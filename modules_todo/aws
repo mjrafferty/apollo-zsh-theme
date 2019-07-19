@@ -1,0 +1,16 @@
+# vim:ft=bash
+################################################################
+# AWS Profile
+
+typeset -g APOLLO_AWS_PROFILE
+typeset -g APOLLO_AWS_DEFAULT_PROFILE
+
+prompt_aws() {
+
+  local aws_profile="${APOLLO_AWS_PROFILE:-$APOLLO_AWS_DEFAULT_PROFILE}"
+
+  if [[ -n "$aws_profile" ]]; then
+    _APOLLO_RETURN_MESSAGE="${aws_profile//\%/%%}"
+  fi
+
+}

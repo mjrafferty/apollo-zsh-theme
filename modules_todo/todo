@@ -1,0 +1,34 @@
+# vim:ft=bash
+################################################################
+# todo.sh: shows the number of tasks in your todo.sh file
+prompt_todo() {
+  local todo=$commands[todo.sh]
+  [[ -n $todo ]] || return
+  if (( ! $+_APOLLO_TODO_FILE )); then
+    # There is a bug in todo.sh where it uses $0 instead of ${BASH_SOURCE[0]}. We work around
+    # it by overriding `dirname`, to which $0 is passed as an argument.
+    local script="
+      function dirname() {
+        local f=\$1
+        [[ \"\$f\" == bash ]] && f=${(Q)commands[todo.sh]}
+        command dirname \"\$f\"
+      }
+      source todo.sh shorthelp &>/dev/null
+      echo \"\$TODO_FILE\""
+    typeset -g _APOLLO_TODO_FILE=$(bash -c $script)
+  fi
+  [[ -r $_APOLLO_TODO_FILE ]] || return
+  local -H stat
+  zstat -H stat -- $_APOLLO_TODO_FILE 2>/dev/null || return
+  if ! _apollo_cache_get $0 $stat[inode] $stat[mtime] $stat[size]; then
+    local count=$($todo -p ls | command tail -1)
+    emulate -L zsh && setopt extendedglob
+    if [[ $count == (#b)'TODO: '[[:digit:]]##' of '([[:digit:]]##)' '* ]]; then
+      _apollo_cache_set 1 $match[1]
+    else
+      _apollo_cache_set 0 0
+    fi
+  fi
+  (( $_APOLLO_CACHE_VAL[1] )) || return
+  "$1_prompt_module" "$0" "$2" "grey50" "$DEFAULT_COLOR" 'TODO_ICON' 0 '' "${_APOLLO_CACHE_VAL[2]}"
+}

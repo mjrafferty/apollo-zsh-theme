@@ -1,0 +1,25 @@
+# vim:ft=bash
+#
+################################################################
+# Segment to indicate background jobs with an icon.
+#
+typeset -g APOLLO_BACKGROUND_JOBS_FG="white"
+typeset -g APOLLO_BACKGROUND_JOBS_BG="cyan"
+typeset -g APOLLO_BACKGROUND_JOBS_VERBOSE="true"
+typeset -g APOLLO_BACKGROUND_JOBS_VERBOSE_ALWAYS="true"
+
+_apollo_background_jobs_run() {
+
+  local msg
+
+  if [[ $APOLLO_BACKGROUND_JOBS_VERBOSE == true ]]; then
+    if [[ $APOLLO_BACKGROUND_JOBS_VERBOSE_ALWAYS == true ]]; then
+      msg='${(%):-%j}'
+    else
+      msg='${${(%):-%j}:#1}'
+    fi
+  fi
+
+  _APOLLO_RETURN_MESSAGE="${(e)msg}"
+
+}

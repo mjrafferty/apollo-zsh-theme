@@ -1,0 +1,12 @@
+# vim:ft=bash
+################################################################
+# Display openfoam information
+prompt_openfoam() {
+  local wm_project_version="$WM_PROJECT_VERSION"
+  local wm_fork="$WM_FORK"
+  if [[ -n "$wm_project_version" && -z "$wm_fork" ]] ; then
+    "$1_prompt_module" "$0" "$2" "yellow" "$DEFAULT_COLOR" '' 0 '' "OF: ${${wm_project_version:t}//\%/%%}"
+  elif [[ -n "$wm_project_version" && -n "$wm_fork" ]] ; then
+    "$1_prompt_module" "$0" "$2" "yellow" "$DEFAULT_COLOR" '' 0 '' "F-X: ${${wm_project_version:t}//\%/%%}"
+  fi
+}

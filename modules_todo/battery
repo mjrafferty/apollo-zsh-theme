@@ -1,0 +1,184 @@
+# vim:ft=bash
+################################################################
+# Segment that displays the battery status in levels and colors
+#
+typeset -g APOLLO_BATTERY_STAGES
+typeset -g APOLLO_BATTERY_LOW_THRESHOLD
+typeset -g APOLLO_BATTERY_LEVEL_BACKGROUND
+typeset -g APOLLO_BATTERY_HIDE_ABOVE_THRESHOLD
+
+typeset -gA _APOLLO_BATTERY_STATES
+_APOLLO_BATTERY_STATES=(
+  'low'           'red'
+  'charging'      'yellow'
+  'charged'       'green'
+  'disconnected'  "$DEFAULT_COLOR_INVERTED"
+)
+
+_apollo_battery_osx() {
+
+  (( $+commands[pmset] )) || return
+
+  raw_data=${${(f)$(command pmset -g batt 2>/dev/null)}[2]}
+
+  if [[ $raw_data != *InternalBattery* ]]; then
+    return
+  fi
+
+  remain=${${(s: :)${${(s:; :)raw_data}[3]}}[1]}
+
+  if [[ $remain == *no* ]]; then
+    remain="..."
+  fi
+
+  [[ $raw_data =~ '([0-9]+)%' ]] && bat_percent=$match[1]
+
+  case "${${(s:; :)raw_data}[2]}" in
+    'charging'|'finishing charge'|'AC attached')
+      state=charging
+      ;;
+    'discharging')
+      (( bat_percent < APOLLO_BATTERY_LOW_THRESHOLD )) && state=low || state=disconnected
+      ;;
+    *)
+      state=charged
+      remain=''
+      ;;
+  esac
+
+}
+
+_apollo_battery_linux() {
+
+  local -a bats
+  local bat_status dir
+  local -i energy_now energy_full power_now minutes pow e is_full is_calculating is_charching
+
+  is_full=1
+
+  bats=( /sys/class/power_supply/(BAT*|battery)/(FN) )
+
+  (( $#bats )) || return
+
+  for dir in $bats; do
+
+    pow=0
+
+    if _apollo_read_file $dir/(energy|charge)_now(N); then
+      (( energy_now+=_APOLLO_RETURN_MESSAGE ))
+    fi
+    if _apollo_read_file $dir/(energy|charge)_full(N); then
+      (( energy_full+=_APOLLO_RETURN_MESSAGE ))
+    fi
+    if _apollo_read_file $dir/(power|current)_now(N); then
+      (( power_now+=${pow::=$_APOLLO_RETURN_MESSAGE} ))
+    fi
+    if _apollo_read_file $dir/status(N); then
+      bat_status=$_APOLLO_RETURN_MESSAGE
+    else
+      continue
+    fi
+
+    if [[ $bat_status != Full ]]; then
+      is_full=0
+    fi
+    if [[ $bat_status == Charging ]]; then
+      is_charching=1
+    fi
+    if [[ $bat_status == (Charging|Discharging) && $pow == 0 ]]; then
+      is_calculating=1
+    fi
+  done
+
+  if (( energy_full )); then
+    bat_percent=$(( 100 * energy_now / energy_full ))
+    if (( bat_percent > 100 )); then
+      bat_percent=100
+    fi
+  fi
+
+  if (( is_full || bat_percent == 100 )); then
+    state=charged
+  else
+
+    if (( is_charching )); then
+      state=charging
+    elif (( bat_percent < APOLLO_BATTERY_LOW_THRESHOLD )); then
+      state=low
+    else
+      state=disconnected
+    fi
+
+    if (( power_now > 0 )); then
+
+      if (( is_charching )); then
+        e=$((energy_full - energy_now))
+      else
+        e=energy_now
+      fi
+
+      minutes=$(( 60 * e / power_now ))
+
+      if (( minutes > 0 )); then
+        remain=$((minutes/60)):${(l#2##0#)$((minutes%60))}
+      fi
+
+    elif (( is_calculating )); then
+      remain="..."
+    fi
+
+  fi
+}
+
+_apollo_battery_run() {
+
+  local state remain raw_data
+  local -i bat_percent
+
+  case $OS in
+    OSX)
+      _apollo_battery_osx
+      ;;
+    Linux|Android)
+      _apollo_battery_linux
+      ;;
+    *)
+      _APOLLO_RETURN_MESSAGE=""
+      return;
+      ;;
+  esac
+
+  if (( bat_percent >= APOLLO_BATTERY_HIDE_ABOVE_THRESHOLD )); then
+    _APOLLO_RETURN_MESSAGE=""
+    return;
+  fi
+
+  local msg="$bat_percent%%"
+
+  if [[ $APOLLO_BATTERY_VERBOSE == true && -n $remain ]]; then
+    msg+=" ($remain)"
+  fi
+
+  local icon=BATTERY_ICON bg=$DEFAULT_COLOR
+
+  if (( $#APOLLO_BATTERY_STAGES || $#APOLLO_BATTERY_LEVEL_BACKGROUND )); then
+
+    local -i idx=$#APOLLO_BATTERY_STAGES
+
+    if (( bat_percent < 100 )); then
+      idx=$((bat_percent * $#APOLLO_BATTERY_STAGES / 100 + 1))
+    fi
+
+    if (( $#APOLLO_BATTERY_STAGES )); then
+      icon+=_$idx
+      typeset -g APOLLO_$icon=$APOLLO_BATTERY_STAGES[idx]
+    fi
+
+    if (( $#APOLLO_BATTERY_LEVEL_BACKGROUND )); then
+      bg=$APOLLO_BATTERY_LEVEL_BACKGROUND[idx]
+    fi
+
+  fi
+
+  $1_prompt_module $0_$state $2 "$bg" "$_APOLLO_BATTERY_STATES[$state]" $icon 0 '' $msg
+}

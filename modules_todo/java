@@ -1,0 +1,17 @@
+# vim:ft=bash
+# Specifies the format of java version.
+#
+#   APOLLO_JAVA_VERSION_FULL=true  => 1.8.0_212-8u212-b03-0ubuntu1.18.04.1-b03
+#   APOLLO_JAVA_VERSION_FULL=false => 1.8.0_212
+#
+# These correspond to `java -fullversion` and `java -version` respectively.
+
+# print Java version number
+prompt_java_version() {
+  _apollo_cached_cmd_stdout_stderr java -fullversion || return
+  local v=$_APOLLO_RETVAL
+  v=${${v#*\"}%\"*}
+  [[ $APOLLO_JAVA_VERSION_FULL == true ]] || v=${v%%-*}
+  [[ -n $v ]] || return
+  "$1_prompt_module" "$0" "$2" "red" "white" "JAVA_ICON" 0 '' "${v//\%/%%}"
+}

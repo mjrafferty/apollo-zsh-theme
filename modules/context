@@ -1,0 +1,61 @@
+# vim:ft=bash
+
+################################################################
+# Context: user@hostname (who am I and where am I)
+# Note that if $DEFAULT_USER is not set, this prompt module will always print
+
+typeset -g APOLLO_CONTEXT_TEMPLATE="%n@%m"
+typeset -g APOLLO_CONTEXT_FG="white"
+typeset -g APOLLO_CONTEXT_BG="navy"
+typeset -g APOLLO_CONTEXT_ALWAYS_SHOW_USER="false"
+typeset -g APOLLO_CONTEXT_ALWAYS_SHOW="false"
+
+_apollo_context_cache_key() {
+  _APOLLO_RETURN_MESSAGE="1"
+}
+
+_apollo_context_run() {
+
+  local content user
+  local current_state="DEFAULT"
+
+  if [[ $APOLLO_CONTEXT_ALWAYS_SHOW == true || -z $DEFAULT_USER || -n $SSH_CLIENT || -n $SSH_TTY ]]; then
+
+    content=$APOLLO_CONTEXT_TEMPLATE
+
+  else
+
+    user="$USER"
+
+    if [[ $user != $DEFAULT_USER ]]; then
+      content="${APOLLO_CONTEXT_TEMPLATE}"
+    elif [[ $APOLLO_CONTEXT_ALWAYS_SHOW_USER == true ]]; then
+      content="${user//\%/%%}"
+    else
+      _APOLLO_RETURN_MESSAGE=""
+      return
+    fi
+
+  fi
+
+  if [[ "${(%):-%#}" == '#' ]]; then
+
+    current_state="ROOT"
+
+  elif [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
+
+    if [[ -n "$SUDO_COMMAND" ]]; then
+      current_state="REMOTE_SUDO"
+    else
+      current_state="REMOTE"
+    fi
+
+  elif [[ -n "$SUDO_COMMAND" ]]; then
+
+    current_state="SUDO"
+
+  fi
+
+  _APOLLO_RETURN_MESSAGE="$content"
+
+}

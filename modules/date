@@ -1,0 +1,19 @@
+# vim:ft=bash
+################################################################
+# System date
+
+typeset -g APOLLO_DATE_FORMAT="%D{%m-%d-%y}"
+typeset -g APOLLO_DATE_FG="white"
+typeset -g APOLLO_DATE_BG="blue"
+
+_apollo_date_run() {
+
+  local d=$APOLLO_DATE_FORMAT
+
+  if [[ $APOLLO_EXPERIMENTAL_TIME_REALTIME != true ]]; then
+    d=${(%)d}
+  fi
+
+  _APOLLO_RETURN_MESSAGE="${d//\%/%%}"
+
+}

@@ -1,0 +1,8 @@
+# vim:ft=bash
+################################################################
+# Current Elastic Beanstalk environment
+prompt_aws_eb_env() {
+  [[ -r .elasticbeanstalk/config.yml ]] || return
+  local v=${=$(command grep environment .elasticbeanstalk/config.yml 2>/dev/null)[2]}
+  [[ -n $v ]] && "$1_prompt_module" "$0" "$2" black green 'AWS_EB_ICON' 0 '' "${v//\%/%%}"
+}

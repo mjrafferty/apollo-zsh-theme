@@ -1,0 +1,22 @@
+# vim:ft=bash
+################################################################
+# Anaconda Environment
+
+typeset -g APOLLO_CONDA_PREFIX
+typeset -g APOLLO_CONDA_ENV_PATH
+typeset -g APOLLO_ANACONDA_LEFT_DELIMITER
+typeset -g APOLLO_ANACONDA_RIGHT_DELIMITER
+
+_apollo_anaconda_run() {
+
+  local p=${APOLLO_CONDA_PREFIX:-$APOLLO_CONDA_ENV_PATH}
+
+  if [[ -n $p ]]; then
+
+    local msg="$APOLLO_ANACONDA_LEFT_DELIMITER${${p:t}//\%/%%}$APOLLO_ANACONDA_RIGHT_DELIMITER"
+
+    _APOLLO_RETURN_MESSAGE="$msg"
+
+  fi
+
+}

@@ -1,0 +1,65 @@
+# vim:ft=bash
+################################################################
+# Segment to print a little OS icon
+
+typeset -g _APOLLO_OS_ICON
+typeset -g APOLLO_OS_ICON_FG
+typeset -g APOLLO_OS_ICON_BG
+APOLLO_OS_ICON_FG="white"
+APOLLO_OS_ICON_BG="black"
+
+_apollo_os_icon_run() {
+  _APOLLO_RETURN_MESSAGE="$_APOLLO_OS_ICON"
+}
+
+_apollo_set_os() {
+
+  _apollo_get_icon $1
+  _APOLLO_OS_ICON=$_APOLLO_RETURN_MESSAGE
+}
+
+_apollo_os_icon_module_setup() {
+
+  local os_release_id
+
+  if [[ $(uname -o 2>/dev/null) == Android ]]; then
+    _apollo_set_os Android ANDROID_ICON
+  else
+    case $(uname) in
+      SunOS)                     _apollo_set_os SUNOS_ICON;;
+      Darwin)                    _apollo_set_os APPLE_ICON;;
+      CYGWIN_NT-* | MSYS_NT-*)   _apollo_set_os WINDOWS_ICON;;
+      FreeBSD|OpenBSD|DragonFly) _apollo_set_os FREEBSD_ICON;;
+      Linux)
+
+        if [[ -f /etc/os-release && "${(f)$((</etc/os-release) 2>/dev/null)}" =~ "ID=([A-Za-z]+)" ]]; then
+          os_release_id="${match[1]}"
+        fi
+
+        case "$os_release_id" in
+          *arch*)                  _apollo_set_os LINUX_ARCH_ICON;;
+          *debian*)                _apollo_set_os LINUX_DEBIAN_ICON;;
+          *raspbian*)              _apollo_set_os LINUX_RASPBIAN_ICON;;
+          *ubuntu*)                _apollo_set_os LINUX_UBUNTU_ICON;;
+          *elementary*)            _apollo_set_os LINUX_ELEMENTARY_ICON;;
+          *fedora*)                _apollo_set_os LINUX_FEDORA_ICON;;
+          *coreos*)                _apollo_set_os LINUX_COREOS_ICON;;
+          *gentoo*)                _apollo_set_os LINUX_GENTOO_ICON;;
+          *mageia*)                _apollo_set_os LINUX_MAGEIA_ICON;;
+          *centos*)                _apollo_set_os LINUX_CENTOS_ICON;;
+          *opensuse*|*tumbleweed*) _apollo_set_os LINUX_OPENSUSE_ICON;;
+          *sabayon*)               _apollo_set_os LINUX_SABAYON_ICON;;
+          *slackware*)             _apollo_set_os LINUX_SLACKWARE_ICON;;
+          *linuxmint*)             _apollo_set_os LINUX_MINT_ICON;;
+          *alpine*)                _apollo_set_os LINUX_ALPINE_ICON;;
+          *aosc*)                  _apollo_set_os LINUX_AOSC_ICON;;
+          *nixos*)                 _apollo_set_os LINUX_NIXOS_ICON;;
+          *devuan*)                _apollo_set_os LINUX_DEVUAN_ICON;;
+          *manjaro*)               _apollo_set_os LINUX_MANJARO_ICON;;
+          *)                       _apollo_set_os LINUX_ICON;;
+        esac
+        ;;
+    esac
+  fi
+
+}

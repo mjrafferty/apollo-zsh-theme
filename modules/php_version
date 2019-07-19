@@ -1,0 +1,31 @@
+# vim:ft=bash
+################################################################
+# Segment to display PHP version number
+
+typeset -g APOLLO_PHP_VERSION_FG="grey93"
+typeset -g APOLLO_PHP_VERSION_BG="fuchsia"
+
+_apollo_php_version_cache_key() {
+  _APOLLO_RETURN_MESSAGE="1"
+}
+
+_apollo_php_version_run() {
+
+  local -a match
+  local version
+  local dump
+
+  setopt extendedglob
+
+  php --version 2> /dev/null
+
+  read -r -t _APOLLO_RETURN_MESSAGE <&${_APOLLO_BUFFER_FD}
+
+  if [[ $_APOLLO_RETURN_MESSAGE == (#b)(*$'\n')#(PHP [[:digit:].]##)* ]]; then
+    version=$match[2]
+    _APOLLO_RETURN_MESSAGE="${version//\%/%%}"
+  else
+    return;
+  fi
+
+}

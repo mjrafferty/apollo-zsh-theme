@@ -1,0 +1,18 @@
+# vim:ft=bash
+################################################################
+# Segment to diplay Node version
+prompt_node_version() {
+  (( $+commands[node] )) || return
+
+  if [[ $APOLLO_NODE_VERSION_PROJECT_ONLY == true ]] ; then
+    local dir=$PWD
+    while true; do
+      [[ $dir == / ]] && return
+      [[ -e $dir/package.json ]] && break
+      dir=${dir:h}
+    done
+  fi
+
+  _apollo_cached_cmd_stdout node --version && [[ $_APOLLO_RETVAL == v?* ]] || return
+  "$1_prompt_module" "$0" "$2" "green" "white" 'NODE_ICON' 0 '' "${_APOLLO_RETVAL#v}"
+}

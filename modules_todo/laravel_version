@@ -1,0 +1,11 @@
+# vim:ft=bash
+################################################################
+# Segment to display laravel version
+prompt_laravel_version() {
+  local laravel_version="$(php artisan --version 2> /dev/null)"
+  if [[ -n "${laravel_version}" && "${laravel_version}" =~ "Laravel Framework" ]]; then
+    # Strip out everything but the version
+    laravel_version="${laravel_version//Laravel Framework /}"
+    "$1_prompt_module" "$0" "$2" "maroon" "white" 'LARAVEL_ICON' 0 '' "${laravel_version//\%/%%}"
+  fi
+}

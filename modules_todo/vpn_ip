@@ -1,0 +1,8 @@
+# vim:ft=bash
+################################################################
+# Segment to display if VPN is active
+# prompt if vpn active
+prompt_vpn_ip() {
+  _apollo_parse_ip $APOLLO_VPN_IP_INTERFACE || return
+  "$1_prompt_module" "$0" "$2" "cyan" "$DEFAULT_COLOR" 'VPN_ICON' 0 '' "${_APOLLO_RETVAL//\%/%%}"
+}

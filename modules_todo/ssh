@@ -1,0 +1,8 @@
+# vim:ft=bash
+################################################################
+# Segment to display SSH icon when connected
+prompt_ssh() {
+  if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
+    "$1_prompt_module" "$0" "$2" "$DEFAULT_COLOR" "yellow" 'SSH_ICON' 0 '' ''
+  fi
+}

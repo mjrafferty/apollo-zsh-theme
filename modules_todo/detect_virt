@@ -1,0 +1,13 @@
+# vim:ft=bash
+################################################################
+# Detection for virtualization (systemd based systems only)
+prompt_detect_virt() {
+  (( $+commands[systemd-detect-virt] )) || return
+  local virt=$(command systemd-detect-virt 2>/dev/null)
+  if [[ "$virt" == "none" ]]; then
+    [[ "$(command ls -di /)" != "2 /" ]] && virt="chroot"
+  fi
+  if [[ -n "${virt}" ]]; then
+    "$1_prompt_module" "$0" "$2" "$DEFAULT_COLOR" "yellow" '' 0 '' "${virt//\%/%%}"
+  fi
+}

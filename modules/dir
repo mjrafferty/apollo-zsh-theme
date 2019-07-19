@@ -1,0 +1,314 @@
+# vim:ft=bash
+
+# Stop shortening the directory once its length is no greater than this. The value can be either
+# absolute (e.g., '50') or a percentage of terminal width (e.g, '50%').
+#
+# Currently only applied when APOLLO_SHORTEN_STRATEGY=truncate_to_unique. If you want to use
+# it with another shortening strategy, open an issue.
+
+# Individual elements are patterns. They are expanded with the options set
+# by `emulate zsh && setopt extended_glob`.
+
+typeset -g APOLLO_DIR_BG="blue"
+typeset -g APOLLO_DIR_FG="white"
+typeset -g APOLLO_DIR_MAX_LENGTH=10
+typeset -g APOLLO_DIR_PACKAGE_FILES
+typeset -g APOLLO_DIR_PATH_ABSOLUTE=false
+typeset -g APOLLO_DIR_PATH_HIGHLIGHT_BOLD=true
+typeset -g APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND="red"
+typeset -g APOLLO_DIR_PATH_SEPARATOR="/"
+typeset -g APOLLO_DIR_PATH_SEPARATOR_FOREGROUND
+typeset -g APOLLO_HOME_FOLDER_ABBREVIATION="~"
+typeset -g APOLLO_SHORTEN_DIR_LENGTH=30
+typeset -g APOLLO_SHORTEN_DELIMITER
+typeset -g APOLLO_SHORTEN_DELIMITER_LENGTH
+typeset -g APOLLO_SHORTEN_FOLDER_MARKER
+typeset -g APOLLO_SHORTEN_STRATEGY="truncate_to_unique"
+
+_apollo_dir_cache_key() {
+  _APOLLO_RETURN_MESSAGE="$PWD"
+}
+
+_apollo_shorten_delim_len() {
+  _APOLLO_RETURN_MESSAGE=${APOLLO_SHORTEN_DELIMITER_LENGTH:--1}
+  (( _APOLLO_RETURN_MESSAGE >= 0 )) || _apollo_prompt_length $1
+}
+
+_apollo_truncate_to_unique() {
+
+  local shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
+  local delim=${APOLLO_SHORTEN_DELIMITER-$'\u2026'}
+
+  local -i i=2 n=1
+  [[ $p == /* ]] && (( ++i ))
+  delim=${APOLLO_SHORTEN_DELIMITER-'*'}
+  _apollo_prompt_length $delim
+  local -i real_delim_len=_APOLLO_RETURN_MESSAGE
+  local -i d=${APOLLO_SHORTEN_DELIMITER_LENGTH:--1}
+  (( d >= 0 )) || d=real_delim_len
+  shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:-1}
+  (( shortenlen >= 0 )) && n=shortenlen
+  if [[ $APOLLO_DIR_MAX_LENGTH == *% ]]; then
+    local -i max_len=$(( COLUMNS * $APOLLO_DIR_MAX_LENGTH[1,-2] / 100 ))
+  else
+    local -i max_len=APOLLO_DIR_MAX_LENGTH
+  fi
+  local -i len=$#p
+  local parent="${PWD%/${(pj./.)parts[i,-1]}}"
+  for (( ; len > max_len && i <= $#parts - n; ++i )); do
+    local dir=$parts[i]
+    if [[ -n $APOLLO_SHORTEN_FOLDER_MARKER &&
+      -n $parent/$dir/${~APOLLO_SHORTEN_FOLDER_MARKER}(#qN) ]]; then
+          parent+=/$dir
+          continue
+    fi
+    local -i j=1
+    for (( ; j + d < $#dir; ++j )); do
+      local -a matching
+      matching=($parent/$dir[1,j]*/(N))
+      (( $#matching == 1 )) && break
+    done
+    if (( j + d < $#dir )); then
+      (( len -= ($#dir - j - real_delim_len) ))
+      parts[i]=$dir[1,j]$'\0'
+    fi
+    parent+=/$dir
+  done
+
+}
+
+# Dir text will be the last $APOLLO_SHORTEN_DIR_LENGTH characters of path
+_apollo_truncate_absolute() {
+
+  local shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
+  local delim=${APOLLO_SHORTEN_DELIMITER-$'\u2026'}
+
+  if (( shortenlen > 0 && $#p > shortenlen )); then
+
+    _apollo_shorten_delim_len $delim
+
+    if (( $#p > shortenlen + $_APOLLO_RETURN_MESSAGE )); then
+
+      local -i n=shortenlen
+      local -i i=$#parts
+
+      while true; do
+
+        local dir=$parts[i]
+        local -i len=$(( $#dir + (i > 1) ))
+
+        if (( len <= n )); then
+          (( n -= len ))
+          (( --i ))
+        else
+          parts[i]=$'\0'$dir[-n,-1]
+          parts[1,i-1]=()
+          break
+        fi
+
+      done
+    fi
+  fi
+
+}
+
+_apollo_truncate_with_folder_marker(){
+
+  if [[ -n $APOLLO_SHORTEN_FOLDER_MARKER ]]; then
+    local dir=$PWD
+    local -a m
+    local -i i=$(($#parts - 1))
+    for (( ; i > 1; --i )); do
+      dir=${dir:h}
+      [[ -n $dir/${~APOLLO_SHORTEN_FOLDER_MARKER}(#qN) ]] && m+=$i
+    done
+    m+=1
+    for (( i=1; i < $#m; ++i )); do
+      (( m[i] - m[i+1] > 2 )) && parts[m[i+1]+1,m[i]-1]=($'\0')
+    done
+  fi
+
+}
+
+_apollo_truncate_to_first_and_last(){
+
+  local shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
+
+  if (( shortenlen > 0 )); then
+    local -i i=$(( shortenlen + 1 ))
+    [[ $p == /* ]] && (( ++i ))
+    for (( ; i <= $#parts - shortenlen; ++i )); do
+      parts[i]=$'\0'
+    done
+  fi
+
+}
+
+_apollo_truncated_with_package_name(){
+
+  local shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
+  local delim=${APOLLO_SHORTEN_DELIMITER-$'\u2026'}
+
+  () {
+  [[ $APOLLO_SHORTEN_STRATEGY == truncate_with_package_name &&
+    $+commands[jq] == 1 && $#APOLLO_DIR_PACKAGE_FILES > 0 ]] || return
+      local pat="(${(j:|:)APOLLO_DIR_PACKAGE_FILES})"
+      local -i i=$#parts
+      local dir=$PWD
+      for (( ; i > 0; --i )); do
+        local pkg_file=''
+        for pkg_file in $dir/${~pat}(N); do
+          local -H stat=()
+          zstat -H stat -- $pkg_file 2>/dev/null || return
+          if ! _apollo_cache_get $0_pkg $stat[inode] $stat[mtime] $stat[size]; then
+            local pkg_name=''
+            pkg_name=$(command jq -j '.name' <$pkg_file 2>/dev/null) || pkg_name=''
+            _apollo_cache_set "$pkg_name"
+          fi
+          [[ -n $_APOLLO_CACHE_VAL[1] ]] || return
+          parts[1,i]=($_APOLLO_CACHE_VAL[1])
+          fake_first=1
+          return
+        done
+        dir=${dir:h}
+      done
+    }
+  if (( shortenlen > 0 )); then
+    _apollo_shorten_delim_len $delim
+    local -i d=_APOLLO_RETURN_MESSAGE pref=shortenlen suf=0 i=2
+    [[ $APOLLO_SHORTEN_STRATEGY == truncate_middle ]] && suf=pref
+    for (( ; i < $#parts; ++i )); do
+      local dir=$parts[i]
+      if (( $#dir > pref + suf + d )); then
+        dir[pref+1,-suf-1]=$'\0'
+        parts[i]=$dir
+          fi
+        done
+      fi
+}
+
+################################################################
+# Dir: current working directory
+_apollo_dir_run() {
+
+  emulate -L zsh && setopt extended_glob
+
+  local p func state icon last_fg delim sep
+  local -a parts
+  local -i fake_first shortenlen len
+
+  delim=${APOLLO_SHORTEN_DELIMITER-$'\u2026'}
+  sep=$APOLLO_DIR_PATH_SEPARATOR
+  fake_first=0
+
+  if [[ $APOLLO_DIR_PATH_ABSOLUTE == true ]]; then
+    p=$PWD
+  else
+    p=${(%):-%~}
+  fi
+
+  if [[ $p == '~['* ]]; then
+    # If "${(%):-%~}" expands to "~[a]/]/b", is the first component "~[a]" or "~[a]/]"?
+    # One would expect "${(%):-%-1~}" to give the right answer but alas it always simply
+    # gives the module before the first slash, which would be "~[a]" in this case. Worse,
+    # for "~[a/b]" it'll give the nonsensical "~a[". To solve this problem we have to
+    # repeat what "${(%):-%~}" does and hope that it produces the same result.
+    for func in zsh_directory_name $zsh_directory_name_functions; do
+      if (( $+functions[$func] )) && $func d $PWD && [[ $p == '~['$reply[1]']'* ]]; then
+        parts+='~['$reply[1]']'
+        break
+      fi
+    done
+
+    if (( $#parts )); then
+      parts+=(${(s:/:)${p#$parts[1]}})
+    else
+      p=$PWD
+      parts=("${(s:/:)p}")
+    fi
+  else
+    parts=("${(s:/:)p}")
+  fi
+
+  case $APOLLO_SHORTEN_STRATEGY in
+    truncate_absolute) _apollo_truncate_absolute ;;
+    truncate_with_package_name|truncate_middle) _apollo_truncated_with_package_name ;;
+    truncate_to_last)
+      fake_first=$(($#parts > 1))
+      parts[1,-2]=()
+      ;;
+    truncate_to_first_and_last)
+      _apollo_truncate_to_first_and_last
+      ;;
+    truncate_to_unique)
+      _apollo_truncate_to_unique
+      ;;
+    truncate_with_folder_marker)
+      _apollo_truncate_with_folder_marker
+      ;;
+    *)
+      shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
+      if (( shortenlen > 0 )); then
+        len=$#parts
+        [[ -z $parts[1] ]] && (( --len ))
+        if (( len > shortenlen )); then
+          parts[1,-shortenlen-1]=($'\0')
+        fi
+      fi
+      ;;
+  esac
+
+  if [[ $APOLLO_DIR_SHOW_WRITABLE == true && ! -w $PWD ]]; then
+    state=NOT_WRITABLE
+    icon=LOCK_ICON
+  else
+    case $PWD in
+      /etc|/etc/*) state=ETC;            icon=ETC_ICON;;
+      ~)           state=HOME;           icon=HOME_ICON;;
+      ~/*)         state=HOME_SUBFOLDER; icon=HOME_SUB_ICON;;
+      *)           state=DEFAULT;        icon=FOLDER_ICON;;
+    esac
+  fi
+
+  parts=("${(@)parts//\%/%%}")
+
+  if [[ $fake_first == 0 && $parts[1] == '~' ]]; then
+    parts[1]=$APOLLO_HOME_FOLDER_ABBREVIATION
+  fi
+
+  if [[ $APOLLO_DIR_OMIT_FIRST_CHARACTER == true && $#parts > 1 && -n $parts[2] ]]; then
+    parts[1]=()
+  fi
+
+
+  if [[ $APOLLO_DIR_PATH_HIGHLIGHT_BOLD == true ]]; then
+    last_fg+=%B
+  fi
+
+  if [[ -n $APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND ]]; then
+    _apollo_translate_color $APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND
+    _apollo_foreground $_APOLLO_RETURN_MESSAGE
+    last_fg+=$_APOLLO_RETURN_MESSAGE
+  fi
+
+  parts[-1]=$last_fg${parts[-1]//$'\0'/$'\0'$last_fg}%b
+
+  parts=("${(@)parts//$'\0'/$delim}")
+
+
+  if [[ -n $APOLLO_DIR_PATH_SEPARATOR_FOREGROUND ]]; then
+    _apollo_translate_color $APOLLO_DIR_PATH_SEPARATOR_FOREGROUND
+    _apollo_foreground $_APOLLO_RETURN_MESSAGE
+    sep="$_APOLLO_RETURN_MESSAGE$sep%f"
+  fi
+
+  _APOLLO_RETURN_MESSAGE="${(pj.$sep.)parts}"
+
+}
+
+_apollo_dir_module_setup(){
+  if  [[ $APOLLO_SHORTEN_STRATEGY == truncate_with_package_name && $+commands[jq] == 0 ]]; then
+    >&2 print -P '%F{yellow}WARNING!%f %BAPOLLO_SHORTEN_STRATEGY=truncate_with_package_name%b requires %F{green}jq%f.'
+    >&2 print -P 'Either install %F{green}jq%f or change the value of %BAPOLLO_SHORTEN_STRATEGY%b.'
+  fi
+}

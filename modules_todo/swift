@@ -1,0 +1,9 @@
+# vim:ft=bash
+################################################################
+# Segment to display Swift version
+prompt_swift_version() {
+  _apollo_cached_cmd_stdout swift --version || return
+  emulate -L zsh && setopt extendedglob
+  [[ $_APOLLO_RETVAL == (#b)[^[:digit:]]#([[:digit:].]##)* ]] || return
+  "$1_prompt_module" "$0" "$2" "magenta" "white" 'SWIFT_ICON' 0 '' "${match[1]//\%/%%}"
+}

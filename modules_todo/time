@@ -1,0 +1,10 @@
+# vim:ft=bash
+################################################################
+# System time
+
+# If set to true, `time` prompt will update every second.
+prompt_time() {
+  local t=$APOLLO_TIME_FORMAT
+  [[ $APOLLO_EXPERIMENTAL_TIME_REALTIME == true ]] || t=${(%)t}
+  "$1_prompt_module" "$0" "$2" "$DEFAULT_COLOR_INVERTED" "$DEFAULT_COLOR" "TIME_ICON" 0 '' "${t//\%/%%}"
+}

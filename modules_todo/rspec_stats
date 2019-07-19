@@ -1,0 +1,11 @@
+# vim:ft=bash
+# RSpec test ratio
+prompt_rspec_stats() {
+  if [[ -d app && -d spec ]]; then
+    local -a code
+    code=(app/**/*.rb(N))
+    (( $#code )) || return
+    local tests=(spec/**/*.rb(N))
+    build_test_stats "$1" "$0" "$2" "$#code" "$#tests" "RSpec" 'TEST_ICON'
+  fi
+}

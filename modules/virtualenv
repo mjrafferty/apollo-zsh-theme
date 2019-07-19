@@ -1,0 +1,20 @@
+# vim:ft=bash
+################################################################
+# Virtualenv: current working virtualenv
+# More information on virtualenv (Python):
+# https://virtualenv.pypa.io/en/latest/
+
+typeset -g APOLLO_VIRTUALENV_FG="white"
+typeset -g APOLLO_VIRTUALENV_BG="blue"
+
+_apollo_virtualenv_cache_key() {
+  _APOLLO_RETURN_MESSAGE="$VIRTUAL_ENV"
+}
+
+_apollo_virtualenv_run() {
+
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    _APOLLO_RETURN_MESSAGE="${${VIRTUAL_ENV:t}//\%/%%}"
+  fi
+
+}

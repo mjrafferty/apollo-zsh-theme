@@ -1,0 +1,54 @@
+# vim:ft=bash
+################################################################
+# Vi Mode: show editing mode (NORMAL|INSERT|VISUAL)
+#
+# VISUAL mode is shown as NORMAL unless APOLLO_VI_VISUAL_MODE_STRING is explicitly set.
+# Your ZSH version must be >= 5.3 if you set this parameter.
+
+typeset -g APOLLO_VI_MODE_FG="white"
+typeset -g APOLLO_VI_MODE_BG="grey30"
+
+_apollo_vi_mode_cache_key() {
+  _APOLLO_RETURN_MESSAGE="1"
+}
+
+_apollo_vi_mode_run() {
+
+	_APOLLO_VI_MODE="INSERT"
+
+  _APOLLO_RETURN_MESSAGE='${_APOLLO_VI_MODE}'
+
+}
+
+ _apollo_vi_mode_change() {
+
+	local last_mode="$_APOLLO_VI_MODE"
+
+  case "$KEYMAP" in
+    "vicmd")
+      if ((REGION_ACTIVE == 1)); then
+        _APOLLO_VI_MODE="VISUAL"
+      else
+        _APOLLO_VI_MODE="NORMAL"
+      fi
+      ;;
+    "main")
+      _APOLLO_VI_MODE="INSERT"
+      ;;
+    *);;
+  esac
+
+	if [[ "$_APOLLO_VI_MODE" != "$last_mode" ]]; then
+		zle reset-prompt
+	fi
+
+}
+
+_apollo_vi_mode_module_setup(){
+
+  autoload -Uz add-zle-hook-widget
+  zle -N _apollo_vi_mode_change
+
+  add-zle-hook-widget line-pre-redraw _apollo_vi_mode_change
+
+}

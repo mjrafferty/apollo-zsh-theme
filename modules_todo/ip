@@ -1,0 +1,15 @@
+# vim:ft=bash
+################################################################
+# Segment to display the current IP address
+
+typeset -g APOLLO_IP_FG="white"
+typeset -g APOLLO_IP_BG="cyan"
+typeset -g APOLLO_IP_INTERFACE="en0"
+
+_apollo_ip_run() {
+
+  _apollo_parse_ip $APOLLO_IP_INTERFACE || return
+
+  _APOLLO_RETURN_MESSAGE="${_APOLLO_RETURN_MESSAGE//\%/%%}"
+
+}

@@ -1,0 +1,9 @@
+# vim:ft=bash
+################################################################
+# Segment to display Rust version number
+prompt_rust_version() {
+  _apollo_cached_cmd_stdout rustc --version || return
+  local v=${${_APOLLO_RETVAL#rustc }%% *}
+  [[ -n $v ]] || return
+  "$1_prompt_module" "$0" "$2" "darkorange" "$DEFAULT_COLOR" 'RUST_ICON' 0 '' "${v//\%/%%}"
+}

@@ -1,0 +1,73 @@
+# vim:ft=bash
+################################################################
+# Public IP module
+
+typeset -g APOLLO_PUBLIC_IP_FG="white"
+typeset -g APOLLO_PUBLIC_IP_BG="darkgreen"
+typeset -ga APOLLO_PUBLIC_IP_METHODS
+APOLLO_PUBLIC_IP_METHODS=(curl)
+typeset -g APOLLO_PUBLIC_IP_HOST="ipv4.nexcess.net"
+typeset -g APOLLO_PUBLIC_IP_VPN_INTERFACE
+
+typeset -gF _APOLLO_PUBLIC_IP_TIMESTAMP
+typeset -g  _APOLLO_PUBLIC_IP
+
+_apollo_public_ip_cache_key() {
+  _APOLLO_RETURN_MESSAGE="1"
+}
+
+_apollo_public_ip_run() {
+
+  local method ip icon
+  icon='PUBLIC_IP_ICON'
+
+  if (( ! $#_APOLLO_PUBLIC_IP || EPOCHREALTIME >= _APOLLO_PUBLIC_IP_TIMESTAMP + APOLLO_PUBLIC_IP_TIMEOUT )); then
+
+    _APOLLO_PUBLIC_IP=''
+
+    for method in $APOLLO_PUBLIC_IP_METHODS; do
+
+      case $method in
+        'dig')
+          if (( $+commands[dig] )); then
+            command dig +time=1 +tries=1 +short myip.opendns.com @resolver1.opendns.com 2> /dev/null
+            read -r -t _APOLLO_PUBLIC_IP <&${_APOLLO_BUFFER_FD}
+            [[ $_APOLLO_PUBLIC_IP == ';'* ]] && _APOLLO_PUBLIC_IP=''
+          fi
+        ;;
+        'curl')
+          if (( $+commands[curl] )); then
+            command curl --max-time 10 -w '\n' "$APOLLO_PUBLIC_IP_HOST" 2> /dev/null
+            read -r -t _APOLLO_PUBLIC_IP <&${_APOLLO_BUFFER_FD}
+          fi
+        ;;
+        'wget')
+          if (( $+commands[wget] )); then
+            command wget -T 10 -qO- "$APOLLO_PUBLIC_IP_HOST" 2> /dev/null
+            read -r -t _APOLLO_PUBLIC_IP <&${_APOLLO_BUFFER_FD}
+          fi
+        ;;
+      esac
+
+      if [[ -n $_APOLLO_PUBLIC_IP ]]; then
+        _APOLLO_PUBLIC_IP_TIMESTAMP=$EPOCHREALTIME
+        break
+      fi
+
+    done
+
+  fi
+
+  ip=${_APOLLO_PUBLIC_IP:-$APOLLO_PUBLIC_IP_NONE}
+
+  if [[ -n $APOLLO_PUBLIC_IP_VPN_INTERFACE ]]; then
+    _apollo_parse_ip $APOLLO_PUBLIC_IP_VPN_INTERFACE && icon='VPN_ICON'
+  fi
+
+	if [[ -n $ip ]]; then
+		_APOLLO_RETURN_MESSAGE="${_APOLLO_PUBLIC_IP}"
+	else
+		_APOLLO_RETURN_MESSAGE=""
+	fi
+
+}

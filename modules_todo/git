@@ -1,0 +1,459 @@
+# vim:ft=bash
+################################################################
+# GIT module: shows the state of your repository, if you are in a folder under
+# version control
+
+# The git module can have 4 different states - defaults to 'clean'.
+
+typeset -gFH _APOLLO_GITSTATUS_START_TIME
+typeset -gH _APOLLO_NEXT_GIT_DIR
+typeset -gA git_states
+
+git_states=(
+  'clean'         'green'
+  'modified'      'yellow'
+  'untracked'     'green'
+  'loading'       'grey'
+)
+
+# git workdir => the last prompt we've shown for it
+typeset -gAH _APOLLO_LAST_GIT_PROMPT
+
+# git workdir => 1 if gitstatus is slow on it, 0 if it's fast.
+typeset -gAH _APOLLO_GIT_SLOW
+
+_apollo_update_prompt() {
+
+  _APOLLO_REFRESH_REASON=$1
+  _apollo_set_prompt
+  _APOLLO_REFRESH_REASON=''
+  zle && zle .reset-prompt && zle -R
+
+}
+
+apollo_git_init() {
+
+  local component state color var
+
+  if [[ -n "$APOLLO_CHANGESET_HASH_LENGTH" ]]; then
+    APOLLO_GIT_INTERNAL_HASH_LENGTH="$APOLLO_CHANGESET_HASH_LENGTH"
+  fi
+
+  for component in REMOTE_URL COMMIT BRANCH TAG REMOTE_BRANCH STAGED UNSTAGED UNTRACKED \
+                   OUTGOING_CHANGES INCOMING_CHANGES STASH ACTION; do
+
+    color=${(P)${:-APOLLO_GIT_${component}FORMAT_FOREGROUND}}
+
+    if [[ -n $color ]]; then
+
+      for state in "${(@k)git_states}"; do
+
+        var=APOLLO_GIT_${(U)state}_${component}FORMAT_FOREGROUND
+
+        if [[ -z ${(P)var} ]]; then
+          typeset -g $var=$color
+        fi
+
+      done
+
+    fi
+  done
+
+  autoload -Uz git_info
+
+  GIT_CHANGESET_PREFIX=''
+
+  if [[ "$APOLLO_SHOW_CHANGESET" == true ]]; then
+    GIT_CHANGESET_PREFIX="$(print_icon 'GIT_COMMIT_ICON')%0.$APOLLO_GIT_INTERNAL_HASH_LENGTH""i "
+  fi
+
+  zstyle ':git_info:*' check-for-changes true
+
+  GIT_DEFAULT_FORMAT="$GIT_CHANGESET_PREFIX%b%c%u%m"
+
+  zstyle ':git_info:*' formats "$GIT_DEFAULT_FORMAT"
+  zstyle ':git_info:*' actionformats "%b %F{${APOLLO_GIT_ACTIONFORMAT_FOREGROUND}}| %a%f"
+  zstyle ':git_info:*' stagedstr " $(print_icon 'GIT_STAGED_ICON')"
+  zstyle ':git_info:*' unstagedstr " $(print_icon 'GIT_UNSTAGED_ICON')"
+  zstyle ':git_info:git*+set-message:*' hooks $APOLLO_GIT_GIT_HOOKS
+  zstyle ':git_info:hg*+set-message:*' hooks $APOLLO_GIT_HG_HOOKS
+  zstyle ':git_info:svn*+set-message:*' hooks $APOLLO_GIT_SVN_HOOKS
+
+  # For Hg, only show the branch name
+  zstyle ':git_info:hg*:*' branchformat "$(print_icon 'GIT_BRANCH_ICON')%b"
+  # The `get-revision` function must be turned on for dirty-check to work for Hg
+  zstyle ':git_info:hg*:*' get-revision true
+  zstyle ':git_info:hg*:*' get-bookmarks true
+  zstyle ':git_info:hg*+gen-hg-bookmark-string:*' hooks hg-bookmarks
+
+  # TODO: fix the %b (branch) format for svn. Using %b breaks color-encoding of the foreground
+  # for the rest of the powerline.
+  zstyle ':git_info:svn*:*' formats "$GIT_CHANGESET_PREFIX%c%u"
+  zstyle ':git_info:svn*:*' actionformats "$GIT_CHANGESET_PREFIX%c%u %F{${APOLLO_GIT_ACTIONFORMAT_FOREGROUND}}| %a%f"
+
+  if [[ "$APOLLO_SHOW_CHANGESET" == true ]]; then
+    zstyle ':git_info:*' get-revision true
+  fi
+
+}
+
+_apollo_git_style() {
+
+  local color
+
+  color=${(P)${:-APOLLO_GIT_${1}_${2}FORMAT_FOREGROUND}}
+
+  if [[ -z $color ]]; then
+    _APOLLO_RETVAL=""
+    return
+  fi
+
+  if [[ $color == <-> ]]; then
+    color=${(l:3::0:)color}
+  else
+    color=$__APOLLO_COLORS[${${${color#bg-}#fg-}#br}]
+
+    if [[ -z $color ]]; then
+      _APOLLO_RETVAL=""
+      return
+    fi
+
+  fi
+
+  _APOLLO_RETVAL="%F{$color}"
+}
+
+_apollo_git_render() {
+
+  local -a msg cache_key cur_prompt stale_prompt
+  local dir state ws id bg
+  local -i n
+
+  if (( $+_APOLLO_NEXT_GIT_DIR )); then
+
+    dir=${${GIT_DIR:a}:-$PWD}
+
+    while true; do
+
+      msg=("${(@0)${_APOLLO_LAST_GIT_PROMPT[$dir]}}")
+      [[ $#msg -gt 1 || -n ${msg[1]} ]] && break
+      [[ $dir == / ]] && msg=() && break
+      dir=${dir:h}
+
+    done
+
+    if (( $#msg )); then
+
+      $2_prompt_module $1_LOADING $3 "${git_states[loading]}" "$DEFAULT_COLOR" '' 0 '' "${msg[@]}"
+
+    else
+
+      _apollo_get_icon GIT_LOADING_ICON
+
+      if [[ -n $_APOLLO_RETVAL || -n $APOLLO_GIT_LOADING_TEXT ]]; then
+        $2_prompt_module $1_LOADING $3 "${git_states[loading]}" "$DEFAULT_COLOR" GIT_LOADING_ICON 0 '' "$APOLLO_GIT_LOADING_TEXT"
+      fi
+
+    fi
+
+    return 0
+
+  fi
+
+  [[ $GIT_STATUS_RESULT == ok-* ]] || return 1
+
+  (( ${APOLLO_GIT_GIT_HOOKS[(I)git-untracked]} )) || GIT_STATUS_HAS_UNTRACKED=0
+  (( ${APOLLO_GIT_GIT_HOOKS[(I)git-aheadbehind]} )) || { GIT_STATUS_COMMITS_AHEAD=0 && GIT_STATUS_COMMITS_BEHIND=0 }
+  (( ${APOLLO_GIT_GIT_HOOKS[(I)git-stash]} )) || GIT_STATUS_STASHES=0
+  (( ${APOLLO_GIT_GIT_HOOKS[(I)git-remotebranch]} )) || GIT_STATUS_REMOTE_BRANCH=""
+  (( ${APOLLO_GIT_GIT_HOOKS[(I)git-tagname]} )) || GIT_STATUS_TAG=""
+
+  (( APOLLO_GIT_COMMITS_AHEAD_MAX_NUM >= 0 && GIT_STATUS_COMMITS_AHEAD > APOLLO_GIT_COMMITS_AHEAD_MAX_NUM )) &&
+    GIT_STATUS_COMMITS_AHEAD=$APOLLO_GIT_COMMITS_AHEAD_MAX_NUM
+
+  (( APOLLO_GIT_COMMITS_BEHIND_MAX_NUM >= 0 && GIT_STATUS_COMMITS_BEHIND > APOLLO_GIT_COMMITS_BEHIND_MAX_NUM )) &&
+    GIT_STATUS_COMMITS_BEHIND=$APOLLO_GIT_COMMITS_BEHIND_MAX_NUM
+
+
+  cache_key=(
+    "$GIT_STATUS_LOCAL_BRANCH"
+    "$GIT_STATUS_REMOTE_BRANCH"
+    "$GIT_STATUS_REMOTE_URL"
+    "$GIT_STATUS_ACTION"
+    "$GIT_STATUS_NUM_STAGED"
+    "$GIT_STATUS_NUM_UNSTAGED"
+    "$GIT_STATUS_NUM_UNTRACKED"
+    "$GIT_STATUS_HAS_STAGED"
+    "$GIT_STATUS_HAS_UNSTAGED"
+    "$GIT_STATUS_HAS_UNTRACKED"
+    "$GIT_STATUS_COMMITS_AHEAD"
+    "$GIT_STATUS_COMMITS_BEHIND"
+    "$GIT_STATUS_STASHES"
+    "$GIT_STATUS_TAG"
+  )
+
+  if [[ $APOLLO_SHOW_CHANGESET == true || -z $GIT_STATUS_LOCAL_BRANCH ]]; then
+    cache_key+=$GIT_STATUS_COMMIT
+  fi
+
+  if ! _apollo_cache_get "${(@)cache_key}"; then
+
+    state=CLEAN
+
+    function _$0_fmt() {
+      _apollo_git_style $state $1
+      cur_prompt+=$_APOLLO_RETVAL$2
+      _apollo_git_style LOADING $1
+      stale_prompt+=$_APOLLO_RETVAL$2
+    }
+
+    trap "unfunction _$0_fmt" EXIT
+
+    if (( ${APOLLO_GIT_GIT_HOOKS[(I)git-detect-changes]} )); then
+      if [[ $GIT_STATUS_HAS_STAGED != 0 || $GIT_STATUS_HAS_UNSTAGED != 0 ]]; then
+        state=MODIFIED
+      elif [[ $GIT_STATUS_HAS_UNTRACKED != 0 ]]; then
+        state=UNTRACKED
+      fi
+
+      # It's weird that removing git-detect-changes from APOLLO_GIT_GIT_HOOKS gets rid
+      # of the GIT icon. That's what git_info does, so we do the same in the name of compatiblity.
+      if [[ "$GIT_STATUS_REMOTE_URL" == *github* ]] then
+        _apollo_get_icon GIT_GIT_GITHUB_ICON
+        _$0_fmt REMOTE_URL $_APOLLO_RETVAL
+      elif [[ "$GIT_STATUS_REMOTE_URL" == *bitbucket* ]] then
+        _apollo_get_icon GIT_GIT_BITBUCKET_ICON
+        _$0_fmt REMOTE_URL $_APOLLO_RETVAL
+      elif [[ "$GIT_STATUS_REMOTE_URL" == *stash* ]] then
+        _apollo_get_icon GIT_GIT_GITHUB_ICON
+        _$0_fmt REMOTE_URL $_APOLLO_RETVAL
+      elif [[ "$GIT_STATUS_REMOTE_URL" == *gitlab* ]] then
+        _apollo_get_icon GIT_GIT_GITLAB_ICON
+        _$0_fmt REMOTE_URL $_APOLLO_RETVAL
+      else
+        _apollo_get_icon GIT_GIT_ICON
+        _$0_fmt REMOTE_URL $_APOLLO_RETVAL
+      fi
+    fi
+
+    if [[ $APOLLO_SHOW_CHANGESET == true || -z $GIT_STATUS_LOCAL_BRANCH ]]; then
+      _apollo_get_icon GIT_COMMIT_ICON
+      _$0_fmt COMMIT "$_APOLLO_RETVAL${${GIT_STATUS_COMMIT:0:$APOLLO_GIT_INTERNAL_HASH_LENGTH}:-HEAD}"
+      ws=' '
+    fi
+
+    if [[ -n $GIT_STATUS_LOCAL_BRANCH ]]; then
+      _apollo_get_icon GIT_BRANCH_ICON
+      _$0_fmt BRANCH "$ws$_APOLLO_RETVAL${GIT_STATUS_LOCAL_BRANCH//\%/%%}"
+    fi
+
+    if [[ $APOLLO_GIT_HIDE_TAGS == false && -n $GIT_STATUS_TAG ]]; then
+      _apollo_get_icon GIT_TAG_ICON
+      _$0_fmt TAG " $_APOLLO_RETVAL${GIT_STATUS_TAG//\%/%%}"
+    fi
+
+    if [[ -n $GIT_STATUS_ACTION ]]; then
+      _$0_fmt ACTION " | ${GIT_STATUS_ACTION//\%/%%}"
+    else
+      if [[ -n $GIT_STATUS_REMOTE_BRANCH &&
+            $GIT_STATUS_LOCAL_BRANCH != $GIT_STATUS_REMOTE_BRANCH ]]; then
+        _apollo_get_icon GIT_REMOTE_BRANCH_ICON
+        _$0_fmt REMOTE_BRANCH " $_APOLLO_RETVAL${GIT_STATUS_REMOTE_BRANCH//\%/%%}"
+      fi
+      if [[ $GIT_STATUS_HAS_STAGED == 1 ]]; then
+        _apollo_get_icon GIT_STAGED_ICON
+        (( ${APOLLO_GIT_MAX_NUM_STAGED:-$APOLLO_GIT_STAGED_MAX_NUM} != 1 )) && _APOLLO_RETVAL+=$GIT_STATUS_NUM_STAGED
+        _$0_fmt STAGED " $_APOLLO_RETVAL"
+      fi
+      if [[ $GIT_STATUS_HAS_UNSTAGED == 1 ]]; then
+        _apollo_get_icon GIT_UNSTAGED_ICON
+        (( ${APOLLO_GIT_MAX_NUM_UNSTAGED:-$APOLLO_GIT_UNSTAGED_MAX_NUM} != 1 )) && _APOLLO_RETVAL+=$GIT_STATUS_NUM_UNSTAGED
+        _$0_fmt UNSTAGED " $_APOLLO_RETVAL"
+      fi
+      if [[ $GIT_STATUS_HAS_UNTRACKED == 1 ]]; then
+        _apollo_get_icon GIT_UNTRACKED_ICON
+        (( ${APOLLO_GIT_MAX_NUM_UNTRACKED:-$APOLLO_GIT_UNTRACKED_MAX_NUM} != 1 )) && _APOLLO_RETVAL+=$GIT_STATUS_NUM_UNTRACKED
+        _$0_fmt UNTRACKED " $_APOLLO_RETVAL"
+      fi
+      if [[ $GIT_STATUS_COMMITS_BEHIND -gt 0 ]]; then
+        _apollo_get_icon GIT_INCOMING_CHANGES_ICON
+        (( APOLLO_GIT_COMMITS_BEHIND_MAX_NUM != 1 )) && _APOLLO_RETVAL+=$GIT_STATUS_COMMITS_BEHIND
+        _$0_fmt INCOMING_CHANGES " $_APOLLO_RETVAL"
+      fi
+      if [[ $GIT_STATUS_COMMITS_AHEAD -gt 0 ]]; then
+        _apollo_get_icon GIT_OUTGOING_CHANGES_ICON
+        (( APOLLO_GIT_COMMITS_AHEAD_MAX_NUM != 1 )) && _APOLLO_RETVAL+=$GIT_STATUS_COMMITS_AHEAD
+        _$0_fmt OUTGOING_CHANGES " $_APOLLO_RETVAL"
+      fi
+      if [[ $GIT_STATUS_STASHES -gt 0 ]]; then
+        _apollo_get_icon GIT_STASH_ICON
+        _$0_fmt STASH " $_APOLLO_RETVAL$GIT_STATUS_STASHES"
+      fi
+    fi
+
+    _apollo_cache_set "${1}_$state" "${git_states[${(L)state}]}" "${stale_prompt[@]}" "${cur_prompt[@]}"
+  fi
+
+  id=${_APOLLO_CACHE_VAL[1]}
+  bg=${_APOLLO_CACHE_VAL[2]}
+
+  shift 2 _APOLLO_CACHE_VAL
+
+  n=$(($#_APOLLO_CACHE_VAL / 2))
+
+  _APOLLO_LAST_GIT_PROMPT[$GIT_STATUS_WORKDIR]="${(pj:\0:)_APOLLO_CACHE_VAL[1,$n]}"
+
+  shift $n _APOLLO_CACHE_VAL
+
+  $2_prompt_module "$id" "$3" "$bg" "$DEFAULT_COLOR" '' 0 '' "${(@)_APOLLO_CACHE_VAL}"
+
+  return 0
+
+}
+
+_apollo_git_resume() {
+
+  local latency
+
+  emulate -L zsh
+
+  if [[ $GIT_STATUS_RESULT == ok-async ]]; then
+
+    latency=$((EPOCHREALTIME - _APOLLO_GITSTATUS_START_TIME))
+
+    if (( latency > APOLLO_GIT_MAX_SYNC_LATENCY_SECONDS )); then
+      _APOLLO_GIT_SLOW[$GIT_STATUS_WORKDIR]=1
+    elif (( latency < 0.8 * APOLLO_GIT_MAX_SYNC_LATENCY_SECONDS )); then  # 0.8 to avoid flip-flopping
+      _APOLLO_GIT_SLOW[$GIT_STATUS_WORKDIR]=0
+    fi
+
+  fi
+
+  if [[ -z $_APOLLO_NEXT_GIT_DIR ]]; then
+
+    unset _APOLLO_NEXT_GIT_DIR
+    _apollo_update_prompt gitstatus
+
+  else
+
+    _APOLLO_GITSTATUS_START_TIME=$EPOCHREALTIME
+
+    if ! gitstatus_query -d $_APOLLO_NEXT_GIT_DIR -t 0 -c _apollo_git_resume APOLLO; then
+      unset _APOLLO_NEXT_GIT_DIR
+      return
+    fi
+
+    case $GIT_STATUS_RESULT in
+      *-sync)
+        unset _APOLLO_NEXT_GIT_DIR
+        _apollo_update_prompt gitstatus
+        ;;
+      tout)
+        _APOLLO_NEXT_GIT_DIR=""
+        ;;
+    esac
+
+  fi
+}
+
+_apollo_git_gitstatus() {
+
+  local dir
+  local -F timeout
+
+  [[ $APOLLO_DISABLE_GITSTATUS == true ]] && return 1
+
+  if [[ $_APOLLO_REFRESH_REASON == precmd ]]; then
+
+    if (( -z $_APOLLO_NEXT_GIT_DIR )); then
+
+      _APOLLO_NEXT_GIT_DIR=${${GIT_DIR:a}:-$PWD}
+
+    else
+
+      dir=${${GIT_DIR:a}:-$PWD}
+
+      timeout=$APOLLO_GIT_MAX_SYNC_LATENCY_SECONDS
+
+      while true; do
+
+        case "$_APOLLO_GIT_SLOW[$dir]" in
+          "") [[ $dir == / ]] && break; dir=${dir:h};;
+          0) break;;
+          1) timeout=0; break;;
+        esac
+
+      done
+
+      _APOLLO_GITSTATUS_START_TIME=$EPOCHREALTIME
+
+      gitstatus_query -d ${${GIT_DIR:a}:-$PWD} -t $timeout -c _apollo_git_resume APOLLO || return 1
+
+      [[ $GIT_STATUS_RESULT == tout ]] && _APOLLO_NEXT_GIT_DIR=""
+
+    fi
+  fi
+
+  return 0
+}
+
+_apollo_git_run() {
+
+  local git_prompt
+  local current_state
+
+  if _apollo_git_gitstatus; then
+    _apollo_git_render $0 $1 $2 \
+      && return
+  fi
+
+  if (( $#backends )); then
+
+    GIT_WORKDIR_DIRTY=false
+    GIT_WORKDIR_HALF_DIRTY=false
+
+    # Actually invoke git_info manually to gather all information.
+    zstyle ':git_info:*' enable ${backends}
+
+    git_info
+
+    git_prompt="${git_info_msg_0_}"
+
+    if [[ -n "$git_prompt" ]]; then
+
+      if [[ "$GIT_WORKDIR_DIRTY" == true ]]; then
+        current_state='modified'
+      else
+
+        if [[ "$GIT_WORKDIR_HALF_DIRTY" == true ]]; then
+          current_state='untracked'
+        else
+          current_state='clean'
+        fi
+
+      fi
+
+      _APOLLO_RETURN_MESSAGE="$git_prompt"
+
+    fi
+  fi
+
+}
+
+_apollo_git_module_setup(){
+
+  apollo_git_init
+
+  if [[ $APOLLO_DISABLE_GITSTATUS != true ]] && (( ${APOLLO_GIT_BACKENDS[(I)git]} )); then
+
+    source ${APOLLO_GITSTATUS_DIR:-${_apollo_installation_dir}/gitstatus}/gitstatus.plugin.zsh
+
+    gitstatus_start                                                                 \
+      -s ${APOLLO_GIT_MAX_NUM_STAGED:-$APOLLO_GIT_STAGED_MAX_NUM}       \
+      -u ${APOLLO_GIT_MAX_NUM_UNSTAGED:-$APOLLO_GIT_UNSTAGED_MAX_NUM}   \
+      -d ${APOLLO_GIT_MAX_NUM_UNTRACKED:-$APOLLO_GIT_UNTRACKED_MAX_NUM} \
+      -m $APOLLO_GIT_MAX_INDEX_SIZE_DIRTY                                     \
+      APOLLO
+
+  fi
+}

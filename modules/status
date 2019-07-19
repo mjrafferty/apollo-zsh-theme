@@ -1,0 +1,89 @@
+# vim:ft=bash
+################################################################
+# Status: When an error occur, return the error code, or a cross icon if option is set
+# Display an ok icon when no error occur, or hide the module if option is set to false
+#
+# old options, retro compatibility
+
+typeset -g APOLLO_STATUS_FG="white"
+typeset -g APOLLO_STATUS_BG="green"
+typeset -g APOLLO_STATUS_HIDE_SIGNAME="false"
+typeset -g APOLLO_STATUS_SHOW_PIPESTATUS="true"
+typeset -g APOLLO_STATUS_CROSS="false"
+typeset -g APOLLO_STATUS_VERBOSE="true"
+typeset -g APOLLO_STATUS_OK="true"
+typeset -g APOLLO_STATUS_OK_IN_NON_VERBOSE="true"
+
+exit_code_or_status() {
+
+  local ec=$1
+
+  if [[ "$APOLLO_STATUS_HIDE_SIGNAME" = true ]] || (( ec <= 128 )); then
+    _APOLLO_RETURN_MESSAGE=$ec
+  else
+    _APOLLO_RETURN_MESSAGE="SIG${signals[$((sig + 1))]}($((ec - 128)))"
+  fi
+
+}
+
+_apollo_status_run() {
+
+    local ec_text
+    local ec_sum
+    local ec
+
+    APOLLO_STATUS_BG="green"
+
+    if [[ $APOLLO_STATUS_SHOW_PIPESTATUS == true ]]; then
+
+      if (( $#_APOLLO_PIPE_EXIT_CODES > 1 )); then
+        ec_sum=${_APOLLO_PIPE_EXIT_CODES[1]}
+        exit_code_or_status "${_APOLLO_PIPE_EXIT_CODES[1]}"
+
+      else
+        ec_sum=${_APOLLO_EXIT_CODE}
+        exit_code_or_status "${_APOLLO_EXIT_CODE}"
+      fi
+
+      ec_text=$_APOLLO_RETURN_MESSAGE
+
+      for ec in "${(@)_APOLLO_PIPE_EXIT_CODES[2,-1]}"; do
+        (( ec_sum += ec ))
+        exit_code_or_status "$ec"
+        ec_text+="|$_APOLLO_RETURN_MESSAGE"
+      done
+
+    else
+
+      ec_sum=${_APOLLO_EXIT_CODE}
+      # We use _APOLLO_EXIT_CODE instead of the right-most _APOLLO_PIPE_EXIT_CODES item because
+      # PIPE_FAIL may be set.
+      exit_code_or_status "${_APOLLO_EXIT_CODE}"
+      ec_text=$_APOLLO_RETURN_MESSAGE
+
+    fi
+
+
+    if (( ec_sum > 0 )); then
+
+      APOLLO_STATUS_BG="red"
+      if [[ "$APOLLO_STATUS_VERBOSE" == true ]]; then
+        #_APOLLO_CACHE_VAL=("$0_ERROR" "$2" red yellow1 CARRIAGE_RETURN_ICON 0 '' "$ec_text")
+        _APOLLO_RETURN_MESSAGE="$ec_text"
+      else
+        #_APOLLO_CACHE_VAL=("$0_ERROR" "$2" "$DEFAULT_COLOR" red FAIL_ICON 0 '' '')
+        _APOLLO_RETURN_MESSAGE="BAD"
+      fi
+
+    elif [[ "$APOLLO_STATUS_OK" == true ]] && [[ "$APOLLO_STATUS_VERBOSE" == true || "$APOLLO_STATUS_OK_IN_NON_VERBOSE" == true ]]; then
+
+      #_APOLLO_CACHE_VAL=("$0_OK" "$2" "$DEFAULT_COLOR" green OK_ICON 0 '' '')
+      _APOLLO_RETURN_MESSAGE="OK"
+
+    else
+
+      _APOLLO_RETURN_MESSAGE=""
+
+    fi
+
+}
