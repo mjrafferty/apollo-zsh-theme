@@ -1,5 +1,5 @@
 
-_riff_quota_run() {
+_apollo_quota_run() {
   if [[ -x /usr/bin/quota ]] && ((( OS_VERSION < 7 )) || [[ $USER == "${HOME/*\//}" ]]); then
     _quota=$(quota -qg $(pwd | grep -Po "/home/\K[^/]*") 2> /dev/null | grep -Po "Over|grace|limit")
     _APOLLO_RETURN_MESSAGE="$_quota"
