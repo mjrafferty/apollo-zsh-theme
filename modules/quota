@@ -11,11 +11,11 @@ _apollo_quota_cache_key(){
 	if [[ $PWD =~ "/((chroot/)?home/|local/)" ]]; then
 		temp=${PWD:${MEND}};
 		_APOLLO_QUOTA_USER="${temp%%/*}"
+    _APOLLO_RETURN_MESSAGE="$_APOLLO_QUOTA_USER"
 	else
 		_APOLLO_QUOTA_USER=""
+    _APOLLO_RETURN_MESSAGE=""
 	fi
-
-	_APOLLO_RETURN_MESSAGE="$_APOLLO_QUOTA_USER"
 
 }
 

@@ -51,6 +51,9 @@ _apollo_set_module_text() {
   bg_var="APOLLO_${module}_BG"
   length="_APOLLO_${module}_LENGTH"
 
+  # Clear out old message before passing to module
+  _APOLLO_RETURN_MESSAGE=""
+
   "_apollo_${module}_run" >&"${_APOLLO_BUFFER_FD}"
 
   # Flush any remaining data in buffer
