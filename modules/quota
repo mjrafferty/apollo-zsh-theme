@@ -1,6 +1,9 @@
 # vim:ft=bash
 ## Show if user is over quota ##
 
+typeset -g APOLLO_QUOTA_FG="white"
+typeset -g APOLLO_QUOTA_BG="red"
+
 typeset -g _APOLLO_QUOTA_COMMAND="$(command -v quota)"
 typeset -g _APOLLO_QUOTA_USER
 
