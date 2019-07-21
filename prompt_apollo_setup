@@ -13,7 +13,7 @@ APOLLO_LEFT_PROMPT_ELEMENTS=(public_ip virtualenv newline root_indicator context
 APOLLO_RIGHT_PROMPT_ELEMENTS=(command_execution_time background_jobs game newline status php_version)
 
 ## Necessary global variables
-typeset -g  _APOLLO_INSTALL_DIR="${HOME}/.zsh/apollo-zsh-theme"
+typeset -g  _APOLLO_INSTALL_DIR="${0:h}"
 typeset -gA _APOLLO_CACHE
 typeset -g 	_APOLLO_BUFFER_NAME
 typeset -g 	_APOLLO_BUFFER_FD
