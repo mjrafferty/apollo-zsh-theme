@@ -394,7 +394,7 @@ prompt_apollo_setup() {
   add-zsh-hook zshexit _apollo_cleanup
 
   # Open a buffer for modules to use
-  _APOLLO_BUFFER_NAME="/tmp/${USER}_APOLLO_$EPOCHSECONDS"
+  _APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}_APOLLO_$EPOCHSECONDS"
   mkfifo "${_APOLLO_BUFFER_NAME}"
   exec {_APOLLO_BUFFER_FD}<> "${_APOLLO_BUFFER_NAME}"
 
