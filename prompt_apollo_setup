@@ -41,11 +41,11 @@ source "${_APOLLO_INSTALL_DIR}/lib/link_lines.zsh"
 # Must set _APOLLO_RETURN_MESSAGE and _APOLLO_LEFT_TEXT_LENGTH
 _apollo_set_module_text() {
 
-  local module module_text fg_color bg_color transition_fg_color cache_key
+  local module module_text fg_color bg_color transition_fg_color apollo_cache_key
   local -u fg_var bg_var length # Convert variable names to upper case when checking config
 
   module="$1"
-  cache_key="$2"
+  apollo_cache_key="$2"
 
   fg_var="APOLLO_${module}_FG"
   bg_var="APOLLO_${module}_BG"
@@ -54,7 +54,7 @@ _apollo_set_module_text() {
   # Clear out old message before passing to module
   _APOLLO_RETURN_MESSAGE=""
 
-  "_apollo_${module}_run" >&"${_APOLLO_BUFFER_FD}"
+   "_apollo_${module}_run" >&"${_APOLLO_BUFFER_FD}"
 
   # Flush any remaining data in buffer
   while read -rt dump <&"${_APOLLO_BUFFER_FD}"; do true; done
@@ -62,8 +62,8 @@ _apollo_set_module_text() {
   if (( ${#_APOLLO_RETURN_MESSAGE} == 0 )); then
     _APOLLO_RETURN_MESSAGE=""
     _APOLLO_LAST_TEXT_LENGTH="0"
-    if [[ -n "$cache_key" ]]; then
-      _APOLLO_CACHE["${module}-${cache_key}"]="${_APOLLO_LAST_TEXT_LENGTH}|${_APOLLO_RETURN_MESSAGE}"
+    if [[ -n "$apollo_cache_key" ]]; then
+      _APOLLO_CACHE["${module}-${apollo_cache_key}"]="${_APOLLO_LAST_TEXT_LENGTH}|${_APOLLO_RETURN_MESSAGE}"
     fi
     return;
   fi
@@ -96,8 +96,8 @@ _apollo_set_module_text() {
 
   _APOLLO_RETURN_MESSAGE="${fg_color}${bg_color}${module_text}${transition_fg_color}"
 
-  if [[ -n "$cache_key" ]]; then
-    _APOLLO_CACHE["${module}-${cache_key}"]="${_APOLLO_LAST_TEXT_LENGTH}|${_APOLLO_RETURN_MESSAGE}"
+  if [[ -n "$apollo_cache_key" ]]; then
+    _APOLLO_CACHE["${module}-${apollo_cache_key}"]="${_APOLLO_LAST_TEXT_LENGTH}|${_APOLLO_RETURN_MESSAGE}"
   fi
 
 }
@@ -107,7 +107,7 @@ _apollo_set_module_text() {
 # using date from cache, or pass to _apollo_set_module_text
 _apollo_get_module_text() {
 
-  local module start cache_key cache runtime
+  local module start apollo_cache_key cache runtime
 
   module="$1"
 
@@ -115,17 +115,17 @@ _apollo_get_module_text() {
     start=${EPOCHREALTIME}
   fi
 
-  if typeset -f "_apollo_${module}_cache_key" > /dev/null; then
+  if [[ ${+functions[_apollo_${module}_cache_key]} -gt 0 ]]; then
     "_apollo_${module}_cache_key";
-    cache_key="${_APOLLO_RETURN_MESSAGE}"
-    cache="${_APOLLO_CACHE["${module}-${cache_key}"]}"
+    apollo_cache_key="${_APOLLO_RETURN_MESSAGE}"
+    cache="${_APOLLO_CACHE["${module}-${apollo_cache_key}"]}"
   fi
 
   if [[ -n "$cache" ]]; then
     _APOLLO_LAST_TEXT_LENGTH="${cache%%|*}"
     _APOLLO_RETURN_MESSAGE="${cache##*|}"
   else
-    _apollo_set_module_text "$module" "$cache_key"
+    _apollo_set_module_text "$module" "$apollo_cache_key"
   fi
 
   if ((APOLLO_PROFILER > 0)); then
@@ -359,8 +359,8 @@ _apollo_preexec() {
 
   # Run preexec hooks for modules
   for element in "${APOLLO_LEFT_PROMPT_ELEMENTS[@]}" "${APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"; do
-    if typeset -f "_apollo_${element}_module_preexec" > /dev/null; then
-      "_apollo_${element}_module_preexec";
+    if [[ ${+functions[_apollo_${element}_preexec]} -gt 0 ]]; then
+      "_apollo_${element}_preexec";
     fi
   done
 
@@ -405,8 +405,8 @@ prompt_apollo_setup() {
 
       source "${_APOLLO_INSTALL_DIR}/modules/${element}";
 
-      if typeset -f "_apollo_${element}_module_setup" > /dev/null; then
-        "_apollo_${element}_module_setup";
+      if [[ ${+functions[_apollo_${element}_setup]} -gt 0 ]]; then
+        "_apollo_${element}_setup";
       fi
 
     fi

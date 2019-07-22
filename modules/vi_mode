@@ -44,7 +44,7 @@ _apollo_vi_mode_run() {
 
 }
 
-_apollo_vi_mode_module_setup(){
+_apollo_vi_mode_setup(){
 
   autoload -Uz add-zle-hook-widget
   zle -N _apollo_vi_mode_change

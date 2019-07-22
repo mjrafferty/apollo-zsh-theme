@@ -306,7 +306,7 @@ _apollo_dir_run() {
 
 }
 
-_apollo_dir_module_setup(){
+_apollo_dir_setup(){
   if  [[ $APOLLO_SHORTEN_STRATEGY == truncate_with_package_name && $+commands[jq] == 0 ]]; then
     >&2 print -P '%F{yellow}WARNING!%f %BAPOLLO_SHORTEN_STRATEGY=truncate_with_package_name%b requires %F{green}jq%f.'
     >&2 print -P 'Either install %F{green}jq%f or change the value of %BAPOLLO_SHORTEN_STRATEGY%b.'
