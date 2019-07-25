@@ -196,6 +196,7 @@ _apollo_dir_run() {
   local p func state icon last_fg delim sep
   local -a parts
   local -i fake_first shortenlen len
+  local cache_key="" # Not used here, but having the value set from calling function messes with expansion of ${(%):-%~}
 
   delim=${APOLLO_SHORTEN_DELIMITER-$'\u2026'}
   sep=$APOLLO_DIR_PATH_SEPARATOR
@@ -302,7 +303,16 @@ _apollo_dir_run() {
     sep="$_APOLLO_RETURN_MESSAGE$sep%f"
   fi
 
-  _APOLLO_RETURN_MESSAGE="${(pj.$sep.)parts}"
+  ## Not compatible with older ZSH versions
+  #_APOLLO_RETURN_MESSAGE="${(pj.$sep.)parts}"
+  _APOLLO_RETURN_MESSAGE=""
+  for ((part=1;part<=${#parts[*]};part++)); do
+    if ((part > 1)); then
+      _APOLLO_RETURN_MESSAGE+="${sep}"
+    fi
+    _APOLLO_RETURN_MESSAGE+="${parts[part]}"
+  done
+
 
 }
 
