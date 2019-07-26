@@ -20,9 +20,9 @@ _apollo_vi_mode_run() {
 
 }
 
- _apollo_vi_mode_change() {
+zle-keymap-select() {
 
-	local last_mode="$_APOLLO_VI_MODE"
+  local last_mode="$_APOLLO_VI_MODE"
 
   case "$KEYMAP" in
     "vicmd")
@@ -38,17 +38,40 @@ _apollo_vi_mode_run() {
     *);;
   esac
 
-	if [[ "$_APOLLO_VI_MODE" != "$last_mode" ]]; then
-		zle reset-prompt
-	fi
+  if [[ "$_APOLLO_VI_MODE" != "$last_mode" ]]; then
+    zle && zle reset-prompt
+  fi
 
+}
+
+_apollo_vi_mode_visual_mode() {
+  _APOLLO_VI_MODE="VISUAL"
+  zle && zle visual-mode
+
+  if [[ "$_APOLLO_VI_MODE" != "$last_mode" ]]; then
+    zle && zle reset-prompt
+  fi
+
+}
+
+_apollo_vi_mode_cmd_mode() {
+
+  _APOLLO_VI_MODE="NORMAL"
+  zle && zle deactivate-region
+
+  if [[ "$_APOLLO_VI_MODE" != "$last_mode" ]]; then
+    zle && zle reset-prompt
+  fi
 }
 
 _apollo_vi_mode_setup(){
 
-  autoload -Uz add-zle-hook-widget
-  zle -N _apollo_vi_mode_change
+  export KEYTIMEOUT=1
 
-  add-zle-hook-widget line-pre-redraw _apollo_vi_mode_change
+	zle -N zle-keymap-select
+  zle -N _apollo_vi_mode_visual_mode
+  bindkey -M vicmd v _apollo_vi_mode_visual_mode
+  zle -N _apollo_vi_mode_cmd_mode
+  bindkey -M visual '^[' _apollo_vi_mode_cmd_mode
 
 }
