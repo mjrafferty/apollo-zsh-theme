@@ -73,7 +73,7 @@ _apollo_vi_mode_setup(){
 	zle -N zle-keymap-select
 
 	autoload -Uz is-at-least \
-		&& if ! is-at-least 5.3; then
+		&& if is-at-least 5.3; then
 			zle -N _apollo_vi_mode_visual_mode
 			bindkey -M vicmd v _apollo_vi_mode_visual_mode
 			zle -N _apollo_vi_mode_cmd_mode
