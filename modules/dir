@@ -13,17 +13,17 @@ typeset -g APOLLO_DIR_BG="blue"
 typeset -g APOLLO_DIR_FG="white"
 typeset -g APOLLO_DIR_MAX_LENGTH=10
 typeset -g APOLLO_DIR_PACKAGE_FILES
-typeset -g APOLLO_DIR_PATH_ABSOLUTE=false
+typeset -g APOLLO_DIR_PATH_ABSOLUTE=true
 typeset -g APOLLO_DIR_PATH_HIGHLIGHT_BOLD=true
 typeset -g APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND="red"
 typeset -g APOLLO_DIR_PATH_SEPARATOR="/"
-typeset -g APOLLO_DIR_PATH_SEPARATOR_FOREGROUND
+typeset -g APOLLO_DIR_PATH_SEPARATOR_FOREGROUND="yellow"
 typeset -g APOLLO_HOME_FOLDER_ABBREVIATION="~"
 typeset -g APOLLO_SHORTEN_DIR_LENGTH=30
 typeset -g APOLLO_SHORTEN_DELIMITER
 typeset -g APOLLO_SHORTEN_DELIMITER_LENGTH
 typeset -g APOLLO_SHORTEN_FOLDER_MARKER
-typeset -g APOLLO_SHORTEN_STRATEGY="truncate_to_unique"
+typeset -g APOLLO_SHORTEN_STRATEGY=""
 
 _apollo_dir_cache_key() {
   _APOLLO_RETURN_MESSAGE="$PWD"
@@ -38,41 +38,66 @@ _apollo_truncate_to_unique() {
 
   local shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
   local delim=${APOLLO_SHORTEN_DELIMITER-$'\u2026'}
+  local -i i n d j max_len len real_delim_len
+  local parent dir
+  local -a matching
+  i=2
+  n=1
 
-  local -i i=2 n=1
-  [[ $p == /* ]] && (( ++i ))
-  delim=${APOLLO_SHORTEN_DELIMITER-'*'}
-  _apollo_prompt_length $delim
-  local -i real_delim_len=_APOLLO_RETURN_MESSAGE
-  local -i d=${APOLLO_SHORTEN_DELIMITER_LENGTH:--1}
-  (( d >= 0 )) || d=real_delim_len
-  shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:-1}
-  (( shortenlen >= 0 )) && n=shortenlen
-  if [[ $APOLLO_DIR_MAX_LENGTH == *% ]]; then
-    local -i max_len=$(( COLUMNS * $APOLLO_DIR_MAX_LENGTH[1,-2] / 100 ))
-  else
-    local -i max_len=APOLLO_DIR_MAX_LENGTH
+  if [[ $p == /* ]]; then
+    (( ++i ))
   fi
-  local -i len=$#p
-  local parent="${PWD%/${(pj./.)parts[i,-1]}}"
+
+  delim=${APOLLO_SHORTEN_DELIMITER-'*'}
+
+  _apollo_prompt_length $delim
+  real_delim_len=_APOLLO_RETURN_MESSAGE
+
+  d=${APOLLO_SHORTEN_DELIMITER_LENGTH:--1}
+
+  if (( d < 0 )); then
+    d=real_delim_len
+  fi
+
+  shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:-1}
+
+  if (( shortenlen >= 0 )); then
+    n=shortenlen
+  fi
+
+  if [[ $APOLLO_DIR_MAX_LENGTH == *% ]]; then
+    max_len=$(( COLUMNS * $APOLLO_DIR_MAX_LENGTH[1,-2] / 100 ))
+  else
+    max_len=APOLLO_DIR_MAX_LENGTH
+  fi
+
+  len=$#p
+  parent="${PWD%/${(pj./.)parts[i,-1]}}"
+
   for (( ; len > max_len && i <= $#parts - n; ++i )); do
-    local dir=$parts[i]
+
+    dir=$parts[i]
+
     if [[ -n $APOLLO_SHORTEN_FOLDER_MARKER &&
       -n $parent/$dir/${~APOLLO_SHORTEN_FOLDER_MARKER}(#qN) ]]; then
           parent+=/$dir
           continue
     fi
-    local -i j=1
+
+    j=1
+
     for (( ; j + d < $#dir; ++j )); do
-      local -a matching
       matching=($parent/$dir[1,j]*/(N))
       (( $#matching == 1 )) && break
     done
+
     if (( j + d < $#dir )); then
       (( len -= ($#dir - j - real_delim_len) ))
       parts[i]=$dir[1,j]$'\0'
     fi
+
     parent+=/$dir
+
   done
 
 }
@@ -114,18 +139,28 @@ _apollo_truncate_absolute() {
 
 _apollo_truncate_with_folder_marker(){
 
+  local dir
+  local -a m
+  local -i i
+
   if [[ -n $APOLLO_SHORTEN_FOLDER_MARKER ]]; then
-    local dir=$PWD
-    local -a m
-    local -i i=$(($#parts - 1))
+
+    dir=$PWD
+    i=$(($#parts - 1))
+
     for (( ; i > 1; --i )); do
       dir=${dir:h}
-      [[ -n $dir/${~APOLLO_SHORTEN_FOLDER_MARKER}(#qN) ]] && m+=$i
+      if [[ -n $dir/${~APOLLO_SHORTEN_FOLDER_MARKER}(#qN) ]]; then
+        m+=$i
+      fi
     done
+
     m+=1
+
     for (( i=1; i < $#m; ++i )); do
       (( m[i] - m[i+1] > 2 )) && parts[m[i+1]+1,m[i]-1]=($'\0')
     done
+
   fi
 
 }
@@ -232,11 +267,11 @@ _apollo_dir_run() {
   fi
 
   case $APOLLO_SHORTEN_STRATEGY in
-    truncate_absolute) _apollo_truncate_absolute ;;
-    truncate_with_package_name|truncate_middle) _apollo_truncated_with_package_name ;;
-    truncate_to_last)
-      fake_first=$(($#parts > 1))
-      parts[1,-2]=()
+    truncate_absolute)
+      _apollo_truncate_absolute
+      ;;
+    truncate_with_package_name|truncate_middle)
+      _apollo_truncated_with_package_name
       ;;
     truncate_to_first_and_last)
       _apollo_truncate_to_first_and_last
@@ -246,6 +281,10 @@ _apollo_dir_run() {
       ;;
     truncate_with_folder_marker)
       _apollo_truncate_with_folder_marker
+      ;;
+    truncate_to_last)
+      fake_first=$(($#parts > 1))
+      parts[1,-2]=()
       ;;
     *)
       shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
