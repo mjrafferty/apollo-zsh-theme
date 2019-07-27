@@ -28,8 +28,8 @@ _apollo_quota_run() {
     "$_APOLLO_QUOTA_COMMAND" -qg "$_APOLLO_QUOTA_USER" 2> /dev/null
 
     # Read once to clear the header from output, second read gathers what we want.
-  read -r -t _APOLLO_RETURN_MESSAGE <&${_APOLLO_BUFFER_FD}
-  read -r -t _APOLLO_RETURN_MESSAGE <&${_APOLLO_BUFFER_FD}
+    read -r -t _APOLLO_RETURN_MESSAGE <&${_APOLLO_BUFFER_FD}
+    read -r -t _APOLLO_RETURN_MESSAGE <&${_APOLLO_BUFFER_FD}
 
   else
     _APOLLO_RETURN_MESSAGE=""

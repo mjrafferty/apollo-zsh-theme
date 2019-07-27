@@ -3,29 +3,12 @@
 typeset -g _APOLLO_BYTE_SUFFIX
 _APOLLO_BYTE_SUFFIX=('B' 'K' 'M' 'G' 'T' 'P' 'E' 'Z' 'Y')
 
-# If we execute `print -P $1`, how many characters will be printed on the last line?
-_apollo_prompt_length() {
+_apollo_get_display_width(){
 
-  emulate -L zsh
+  local format_regex='%([BSUbfksu]|([FK]|){*})'
 
-  local -i x y m
-  y=$#1
+  _APOLLO_RETURN_MESSAGE="${(m)#${(S%%)1//$~format_regex/}}"
 
-  if (( y )); then
-
-    while (( ${${(%):-$1%$y(l.1.0)}[-1]} )); do
-      x=y
-      (( y *= 2 ));
-    done
-
-    while (( y > x + 1 )); do
-      m=$(( x + (y - x) / 2 ))
-      typeset ${${(%):-$1%$m(l.x.y)}[-1]}=$m
-    done
-
-  fi
-
-  _APOLLO_RETURN_MESSAGE=$x
 }
 
 _apollo_human_readable_bytes() {

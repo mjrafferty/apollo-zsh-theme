@@ -43,7 +43,6 @@ _apollo_set_module_text() {
 
   local module module_text fg_color bg_color transition_fg_color cache_key
   local -u fg_var bg_var # Convert variable names to upper case when checking config
-  local format_regex='%([BSUbfksu]|([FK]|){*})'
 
   module="$1"
   cache_key="$2"
@@ -72,7 +71,9 @@ _apollo_set_module_text() {
   ## TODO icons?
   ## TODO rework colors
   module_text=" ${_APOLLO_RETURN_MESSAGE} "
-  _APOLLO_LAST_TEXT_LENGTH=${(m)#${(S%%)module_text//$~format_regex/}}
+
+  _apollo_get_display_width "$module_text"
+  _APOLLO_LAST_TEXT_LENGTH="${_APOLLO_RETURN_MESSAGE}"
 
   _apollo_translate_color "${(P)${fg_var}}"
   fg_color="${_APOLLO_RETURN_MESSAGE}"
