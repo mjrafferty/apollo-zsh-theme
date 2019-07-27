@@ -18,6 +18,8 @@ typeset -gA _APOLLO_CACHE
 typeset -g 	_APOLLO_BUFFER_NAME
 typeset -g 	_APOLLO_BUFFER_FD
 typeset -ga _APOLLO_LINES_META
+typeset -ga _APOLLO_LEFT_LENGTH
+typeset -ga _APOLLO_RIGHT_LENGTH
 typeset -ga _APOLLO_PROMPT_LINES
 typeset -gi _APOLLO_BREAK_CACHE_COUNTER
 typeset -gi _APOLLO_CURRENT_RPROMPT=1
@@ -41,14 +43,17 @@ source "${_APOLLO_INSTALL_DIR}/lib/link_lines.zsh"
 # Must set _APOLLO_RETURN_MESSAGE and _APOLLO_LEFT_TEXT_LENGTH
 _apollo_set_module_text() {
 
-  local module module_text fg_color bg_color transition_fg_color cache_key
-  local -u fg_var bg_var # Convert variable names to upper case when checking config
+  local module module_text fg_color bg_color transition_fg_color cache_key side
+  local -u fg_var bg_var text length # Convert variable names to upper case when checking config
 
   module="$1"
-  cache_key="$2"
+  side="$2"
+  cache_key="$3"
 
   fg_var="APOLLO_${module}_FG"
   bg_var="APOLLO_${module}_BG"
+  text="_APOLLO_${module}_TEXT"
+  length="_APOLLO_${module}_LENGTH"
 
   # Clear out old message before passing to module
   _APOLLO_RETURN_MESSAGE=""
@@ -60,9 +65,9 @@ _apollo_set_module_text() {
 
   if (( ${#_APOLLO_RETURN_MESSAGE} == 0 )); then
     _APOLLO_RETURN_MESSAGE=""
-    _APOLLO_LAST_TEXT_LENGTH="0"
+    typeset -g ${length}="0"
     if [[ -n "$cache_key" ]]; then
-      _APOLLO_CACHE["${module}-${cache_key}"]="${_APOLLO_LAST_TEXT_LENGTH}|${_APOLLO_RETURN_MESSAGE}"
+      _APOLLO_CACHE["${module}-${cache_key}"]="${_APOLLO_RETURN_MESSAGE}"
     fi
     return;
   fi
@@ -71,9 +76,6 @@ _apollo_set_module_text() {
   ## TODO icons?
   ## TODO rework colors
   module_text=" ${_APOLLO_RETURN_MESSAGE} "
-
-  _apollo_get_display_width "$module_text"
-  _APOLLO_LAST_TEXT_LENGTH="${_APOLLO_RETURN_MESSAGE}"
 
   _apollo_translate_color "${(P)${fg_var}}"
   fg_color="${_APOLLO_RETURN_MESSAGE}"
@@ -90,11 +92,17 @@ _apollo_set_module_text() {
   _apollo_background "${bg_color}"
   bg_color="${_APOLLO_RETURN_MESSAGE}"
 
-  _APOLLO_RETURN_MESSAGE="${fg_color}${bg_color}${module_text}${transition_fg_color}"
+  _apollo_add_separator "$side" "$module"
+
+  typeset -g ${text}="${_APOLLO_RETURN_MESSAGE}${fg_color}${bg_color}${module_text}${transition_fg_color}"
+
+  _apollo_get_display_width "${(P)${text}}"
+  typeset -g ${length}="$_APOLLO_RETURN_MESSAGE"
 
   if [[ -n "$cache_key" ]]; then
-    _APOLLO_CACHE["${module}-${cache_key}"]="${_APOLLO_LAST_TEXT_LENGTH}|${_APOLLO_RETURN_MESSAGE}"
+    _APOLLO_CACHE["${module}-${cache_key}"]="${_APOLLO_RETURN_MESSAGE}"
   fi
+
 
 }
 
@@ -103,9 +111,10 @@ _apollo_set_module_text() {
 # using date from cache, or pass to _apollo_set_module_text
 _apollo_get_module_text() {
 
-  local module start cache_key cache runtime
+  local module side start cache_key cache runtime
 
   module="$1"
+  side="$2"
 
   if ((APOLLO_PROFILER > 0)); then
     start=${EPOCHREALTIME}
@@ -118,10 +127,9 @@ _apollo_get_module_text() {
   fi
 
   if [[ -n "$cache" ]]; then
-    _APOLLO_LAST_TEXT_LENGTH="${cache%%|*}"
-    _APOLLO_RETURN_MESSAGE="${cache##*|}"
+    _APOLLO_RETURN_MESSAGE="${cache}"
   else
-    _apollo_set_module_text "$module" "$cache_key"
+    _apollo_set_module_text "$module" "$side" "$cache_key"
   fi
 
   if ((APOLLO_PROFILER > 0)); then
@@ -145,7 +153,7 @@ _apollo_add_separator() {
 
   case "$prompt_side" in
     "left")
-      if (( _APOLLO_LEFT_TEXT_LENGTH > 0 )); then
+      if (( ( 0 ${(e)_APOLLO_LEFT_LENGTH[line_index]}) > 0 )); then
 
         if [[ "$current_module" == "newline" ]]; then
           transition_bg_color="%k"
@@ -154,16 +162,14 @@ _apollo_add_separator() {
         fi
 
         _APOLLO_RETURN_MESSAGE="${transition_bg_color}${APOLLO_LEFT_SEPARATOR}%f"
-        ((_APOLLO_LEFT_TEXT_LENGTH+=${#APOLLO_LEFT_SEPARATOR}));
 
       else
         _APOLLO_RETURN_MESSAGE="%f%k"
-        fi
+      fi
       ;;
     "right")
       transition_fg_color="%F{${__APOLLO_COLORS[${(P)${bg_var}}]}}"
       _APOLLO_RETURN_MESSAGE="${transition_fg_color}${APOLLO_RIGHT_SEPARATOR}"
-      ((_APOLLO_RIGHT_TEXT_LENGTH+=${#APOLLO_RIGHT_SEPARATOR}));
       ;;
     *);;
   esac
@@ -185,19 +191,19 @@ _apollo_add_newline() {
   faux_rprompt="${_APOLLO_RETURN_MESSAGE}"
 
   if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
-    if (( _APOLLO_LEFT_TEXT_LENGTH > 0 )); then
+    if (( ( 0 ${(e)_APOLLO_LEFT_LENGTH[line_index]}) > 0 )); then
       ((_APOLLO_LINES_META[line_index]+=1));
     fi
-    if (( _APOLLO_RIGHT_TEXT_LENGTH > 0 )); then
+    if (( ( 0 ${(e)_APOLLO_RIGHT_LENGTH[line_index]}) > 0 )); then
       ((_APOLLO_LINES_META[line_index]+=2));
     fi
     ((_APOLLO_LEFT_TEXT_LENGTH+=4)); # Hardcoded width for line links. TODO
   fi
 
   if [[ "${current_module}" == "newline" ]]; then
-    _APOLLO_RETURN_MESSAGE='${(el.(($COLUMNS - 1 - '"$_APOLLO_LEFT_TEXT_LENGTH"' - '"$_APOLLO_RIGHT_TEXT_LENGTH"')).. .)}'
+    _APOLLO_RETURN_MESSAGE="\${(el.((\$COLUMNS - 5 - ( 0 $_APOLLO_LEFT_LENGTH[line_index] $_APOLLO_RIGHT_LENGTH[line_index]))).. .)}"
   else
-    _APOLLO_RETURN_MESSAGE='${(el.(($COLUMNS - 1 - '"$_APOLLO_LEFT_TEXT_LENGTH"' - '"$_APOLLO_RIGHT_TEXT_LENGTH"'))..─.)}'
+    _APOLLO_RETURN_MESSAGE="\${(el.((\$COLUMNS - 5 - ( 0 $_APOLLO_LEFT_LENGTH[line_index] $_APOLLO_RIGHT_LENGTH[line_index])))..─.)}"
   fi
 
   _APOLLO_RETURN_MESSAGE+="${faux_rprompt}%f%k"
@@ -210,13 +216,13 @@ _apollo_add_newline() {
 ## Assemble left prompt
 _apollo_set_left_prompt() {
 
-  local element length module_text current_module
+  local element prompt_length module_text current_module
   local -i line_index
 
   line_index=1;
-  length="${#APOLLO_LEFT_PROMPT_ELEMENTS[@]}"
+  prompt_length="${#APOLLO_LEFT_PROMPT_ELEMENTS[@]}"
 
-  for ((element=1; element<=length;element++)); do
+  for ((element=1; element<=prompt_length;element++)); do
 
     current_module="${APOLLO_LEFT_PROMPT_ELEMENTS[element]}"
 
@@ -228,14 +234,10 @@ _apollo_set_left_prompt() {
         _APOLLO_LINES_META[line_index]=0;
         ;;
       *)
-        _apollo_get_module_text "$current_module"
-        module_text="${_APOLLO_RETURN_MESSAGE}"
+        _apollo_get_module_text "$current_module" "left"
 
-        if [[ -n "${module_text}" ]]; then
-          _apollo_add_separator "left" "$current_module"
-          _APOLLO_PROMPT_LINES[line_index]+="${_APOLLO_RETURN_MESSAGE}${module_text}"
-          ((_APOLLO_LEFT_TEXT_LENGTH+=_APOLLO_LAST_TEXT_LENGTH));
-        fi
+        _APOLLO_PROMPT_LINES[line_index]+="\${(e)_APOLLO_${(U)current_module}_TEXT}"
+        _APOLLO_LEFT_LENGTH[line_index]+=" + \$_APOLLO_${(U)current_module}_LENGTH"
         ;;
     esac
 
@@ -246,13 +248,9 @@ _apollo_set_left_prompt() {
 
   ((_APOLLO_LINES_META[line_index]=1));
 
-  if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
-    _apollo_add_links "$line_index"
-  fi
-
   for ((line=1;line<=line_index;line++)); do
 
-    PROMPT+="${_APOLLO_PROMPT_LINES[line]}"
+    PROMPT+="\${(e)_APOLLO_PROMPT_LINES[$line]}"
 
     if ((line < line_index)); then
       PROMPT+="${_APOLLO_NEWLINE}"
@@ -262,19 +260,16 @@ _apollo_set_left_prompt() {
 
   PROMPT+="$APOLLO_PROMPT_END"
 
-  _APOLLO_LINES_META=()
-  _APOLLO_PROMPT_LINES=()
-
 }
 
 ## Assemble a right prompt line
 _apollo_make_rprompt(){
 
-  local length module_text current_module rprompt
+  local prompt_length module_text current_module rprompt
 
-  length="${#APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"
+  prompt_length="${#APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"
 
-  while ((_APOLLO_CURRENT_RPROMPT <= length)); do
+  while ((_APOLLO_CURRENT_RPROMPT <= prompt_length)); do
 
     current_module="${APOLLO_RIGHT_PROMPT_ELEMENTS[_APOLLO_CURRENT_RPROMPT]}"
     ((_APOLLO_CURRENT_RPROMPT++));
@@ -284,14 +279,10 @@ _apollo_make_rprompt(){
         break;
         ;;
       *)
-        _apollo_get_module_text "${current_module}"
-        module_text="${_APOLLO_RETURN_MESSAGE}"
+        _apollo_get_module_text "${current_module}" "right"
 
-        if [[ -n "${module_text}" ]]; then
-          _apollo_add_separator "right" "${current_module}"
-          rprompt+="${_APOLLO_RETURN_MESSAGE}${module_text}"
-          ((_APOLLO_RIGHT_TEXT_LENGTH+=_APOLLO_LAST_TEXT_LENGTH));
-        fi
+        rprompt+="\${(e)_APOLLO_${(U)current_module}_TEXT}"
+        _APOLLO_RIGHT_LENGTH[line_index]+=" + \$_APOLLO_${(U)current_module}_LENGTH"
         ;;
     esac
 
@@ -312,8 +303,27 @@ _apollo_set_prompts(){
     RPROMPT+="%k%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_BR_LINK}%f"
   fi
 
-
   _APOLLO_CURRENT_RPROMPT=1
+
+}
+
+_apollo_run_modules() {
+
+  for element in "${APOLLO_LEFT_PROMPT_ELEMENTS[@]}"; do
+    if [[ ${+functions[_apollo_${element}_run]} -gt 0 ]]; then
+      _apollo_get_module_text "$element" "left"
+    fi
+  done
+
+  for element in "${APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"; do
+    if [[ ${+functions[_apollo_${element}_run]} -gt 0 ]]; then
+      _apollo_get_module_text "$element" "right"
+    fi
+  done
+
+  if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
+    _apollo_add_links "${#_APOLLO_PROMPT_LINES}"
+  fi
 
 }
 
@@ -323,13 +333,6 @@ _apollo_precmd() {
   _APOLLO_PIPE_EXIT_CODES=( "${pipestatus[@]}" )
 
   local start
-
-  setopt prompt_subst
-
-  _APOLLO_LEFT_TEXT_LENGTH=0;
-  _APOLLO_RIGHT_TEXT_LENGTH=0;
-  PROMPT=""
-  RPROMPT=""
 
   # Forcefully refresh cache by pressing enter a few times
   if ((_APOLLO_BREAK_CACHE_COUNTER++ >= 2)); then
@@ -341,7 +344,7 @@ _apollo_precmd() {
     start="$EPOCHREALTIME"
   fi
 
-  _apollo_set_prompts
+  _apollo_run_modules
 
   if ((APOLLO_PROFILER > 0)); then
     printf "%25s: %f\n" "modules_total" "$_APOLLO_PROFILER_TOTAL"
@@ -377,17 +380,19 @@ prompt_apollo_setup() {
 
   local element
 
-  autoload -U colors && colors
+  setopt prompt_subst
+
+  #autoload -Uz +X colors
   autoload -Uz add-zsh-hook
 
   zmodload zsh/datetime
-  zmodload zsh/mathfunc
-  zmodload zsh/system
-  zmodload -F zsh/stat b:zstat
 
   add-zsh-hook precmd _apollo_precmd
   add-zsh-hook preexec _apollo_preexec
   add-zsh-hook zshexit _apollo_cleanup
+
+  PROMPT=""
+  RPROMPT=""
 
   # Open a buffer for modules to use
   _APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}_APOLLO_$EPOCHSECONDS"
@@ -413,6 +418,8 @@ prompt_apollo_setup() {
   for conf in "${_APOLLO_INSTALL_DIR}/conf/"*.conf; do
     source "${conf}";
   done
+
+  _apollo_set_prompts
 
 }
 
