@@ -26,7 +26,7 @@ typeset -gi _APOLLO_RIGHT_TEXT_LENGTH=0
 typeset -gi _APOLLO_LAST_TEXT_LENGTH=0
 typeset -g  _APOLLO_PROFILER_TOTAL=0
 typeset -g  _APOLLO_EXIT_CODE        # Capture command exit code
-typeset -g  _APOLLO_PIPE_EXIT_CODES   # Capture command exit code
+typeset -g  _APOLLO_PIPE_EXIT_CODES   # Capture command exit codes
 typeset -g  _APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
 typeset -g  _APOLLO_NEWLINE='
 '
@@ -42,14 +42,14 @@ source "${_APOLLO_INSTALL_DIR}/lib/link_lines.zsh"
 _apollo_set_module_text() {
 
   local module module_text fg_color bg_color transition_fg_color cache_key
-  local -u fg_var bg_var length # Convert variable names to upper case when checking config
+  local -u fg_var bg_var # Convert variable names to upper case when checking config
+  local format_regex='%([BSUbfksu]|([FK]|){*})'
 
   module="$1"
   cache_key="$2"
 
   fg_var="APOLLO_${module}_FG"
   bg_var="APOLLO_${module}_BG"
-  length="_APOLLO_${module}_LENGTH"
 
   # Clear out old message before passing to module
   _APOLLO_RETURN_MESSAGE=""
@@ -72,12 +72,7 @@ _apollo_set_module_text() {
   ## TODO icons?
   ## TODO rework colors
   module_text=" ${_APOLLO_RETURN_MESSAGE} "
-  local zero='%([BSUbfksu]|([FK]|){*})'
-	_APOLLO_LAST_TEXT_LENGTH=${#${(S%%)module_text//$~zero/}}
-
-	if [[ -n "${(P)${length}}" ]]; then
-		(( _APOLLO_LAST_TEXT_LENGTH = ${(P)${length}} + 2));
-	fi
+  _APOLLO_LAST_TEXT_LENGTH=${(m)#${(S%%)module_text//$~format_regex/}}
 
   _apollo_translate_color "${(P)${fg_var}}"
   fg_color="${_APOLLO_RETURN_MESSAGE}"

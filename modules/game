@@ -4,7 +4,6 @@ typeset -g  APOLLO_GAME_BG="darkblue"
 typeset -g  APOLLO_GAME_FG="white"
 
 typeset -gi _APOLLO_GAME_CASH=1000
-typeset -gi  _APOLLO_GAME_LENGTH=0
 
 typeset -ag _APOLLO_GAME_SYMBOLS
 
@@ -24,7 +23,6 @@ _apollo_game_run (){
   local slots
   local win=0
   local winst=""
-  local -i length=0
 
   ((n1 = RANDOM % 5 + 1))
   ((n2 = RANDOM % 5 + 1))
@@ -35,21 +33,16 @@ _apollo_game_run (){
     if (((n1==n2) && (n1==n3))); then
       ((win=100*(n1)));
       winst=" ${_APOLLO_GAME_SYMBOLS[7]} ${win} ${_APOLLO_GAME_SYMBOLS[7]} "
-      ((length+=11));
     else
       win=10;
       winst="${_APOLLO_GAME_SYMBOLS[6]}"
-      ((length+=2));
     fi
 
   fi
 
   ((_APOLLO_GAME_CASH+=(win-10)))
-  ((length+=${#_APOLLO_GAME_CASH}));
 
   slots="[${_APOLLO_GAME_SYMBOLS[n1]}|${_APOLLO_GAME_SYMBOLS[n2]}|${_APOLLO_GAME_SYMBOLS[n3]}]"
   _APOLLO_RETURN_MESSAGE="%B${slots}${winst}${_APOLLO_GAME_SYMBOLS[8]}:${_APOLLO_GAME_CASH}%b"
-  ((length+=13));
-  ((_APOLLO_GAME_LENGTH=length));
 
 }

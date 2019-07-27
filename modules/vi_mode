@@ -33,7 +33,14 @@ zle-keymap-select() {
       fi
       ;;
     "main")
-      _APOLLO_VI_MODE="INSERT"
+      case $ZLE_STATE in
+        *insert)
+          _APOLLO_VI_MODE="INSERT"
+          ;;
+        *overwrite)
+          _APOLLO_VI_MODE="REPLACE"
+          ;;
+      esac
       ;;
     *);;
   esac
@@ -44,7 +51,21 @@ zle-keymap-select() {
 
 }
 
+zle-line-init() {
+
+  local last_mode="$_APOLLO_VI_MODE"
+
+	_APOLLO_VI_MODE="INSERT"
+
+  if [[ "$_APOLLO_VI_MODE" != "$last_mode" ]]; then
+    zle && zle reset-prompt
+  fi
+}
+
 _apollo_vi_mode_visual_mode() {
+
+  local last_mode="$_APOLLO_VI_MODE"
+
   _APOLLO_VI_MODE="VISUAL"
 
   zle && zle visual-mode
@@ -57,6 +78,8 @@ _apollo_vi_mode_visual_mode() {
 
 _apollo_vi_mode_cmd_mode() {
 
+  local last_mode="$_APOLLO_VI_MODE"
+
   _APOLLO_VI_MODE="NORMAL"
 
   zle && zle deactivate-region
@@ -68,16 +91,16 @@ _apollo_vi_mode_cmd_mode() {
 
 _apollo_vi_mode_setup(){
 
-  export KEYTIMEOUT=1
-
 	zle -N zle-keymap-select
+	zle -N zle-line-init
 
-	autoload -Uz is-at-least \
-		&& if is-at-least 5.3; then
-			zle -N _apollo_vi_mode_visual_mode
-			bindkey -M vicmd v _apollo_vi_mode_visual_mode
-			zle -N _apollo_vi_mode_cmd_mode
-			bindkey -M visual '^[' _apollo_vi_mode_cmd_mode
-		fi
+  autoload -Uz is-at-least
+
+  if is-at-least 5.3; then
+    zle -N _apollo_vi_mode_visual_mode
+    bindkey -M vicmd v _apollo_vi_mode_visual_mode
+    zle -N _apollo_vi_mode_cmd_mode
+    bindkey -M visual '^[' _apollo_vi_mode_cmd_mode
+  fi
 
 }
