@@ -1,95 +1,8 @@
 # vim:ft=bash
-#
-# Example: Start gitstatusd, send it a request, wait for response and print it.
-#
-#   source gitstatus.plugin.zsh
-#   gitstatus_start MY
-#   gitstatus_query -d $PWD MY
-#   set | egrep '^VCS_STATUS'
-#
-# Output:
-#
-#   VCS_STATUS_ACTION=''
-#   VCS_STATUS_COMMIT=6e86ec135bf77875e222463cbac8ef72a7e8d823
-#   VCS_STATUS_COMMITS_AHEAD=0
-#   VCS_STATUS_COMMITS_BEHIND=0
-#   VCS_STATUS_INDEX_SIZE=42
-#   VCS_STATUS_NUM_STAGED=0
-#   VCS_STATUS_NUM_UNSTAGED=2
-#   VCS_STATUS_NUM_UNTRACKED=3
-#   VCS_STATUS_HAS_STAGED=0
-#   VCS_STATUS_HAS_UNSTAGED=1
-#   VCS_STATUS_HAS_UNTRACKED=1
-#   VCS_STATUS_LOCAL_BRANCH=master
-#   VCS_STATUS_REMOTE_BRANCH=master
-#   VCS_STATUS_REMOTE_NAME=origin
-#   VCS_STATUS_REMOTE_URL=git@github.com:romkatv/powerlevel10k.git
-#   VCS_STATUS_RESULT=ok-sync
-#   VCS_STATUS_STASHES=0
-#   VCS_STATUS_TAG=''
-#   VCS_STATUS_WORKDIR=/home/romka/.oh-my-zsh/custom/themes/powerlevel10k
 
 [[ -o interactive ]] || return
 
 autoload -Uz add-zsh-hook && zmodload zsh/datetime zsh/system || return
-
-# Retrives status of a git repo from a directory under its working tree.
-#
-## Usage: gitstatus_query [OPTION]... NAME
-#
-#   -d STR    Directory to query. Defaults to ${${GIT_DIR:-$PWD}:a}. Must be absolute.
-#   -c STR    Callback function to call once the results are available. Called only after
-#             gitstatus_query returns 0 with VCS_STATUS_RESULT=tout.
-#   -t FLOAT  Timeout in seconds. Will block for at most this long. If no results are
-#             available by then: if -c isn't specified, will return 1; otherwise will set
-#             VCS_STATUS_RESULT=tout and return 0.
-#
-# On success sets VCS_STATUS_RESULT to one of the following values:
-#
-#   tout         Timed out waiting for data; will call the user-specified callback later.
-#   norepo-sync  The directory isn't a git repo.
-#   ok-sync      The directory is a git repo.
-#
-# When the callback is called VCS_STATUS_RESULT is set to one of the following values:
-#
-#   norepo-async  The directory isn't a git repo.
-#   ok-async      The directory is a git repo.
-#
-# If VCS_STATUS_RESULT is ok-sync or ok-async, additional variables are set:
-#
-#   VCS_STATUS_WORKDIR         Git repo working directory. Not empty.
-#   VCS_STATUS_COMMIT          Commit hash that HEAD is pointing to. Either 40 hex digits or empty
-#                              if there is no HEAD (empty repo).
-#   VCS_STATUS_LOCAL_BRANCH    Local branch name or empty if not on a branch.
-#   VCS_STATUS_REMOTE_NAME     The remote name, e.g. "upstream" or "origin".
-#   VCS_STATUS_REMOTE_BRANCH   Upstream branch name. Can be empty.
-#   VCS_STATUS_REMOTE_URL      Remote URL. Can be empty.
-#   VCS_STATUS_ACTION          Repository state, A.K.A. action. Can be empty.
-#   VCS_STATUS_INDEX_SIZE      The number of files in the index.
-#   VCS_STATUS_NUM_STAGED      The number of staged changes.
-#   VCS_STATUS_NUM_UNSTAGED    The number of unstaged changes.
-#   VCS_STATUS_NUM_UNTRACKED   The number of untracked files.
-#   VCS_STATUS_HAS_STAGED      1 if there are staged changes, 0 otherwise.
-#   VCS_STATUS_HAS_UNSTAGED    1 if there are unstaged changes, 0 if there aren't, -1 if unknown.
-#   VCS_STATUS_HAS_UNTRACKED   1 if there are untracked files, 0 if there aren't, -1 if unknown.
-#   VCS_STATUS_COMMITS_AHEAD   Number of commits the current branch is ahead of upstream.
-#                              Non-negative integer.
-#   VCS_STATUS_COMMITS_BEHIND  Number of commits the current branch is behind upstream. Non-negative
-#                              integer.
-#   VCS_STATUS_STASHES         Number of stashes. Non-negative integer.
-#   VCS_STATUS_TAG             The last tag (in lexicographical order) that points to the same
-#                              commit as HEAD.
-#
-# The point of reporting -1 as unstaged and untracked is to allow the command to skip scanning
-# files in large repos. See -m flag of gitstatus_start.
-#
-# gitstatus_query returns an error if gitstatus_start hasn't been called in the same shell or
-# the call had failed.
-#
-#       !!!!! WARNING: CONCURRENT CALLS WITH THE SAME NAME ARE NOT ALLOWED !!!!!
-#
-# It's illegal to call gitstatus_query if the last asynchronous call with the same NAME hasn't
-# completed yet. If you need to issue concurrent requests, use different NAME arguments.
 
 gitstatus_query() {
 
@@ -242,25 +155,6 @@ _gitstatus_process_response() {
 
 }
 
-# Starts gitstatusd in the background. Does nothing and succeeds if gitstatusd is already running.
-#
-# Usage: gitstatus_start [OPTION]... NAME
-#
-#   -t FLOAT  Fail the self-check on initialization if not getting a response from gitstatusd for
-#             this this many seconds. Defaults to 5.
-#
-#   -s INT    Report at most this many staged changes; negative value means infinity.
-#             Defaults to 1.
-#
-#   -u INT    Report at most this many unstaged changes; negative value means infinity.
-#             Defaults to 1.
-#
-#   -d INT    Report at most this many untracked files; negative value means infinity.
-#             Defaults to 1.
-#
-#   -m INT    If a repo has more files in its index than this, override -u and -d (but not -s)
-#             with zeros. Negative value means infinity. Defaults to -1.
-
 gitstatus_start_impl() {
 
   if  [[ ${GITSTATUS_ENABLE_LOGGING:-0} == 1 ]]; then
@@ -397,9 +291,6 @@ gitstatus_start() {
     }
   }
 
-# Stops gitstatusd if it's running.
-#
-# Usage: gitstatus_stop NAME.
 gitstatus_stop() {
 
   emulate -L zsh
@@ -445,10 +336,6 @@ gitstatus_stop() {
 }
 
 
-# Usage: gitstatus_check NAME.
-#
-# Returns 0 if and only if `gitstatus_start NAME` has succeeded previously.
-# If it returns non-zero, gitstatus_query NAME is guaranteed to return non-zero.
 gitstatus_check() {
 
   emulate -L zsh
