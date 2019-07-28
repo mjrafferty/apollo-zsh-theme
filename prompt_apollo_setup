@@ -206,7 +206,7 @@ _apollo_set_module_text() {
   typeset -gi ${length}="$_APOLLO_RETURN_MESSAGE"
 
   if [[ -n "$cache_key" ]]; then
-    _APOLLO_CACHE["${module}-${cache_key}"]="${(P)${length}}|${(P)${text}}}"
+    _APOLLO_CACHE["${module}-${cache_key}"]="${(P)${length}}|${(P)${text}}"
   fi
 
 }
