@@ -336,6 +336,7 @@ _apollo_add_newline() {
     _APOLLO_RETURN_MESSAGE="\${(el.((\$COLUMNS - 5 - ( 0 $_APOLLO_LEFT_LENGTH[line_index] $_APOLLO_RIGHT_LENGTH[line_index]))).. .)}"
   else
     _APOLLO_RETURN_MESSAGE="\${(el.((\$COLUMNS - 5 - ( 0 $_APOLLO_LEFT_LENGTH[line_index] $_APOLLO_RIGHT_LENGTH[line_index])))..─.)}"
+    ((_APOLLO_LINES_META[line_index]=3));
   fi
 
   _APOLLO_RETURN_MESSAGE+="${faux_rprompt}%f%k"
