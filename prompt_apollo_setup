@@ -110,9 +110,13 @@ _apollo_run_modules() {
 _apollo_get_module_text() {
 
   local module side start cache_key cache runtime
+  local -u text length # Convert variable names to upper case when checking config
 
   module="$1"
   side="$2"
+
+  text="_APOLLO_${module}_TEXT"
+  length="_APOLLO_${module}_LENGTH"
 
   if ((APOLLO_PROFILER > 0)); then
     start=${EPOCHREALTIME}
@@ -125,8 +129,12 @@ _apollo_get_module_text() {
   fi
 
   if [[ -n "$cache" ]]; then
-    _APOLLO_FIRST_SEPARATOR_ON_LINE="$module"
-    _APOLLO_RETURN_MESSAGE="${cache}"
+    if [[ "$side" == "left" ]]; then
+      _APOLLO_FIRST_SEPARATOR_ON_LINE="$module"
+    fi
+    ## TODO this is adding an additional space to module text for some reason
+    typeset -g ${text}="${cache##*|}"
+    typeset -gi ${length}="${cache%%|*}"
   else
     _apollo_set_module_text "$module" "$side" "$cache_key"
   fi
@@ -165,7 +173,7 @@ _apollo_set_module_text() {
     typeset -gi ${length}="0"
     typeset -g ${text}=""
     if [[ -n "$cache_key" ]]; then
-      _APOLLO_CACHE["${module}-${cache_key}"]="${_APOLLO_RETURN_MESSAGE}"
+      _APOLLO_CACHE["${module}-${cache_key}"]="0|${_APOLLO_RETURN_MESSAGE}"
     fi
     return;
   fi
@@ -198,9 +206,8 @@ _apollo_set_module_text() {
   typeset -gi ${length}="$_APOLLO_RETURN_MESSAGE"
 
   if [[ -n "$cache_key" ]]; then
-    _APOLLO_CACHE["${module}-${cache_key}"]="${_APOLLO_RETURN_MESSAGE}"
+    _APOLLO_CACHE["${module}-${cache_key}"]="${(P)${length}}|${(P)${text}}}"
   fi
-
 
 }
 
