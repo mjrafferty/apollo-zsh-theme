@@ -125,6 +125,7 @@ _apollo_get_module_text() {
   fi
 
   if [[ -n "$cache" ]]; then
+    _APOLLO_FIRST_SEPARATOR_ON_LINE="$module"
     _APOLLO_RETURN_MESSAGE="${cache}"
   else
     _apollo_set_module_text "$module" "$side" "$cache_key"
