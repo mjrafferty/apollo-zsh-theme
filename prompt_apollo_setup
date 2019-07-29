@@ -9,15 +9,17 @@ typeset -g  APOLLO_RIGHT_SEPARATOR=""
 typeset -g  APOLLO_PROMPT_END="> "
 typeset -g  APOLLO_LINE_LINKS="true"
 
-APOLLO_LEFT_PROMPT_ELEMENTS=(public_ip virtualenv newline root_indicator context dir vi_mode ruler )
+APOLLO_LEFT_PROMPT_ELEMENTS=(newline public_ip virtualenv newline root_indicator context dir vi_mode ruler )
 APOLLO_RIGHT_PROMPT_ELEMENTS=(command_execution_time background_jobs game newline status php_version)
 
 ## Necessary global variables
 typeset -g  _APOLLO_INSTALL_DIR="${0:h}"
 typeset -gA _APOLLO_CACHE
 typeset -g 	_APOLLO_BUFFER_NAME
-typeset -g 	_APOLLO_BUFFER_FD
+typeset -gi _APOLLO_BUFFER_FD
 typeset -g  _APOLLO_FIRST_SEPARATOR_ON_LINE
+typeset -ga _APOLLO_NEWLINE_SEP_LENGTH
+typeset -ga _APOLLO_NEWLINE_SEP_TEXT
 typeset -g  _APOLLO_PROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
 typeset -ga _APOLLO_LINES_META
 typeset -ga _APOLLO_LEFT_LENGTH
@@ -27,7 +29,7 @@ typeset -ga _APOLLO_PROMPT_LINES
 typeset -gi _APOLLO_BREAK_CACHE_COUNTER
 typeset -gi _APOLLO_CURRENT_RPROMPT=1
 typeset -g  _APOLLO_PROFILER_TOTAL=0
-typeset -g  _APOLLO_EXIT_CODE
+typeset -gi _APOLLO_EXIT_CODE
 typeset -g  _APOLLO_PIPE_EXIT_CODES
 typeset -g  _APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
 typeset -g  _APOLLO_NEWLINE='
@@ -87,18 +89,45 @@ _apollo_run_modules() {
 
   lines="${#_APOLLO_PROMPT_LINES[@]}"
 
-  for ((line=1;line<=lines;line++)); do
-    _APOLLO_FIRST_SEPARATOR_ON_LINE=""
-    line_modules=( ${(s: :)_APOLLO_LINE_MODULES[line]} )
-    for module in ${line_modules[@]}; do
-      _apollo_get_module_text "$module" "left"
-    done
-  done
-
   for module in "${APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"; do
     if ((${+functions[_apollo_${module}_run]})); then
       _apollo_get_module_text "$module" "right"
     fi
+  done
+
+  for ((line=1;line<=lines;line++)); do
+
+    _APOLLO_NEWLINE_SEP_LENGTH[line]="0"
+    _APOLLO_FIRST_SEPARATOR_ON_LINE=""
+    _APOLLO_LINES_META[line]=0;
+
+    line_modules=( ${(s: :)_APOLLO_LINE_MODULES[line]} )
+
+    for module in ${line_modules[@]}; do
+      case "${module}" in
+        "newline"|"ruler")
+
+          _apollo_add_separator "left" "newline" "$line"
+
+          if [[ "$module" == "ruler" ]]; then
+            ((_APOLLO_LINES_META[line]=3));
+          fi
+          ;;
+        *)
+          _apollo_get_module_text "$module" "left"
+          ;;
+      esac
+    done
+
+    if (( _APOLLO_LINES_META[line] == 0 )); then
+      if (( ( 0 ${(e)_APOLLO_LEFT_LENGTH[line]}) > 0 )); then
+        ((_APOLLO_LINES_META[line]+=1));
+      fi
+      if (( ( 0 ${(e)_APOLLO_RIGHT_LENGTH[line]}) > 0 )); then
+        ((_APOLLO_LINES_META[line]+=2));
+      fi
+    fi
+
   done
 
   if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
@@ -213,11 +242,12 @@ _apollo_set_module_text() {
 
 _apollo_add_separator() {
 
-  local prompt_side current_module transition_bg_color transition_fg_color
+  local prompt_side current_module transition_bg_color transition_fg_color line
   local -u bg_var
 
   prompt_side="$1"
   current_module="$2"
+  line="$3"
 
   bg_var="APOLLO_${current_module}_BG"
 
@@ -226,13 +256,12 @@ _apollo_add_separator() {
       if [[ -n "${_APOLLO_FIRST_SEPARATOR_ON_LINE}" ]]; then
 
         if [[ "$current_module" == "newline" ]]; then
-          transition_bg_color="%k"
+          _APOLLO_NEWLINE_SEP_LENGTH[line]="1" # TODO hardcoded separator length
+          _APOLLO_NEWLINE_SEP_TEXT[line]="%k${APOLLO_LEFT_SEPARATOR}%f"
         else
           transition_bg_color="%K{${__APOLLO_COLORS[${(P)${bg_var}}]}}"
+          _APOLLO_RETURN_MESSAGE="${transition_bg_color}${APOLLO_LEFT_SEPARATOR}%f"
         fi
-
-        _APOLLO_RETURN_MESSAGE="${transition_bg_color}${APOLLO_LEFT_SEPARATOR}%f"
-
       else
         _APOLLO_FIRST_SEPARATOR_ON_LINE="$module"
         _APOLLO_RETURN_MESSAGE="%f%k"
@@ -253,9 +282,10 @@ _apollo_set_prompts(){
 
   _apollo_set_left_prompt
 
-  _apollo_make_rprompt
+  _apollo_make_rprompt "${#_APOLLO_PROMPT_LINES}"
   RPROMPT="${_APOLLO_RETURN_MESSAGE}"
 
+  ## TODO Move this to links file and update
   if [[ "$APOLLO_LINE_LINKS" == "true" && -n "$RPROMPT" ]]; then
     RPROMPT+="%k%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_BR_LINK}%f"
   fi
@@ -274,18 +304,15 @@ _apollo_set_left_prompt() {
 
     current_module="${APOLLO_LEFT_PROMPT_ELEMENTS[element]}"
 
+    _APOLLO_LINE_MODULES[line_index]+="${current_module} "
+
     case "${current_module}" in
       "newline"|"ruler")
         _apollo_add_newline "${current_module}" "${line_index}"
         _APOLLO_FIRST_SEPARATOR_ON_LINE=""
-        _APOLLO_PROMPT_LINES[line_index]+="${_APOLLO_RETURN_MESSAGE}"
         ((line_index++));
-        _APOLLO_LINES_META[line_index]=0;
         ;;
       *)
-        _APOLLO_LINE_MODULES[line_index]+="${current_module} "
-        _apollo_get_module_text "$current_module" "left"
-
         _APOLLO_PROMPT_LINES[line_index]+="\${(e)_APOLLO_${(U)current_module}_TEXT}"
         _APOLLO_LEFT_LENGTH[line_index]+=" + \$_APOLLO_${(U)current_module}_LENGTH"
         ;;
@@ -293,10 +320,7 @@ _apollo_set_left_prompt() {
 
   done
 
-  _apollo_add_separator "left" "newline"
   _APOLLO_PROMPT_LINES[line_index]+="${_APOLLO_RETURN_MESSAGE}"
-
-  ((_APOLLO_LINES_META[line_index]=1));
 
   for ((line=1;line<=line_index;line++)); do
 
@@ -324,35 +348,27 @@ _apollo_add_newline() {
   current_module="$1"
   line_index="$2"
 
-  _apollo_add_separator "left" "newline"
-  _APOLLO_PROMPT_LINES[line_index]+="${_APOLLO_RETURN_MESSAGE}"
-
-  _apollo_make_rprompt
+  _apollo_make_rprompt "$line_index"
   faux_rprompt="${_APOLLO_RETURN_MESSAGE}"
 
-  if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
-    if (( ( 0 ${(e)_APOLLO_LEFT_LENGTH[line_index]}) > 0 )); then
-      ((_APOLLO_LINES_META[line_index]+=1));
-    fi
-    if (( ( 0 ${(e)_APOLLO_RIGHT_LENGTH[line_index]}) > 0 )); then
-      ((_APOLLO_LINES_META[line_index]+=2));
-    fi
-  fi
-
+  ## TODO hardcoded link widths: 5. should be 1 + \$LINK_WIDTH evaluated at prompt draw time
   if [[ "${current_module}" == "newline" ]]; then
-    _APOLLO_RETURN_MESSAGE="\${(el.((\$COLUMNS - 5 - ( 0 $_APOLLO_LEFT_LENGTH[line_index] $_APOLLO_RIGHT_LENGTH[line_index]))).. .)}"
+    _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_NEWLINE_SEP_TEXT[$line_index]}\${(el.((\$COLUMNS - 5 \
+      - ( \${_APOLLO_NEWLINE_SEP_LENGTH[$line_index]}${_APOLLO_LEFT_LENGTH[line_index]}${_APOLLO_RIGHT_LENGTH[line_index]}))).. .)}"
   else
-    _APOLLO_RETURN_MESSAGE="\${(el.((\$COLUMNS - 5 - ( 0 $_APOLLO_LEFT_LENGTH[line_index] $_APOLLO_RIGHT_LENGTH[line_index])))..─.)}"
-    ((_APOLLO_LINES_META[line_index]=3));
+    _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_NEWLINE_SEP_TEXT[$line_index]}\${(el.((\$COLUMNS - 5 \
+      - ( \${_APOLLO_NEWLINE_SEP_LENGTH[$line_index]}${_APOLLO_LEFT_LENGTH[line_index]}${_APOLLO_RIGHT_LENGTH[line_index]})))..─.)}"
   fi
 
-  _APOLLO_RETURN_MESSAGE+="${faux_rprompt}%f%k"
+  _APOLLO_PROMPT_LINES[line_index]+="${faux_rprompt}%f%k"
 
 }
 
 _apollo_make_rprompt(){
 
-  local prompt_length module_text current_module rprompt
+  local prompt_length module_text current_module rprompt line_index
+
+  line_index="$1"
 
   prompt_length="${#APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"
 
@@ -366,8 +382,6 @@ _apollo_make_rprompt(){
         break;
         ;;
       *)
-        _apollo_get_module_text "${current_module}" "right"
-
         rprompt+="\${(e)_APOLLO_${(U)current_module}_TEXT}"
         _APOLLO_RIGHT_LENGTH[line_index]+=" + \$_APOLLO_${(U)current_module}_LENGTH"
         ;;
