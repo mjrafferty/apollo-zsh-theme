@@ -139,7 +139,7 @@ _apollo_run_modules() {
 _apollo_get_module_text() {
 
   local module side start cache_key cache runtime
-  local -u text length # Convert variable names to upper case when checking config
+  local -u text length
 
   module="$1"
   side="$2"
@@ -161,7 +161,6 @@ _apollo_get_module_text() {
     if [[ "$side" == "left" ]]; then
       _APOLLO_FIRST_SEPARATOR_ON_LINE="$module"
     fi
-    ## TODO this is adding an additional space to module text for some reason
     typeset -g ${text}="${cache##*|}"
     typeset -gi ${length}="${cache%%|*}"
   else
@@ -179,7 +178,7 @@ _apollo_get_module_text() {
 _apollo_set_module_text() {
 
   local module module_text fg_color bg_color transition_fg_color cache_key side
-  local -u fg_var bg_var text length # Convert variable names to upper case when checking config
+  local -u fg_var bg_var text length
 
   module="$1"
   side="$2"
