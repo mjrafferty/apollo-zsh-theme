@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Segment to display PHP version number
 
@@ -29,3 +29,5 @@ _apollo_php_version_run() {
   fi
 
 }
+
+_apollo_php_version_run "$@"

@@ -1,0 +1,52 @@
+# vim:ft=zsh
+
+_apollo_set_left_prompt() {
+
+  local element prompt_length module_text current_module
+  local -i line_index
+
+  line_index=1;
+  prompt_length="${#APOLLO_LEFT_PROMPT_ELEMENTS[@]}"
+
+  for ((element=1; element<=prompt_length;element++)); do
+
+    current_module="${APOLLO_LEFT_PROMPT_ELEMENTS[element]}"
+
+    _APOLLO_LINE_MODULES[line_index]+="${current_module} "
+
+    case "${current_module}" in
+      "newline"|"ruler")
+        _apollo_add_newline "${current_module}" "${line_index}"
+        _APOLLO_FIRST_SEPARATOR_ON_LINE=""
+        ((line_index++));
+        ;;
+      *)
+        _APOLLO_PROMPT_LINES[line_index]+="\${(e)_APOLLO_${(U)current_module}_TEXT}"
+        _APOLLO_LEFT_LENGTH[line_index]+=" + \$_APOLLO_${(U)current_module}_LENGTH"
+        ;;
+    esac
+
+  done
+
+  _APOLLO_PROMPT_LINES[line_index]+="${_APOLLO_RETURN_MESSAGE}"
+
+  for ((line=1;line<=line_index;line++)); do
+
+    if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
+      PROMPT+="\${_APOLLO_LEFT_LINK[$line]}\${(e)_APOLLO_PROMPT_LINES[$line]}\${_APOLLO_RIGHT_LINK[$line]}"
+    else
+      PROMPT+="\${(e)_APOLLO_PROMPT_LINES[$line]}"
+    fi
+
+    if ((line < line_index)); then
+      PROMPT+="${_APOLLO_NEWLINE}"
+    fi
+
+  done
+
+  PROMPT+="$APOLLO_PROMPT_END"
+  _APOLLO_PROMPT_COPY="$PROMPT"
+
+}
+
+_apollo_set_left_prompt "$@"

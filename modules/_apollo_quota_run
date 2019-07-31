@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ## Show if user is over quota ##
 
 typeset -g APOLLO_QUOTA_FG="white"
@@ -35,3 +35,5 @@ _apollo_quota_run() {
     _APOLLO_RETURN_MESSAGE=""
   fi
 }
+
+_apollo_quota_run "$@"

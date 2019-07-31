@@ -1,0 +1,39 @@
+# vim:ft=zsh
+
+_apollo_add_separator() {
+
+  local prompt_side current_module transition_bg_color transition_fg_color line
+  local -u bg_var
+
+  prompt_side="$1"
+  current_module="$2"
+  line="$3"
+
+  bg_var="APOLLO_${current_module}_BG"
+
+  case "$prompt_side" in
+    "left")
+      if [[ -n "${_APOLLO_FIRST_SEPARATOR_ON_LINE}" ]]; then
+
+        if [[ "$current_module" == "newline" ]]; then
+          _APOLLO_NEWLINE_SEP_LENGTH[line]="1" # TODO hardcoded separator length
+          _APOLLO_NEWLINE_SEP_TEXT[line]="%k${APOLLO_LEFT_SEPARATOR}%f"
+        else
+          transition_bg_color="%K{${__APOLLO_COLORS[${(P)${bg_var}}]}}"
+          _APOLLO_RETURN_MESSAGE="${transition_bg_color}${APOLLO_LEFT_SEPARATOR}%f"
+        fi
+      else
+        _APOLLO_FIRST_SEPARATOR_ON_LINE="$module"
+        _APOLLO_RETURN_MESSAGE="%f%k"
+      fi
+      ;;
+    "right")
+      transition_fg_color="%F{${__APOLLO_COLORS[${(P)${bg_var}}]}}"
+      _APOLLO_RETURN_MESSAGE="${transition_fg_color}${APOLLO_RIGHT_SEPARATOR}"
+      ;;
+    *);;
+  esac
+
+}
+
+_apollo_add_separator "$@"

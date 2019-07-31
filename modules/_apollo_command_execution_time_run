@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Display the duration the command needed to run.
 
@@ -49,10 +49,8 @@ _apollo_command_execution_time_preexec(){
   _APOLLO_TIMER_START=$EPOCHREALTIME
 }
 
-_apollo_command_execution_time_setup(){
+_APOLLO_TIMER_START=1e10
 
-  _APOLLO_TIMER_START=1e10
+zmodload zsh/mathfunc
 
-  zmodload zsh/mathfunc
-
-}
+_apollo_command_execution_time_run "$@"

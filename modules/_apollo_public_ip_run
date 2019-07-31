@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Public IP module
 
@@ -71,3 +71,5 @@ _apollo_public_ip_run() {
 	fi
 
 }
+
+_apollo_public_ip_run "$@"

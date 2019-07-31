@@ -1,3 +1,4 @@
+# vim:ft=zsh
 
 typeset -g  APOLLO_TL_LINK="╭─"
 typeset -g  APOLLO_ML_LINK="├─"
@@ -223,3 +224,4 @@ _apollo_add_links() {
 
 }
 
+_apollo_add_links "$@"

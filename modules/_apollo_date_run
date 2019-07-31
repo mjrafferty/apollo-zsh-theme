@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # System date
 
@@ -17,3 +17,5 @@ _apollo_date_run() {
   _APOLLO_RETURN_MESSAGE="${d//\%/%%}"
 
 }
+
+_apollo_date_run "$@"

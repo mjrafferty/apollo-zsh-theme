@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 
 ################################################################
 # Context: user@hostname (who am I and where am I)
@@ -59,3 +59,5 @@ _apollo_context_run() {
   _APOLLO_RETURN_MESSAGE="$content"
 
 }
+
+_apollo_context_run "$@"

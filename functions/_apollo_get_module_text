@@ -1,0 +1,42 @@
+# vim:ft=zsh
+
+_apollo_get_module_text() {
+
+  local module side start cache_key cache runtime
+  local -u text length
+
+  module="$1"
+  side="$2"
+
+  text="_APOLLO_${module}_TEXT"
+  length="_APOLLO_${module}_LENGTH"
+
+  if ((APOLLO_PROFILER > 0)); then
+    start=${EPOCHREALTIME}
+  fi
+
+  if ((${+functions[_apollo_${module}_cache_key]})); then
+    "_apollo_${module}_cache_key";
+    cache_key="${_APOLLO_RETURN_MESSAGE}"
+    cache="${_APOLLO_CACHE["${module}-${cache_key}"]}"
+  fi
+
+  if [[ -n "$cache" ]]; then
+    if [[ "$side" == "left" ]]; then
+      _APOLLO_FIRST_SEPARATOR_ON_LINE="$module"
+    fi
+    typeset -g ${text}="${cache##*|}"
+    typeset -gi ${length}="${cache%%|*}"
+  else
+    _apollo_set_module_text "$module" "$side" "$cache_key"
+  fi
+
+  if ((APOLLO_PROFILER > 0)); then
+    runtime="$((EPOCHREALTIME-start))"
+    printf "%25s: %f\n" "$module" "$runtime"
+    ((_APOLLO_PROFILER_TOTAL+=runtime))
+  fi
+
+}
+
+_apollo_get_module_text "$@"

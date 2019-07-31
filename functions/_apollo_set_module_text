@@ -1,0 +1,67 @@
+# vim:ft=zsh
+
+_apollo_set_module_text() {
+
+  local module module_text fg_color bg_color transition_fg_color cache_key side
+  local -u fg_var bg_var text length
+
+  module="$1"
+  side="$2"
+  cache_key="$3"
+
+  fg_var="APOLLO_${module}_FG"
+  bg_var="APOLLO_${module}_BG"
+  text="_APOLLO_${module}_TEXT"
+  length="_APOLLO_${module}_LENGTH"
+
+  # Clear out old message before passing to module
+  _APOLLO_RETURN_MESSAGE=""
+
+   "_apollo_${module}_run" >&"${_APOLLO_BUFFER_FD}"
+
+  # Flush any remaining data in buffer
+  while read -rt dump <&"${_APOLLO_BUFFER_FD}"; do true; done
+
+  if (( ${#_APOLLO_RETURN_MESSAGE} == 0 )); then
+    typeset -gi ${length}="0"
+    typeset -g ${text}=""
+    if [[ -n "$cache_key" ]]; then
+      _APOLLO_CACHE["${module}-${cache_key}"]="0|${_APOLLO_RETURN_MESSAGE}"
+    fi
+    return;
+  fi
+
+  ## TODO padding
+  ## TODO icons?
+  ## TODO rework colors
+  module_text=" ${_APOLLO_RETURN_MESSAGE} "
+
+  _apollo_translate_color "${(P)${fg_var}}"
+  fg_color="${_APOLLO_RETURN_MESSAGE}"
+
+  _apollo_foreground "${fg_color}"
+  fg_color="${_APOLLO_RETURN_MESSAGE}"
+
+  _apollo_translate_color "${(P)${bg_var}}"
+  bg_color="${_APOLLO_RETURN_MESSAGE}"
+
+  _apollo_foreground "${bg_color}"
+  transition_fg_color="${_APOLLO_RETURN_MESSAGE}"
+
+  _apollo_background "${bg_color}"
+  bg_color="${_APOLLO_RETURN_MESSAGE}"
+
+  _apollo_add_separator "$side" "$module"
+
+  typeset -g ${text}="${_APOLLO_RETURN_MESSAGE}${fg_color}${bg_color}${module_text}${transition_fg_color}"
+
+  _apollo_get_display_width "${(P)${text}}"
+  typeset -gi ${length}="$_APOLLO_RETURN_MESSAGE"
+
+  if [[ -n "$cache_key" ]]; then
+    _APOLLO_CACHE["${module}-${cache_key}"]="${(P)${length}}|${(P)${text}}"
+  fi
+
+}
+
+_apollo_set_module_text "$@"

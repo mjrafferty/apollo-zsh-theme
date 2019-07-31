@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Vi Mode: show editing mode (NORMAL|INSERT|VISUAL)
 #
@@ -89,18 +89,16 @@ _apollo_vi_mode_cmd_mode() {
   fi
 }
 
-_apollo_vi_mode_setup(){
+zle -N zle-keymap-select
+zle -N zle-line-init
 
-	zle -N zle-keymap-select
-	zle -N zle-line-init
+autoload -Uz is-at-least
 
-  autoload -Uz is-at-least
+if is-at-least 5.3; then
+  zle -N _apollo_vi_mode_visual_mode
+  bindkey -M vicmd v _apollo_vi_mode_visual_mode
+  zle -N _apollo_vi_mode_cmd_mode
+  bindkey -M visual '^[' _apollo_vi_mode_cmd_mode
+fi
 
-  if is-at-least 5.3; then
-    zle -N _apollo_vi_mode_visual_mode
-    bindkey -M vicmd v _apollo_vi_mode_visual_mode
-    zle -N _apollo_vi_mode_cmd_mode
-    bindkey -M visual '^[' _apollo_vi_mode_cmd_mode
-  fi
-
-}
+_apollo_vi_mode_run "$@"

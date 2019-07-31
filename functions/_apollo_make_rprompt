@@ -1,0 +1,32 @@
+# vim:ft=zsh
+
+_apollo_make_rprompt(){
+
+  local prompt_length module_text current_module rprompt line_index
+
+  line_index="$1"
+
+  prompt_length="${#APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"
+
+  while ((_APOLLO_CURRENT_RPROMPT <= prompt_length)); do
+
+    current_module="${APOLLO_RIGHT_PROMPT_ELEMENTS[_APOLLO_CURRENT_RPROMPT]}"
+    ((_APOLLO_CURRENT_RPROMPT++));
+
+    case "${current_module}" in
+      "newline")
+        break;
+        ;;
+      *)
+        rprompt+="\${(e)_APOLLO_${(U)current_module}_TEXT}"
+        _APOLLO_RIGHT_LENGTH[line_index]+=" + \$_APOLLO_${(U)current_module}_LENGTH"
+        ;;
+    esac
+
+  done
+
+  _APOLLO_RETURN_MESSAGE="${rprompt}"
+
+}
+
+_apollo_make_rprompt "$@"

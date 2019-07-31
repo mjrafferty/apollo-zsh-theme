@@ -1,0 +1,89 @@
+# vim:ft=zsh
+
+## Configurables
+typeset -ga APOLLO_LEFT_PROMPT_ELEMENTS
+typeset -ga APOLLO_RIGHT_PROMPT_ELEMENTS
+typeset -gi APOLLO_PROFILER=0
+typeset -g  APOLLO_LEFT_SEPARATOR=""
+typeset -g  APOLLO_RIGHT_SEPARATOR=""
+typeset -g  APOLLO_PROMPT_END="> "
+typeset -g  APOLLO_LINE_LINKS="true"
+
+APOLLO_LEFT_PROMPT_ELEMENTS=(newline public_ip virtualenv newline root_indicator context dir vi_mode ruler )
+APOLLO_RIGHT_PROMPT_ELEMENTS=(command_execution_time background_jobs game newline status php_version)
+
+## Necessary global variables
+typeset -gA _APOLLO_CACHE
+typeset -g 	_APOLLO_BUFFER_NAME
+typeset -gi _APOLLO_BUFFER_FD
+typeset -g  _APOLLO_FIRST_SEPARATOR_ON_LINE
+typeset -ga _APOLLO_NEWLINE_SEP_LENGTH
+typeset -ga _APOLLO_NEWLINE_SEP_TEXT
+typeset -g  _APOLLO_PROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
+typeset -ga _APOLLO_LINES_META
+typeset -ga _APOLLO_LEFT_LENGTH
+typeset -ga _APOLLO_RIGHT_LENGTH
+typeset -ga _APOLLO_LINE_MODULES
+typeset -ga _APOLLO_PROMPT_LINES
+typeset -gi _APOLLO_BREAK_CACHE_COUNTER
+typeset -gi _APOLLO_CURRENT_RPROMPT=1
+typeset -g  _APOLLO_PROFILER_TOTAL=0
+typeset -gi _APOLLO_EXIT_CODE
+typeset -g  _APOLLO_PIPE_EXIT_CODES
+typeset -g  _APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
+typeset -g  _APOLLO_NEWLINE='
+'
+
+prompt_apollo_setup() {
+
+  local element
+
+  prompt_opts=(bang cr sp percent subst)
+
+  zmodload zsh/datetime
+
+  fpath+=("${_APOLLO_INSTALL_DIR}/functions")
+  fpath+=("${_APOLLO_INSTALL_DIR}/modules")
+
+  source "/Users/mattrafferty/apollo-zsh-theme/lib/colors.zsh"
+  source "/Users/mattrafferty/apollo-zsh-theme/lib/utilities.zsh"
+
+  autoload -Uz +X _apollo_add_links _apollo_add_separator _apollo_get_module_text \
+    _apollo_precmd _apollo_run_modules _apollo_set_module_text _apollo_add_newline \
+    _apollo_cleanup _apollo_make_rprompt _apollo_preexec _apollo_set_left_prompt \
+    _apollo_set_prompts
+
+  autoload -Uz add-zsh-hook
+  add-zsh-hook precmd _apollo_precmd
+  add-zsh-hook preexec _apollo_preexec
+  add-zsh-hook zshexit _apollo_cleanup
+
+  # Open a buffer for modules to use
+  _APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}_APOLLO_$EPOCHSECONDS"
+  mkfifo "${_APOLLO_BUFFER_NAME}"
+  exec {_APOLLO_BUFFER_FD}<> "${_APOLLO_BUFFER_NAME}"
+
+  # Load config files
+  for conf in "${_APOLLO_INSTALL_DIR}/conf/"*.conf; do
+    source "${conf}";
+  done
+
+  # Load enabled modules and run setup hooks
+  for element in "${APOLLO_LEFT_PROMPT_ELEMENTS[@]}" "${APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"; do
+
+    if [[ "$element" == "newline" || "$element" == "ruler" ]]; then
+      continue;
+    fi
+
+    autoload -Uz +X "_apollo_${element}_run"
+
+  done
+
+  PROMPT=""
+  RPROMPT=""
+
+  _apollo_set_prompts
+
+}
+
+prompt_apollo_setup "$@"

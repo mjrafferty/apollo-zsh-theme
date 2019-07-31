@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Virtualenv: current working virtualenv
 # More information on virtualenv (Python):
@@ -18,3 +18,5 @@ _apollo_virtualenv_run() {
   fi
 
 }
+
+_apollo_virtualenv_run "$@"

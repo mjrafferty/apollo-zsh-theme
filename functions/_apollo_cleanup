@@ -1,0 +1,11 @@
+# vim:ft=zsh
+
+_apollo_cleanup() {
+
+	exec {_APOLLO_BUFFER_FD}>&-
+
+	rm "$_APOLLO_BUFFER_NAME"
+
+}
+
+_apollo_cleanup "$@"

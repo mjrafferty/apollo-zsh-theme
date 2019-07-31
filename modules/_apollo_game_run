@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 
 typeset -g  APOLLO_GAME_BG="darkblue"
 typeset -g  APOLLO_GAME_FG="white"
@@ -46,3 +46,5 @@ _apollo_game_run (){
   _APOLLO_RETURN_MESSAGE="%B${slots}${winst}${_APOLLO_GAME_SYMBOLS[8]}:${_APOLLO_GAME_CASH}%b"
 
 }
+
+_apollo_game_run "$@"
