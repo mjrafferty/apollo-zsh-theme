@@ -45,8 +45,8 @@ prompt_apollo_setup() {
   fpath+=("${_APOLLO_INSTALL_DIR}/functions")
   fpath+=("${_APOLLO_INSTALL_DIR}/modules")
 
-  source "/Users/mattrafferty/apollo-zsh-theme/lib/colors.zsh"
-  source "/Users/mattrafferty/apollo-zsh-theme/lib/utilities.zsh"
+  source "${_APOLLO_INSTALL_DIR}/lib/colors.zsh"
+  source "${_APOLLO_INSTALL_DIR}/lib/utilities.zsh"
 
   autoload -Uz +X _apollo_add_links _apollo_add_separator _apollo_get_module_text \
     _apollo_precmd _apollo_run_modules _apollo_set_module_text _apollo_add_newline \
