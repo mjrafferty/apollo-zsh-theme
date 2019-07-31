@@ -16,6 +16,8 @@ APOLLO_RIGHT_PROMPT_ELEMENTS=(command_execution_time background_jobs game newlin
 typeset -gA _APOLLO_CACHE
 typeset -g 	_APOLLO_BUFFER_NAME
 typeset -gi _APOLLO_BUFFER_FD
+typeset -gA _APOLLO_MODULE_TEXT
+typeset -gA _APOLLO_MODULE_LENGTH
 typeset -g  _APOLLO_FIRST_SEPARATOR_ON_LINE
 typeset -ga _APOLLO_NEWLINE_SEP_LENGTH
 typeset -ga _APOLLO_NEWLINE_SEP_TEXT
@@ -31,6 +33,7 @@ typeset -g  _APOLLO_PROFILER_TOTAL=0
 typeset -gi _APOLLO_EXIT_CODE
 typeset -g  _APOLLO_PIPE_EXIT_CODES
 typeset -g  _APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
+
 typeset -g  _APOLLO_NEWLINE='
 '
 
@@ -42,7 +45,8 @@ prompt_apollo_setup() {
 
   zmodload zsh/datetime
 
-  fpath+=("${_APOLLO_INSTALL_DIR}/functions")
+  # TODO check fpath and update if necessary
+  #fpath+=("${_APOLLO_INSTALL_DIR}/functions")
   fpath+=("${_APOLLO_INSTALL_DIR}/modules")
 
   source "${_APOLLO_INSTALL_DIR}/lib/colors.zsh"

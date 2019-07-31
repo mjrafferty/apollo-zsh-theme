@@ -218,6 +218,11 @@ _apollo_add_links() {
 
   done
 
+  ## TODO integrate this into above logic. Should at least be testing length of RPROMPT rather than not null
+  if [[ "$APOLLO_LINE_LINKS" == "true" && -n "$RPROMPT" ]]; then
+    RPROMPT+="${br}"
+  fi
+
   if (( APOLLO_PROFILER > 0 )); then
     printf "%25s: %f\n" "line links" "$((EPOCHREALTIME-start))"
   fi

@@ -3,7 +3,7 @@
 _apollo_set_module_text() {
 
   local module module_text fg_color bg_color transition_fg_color cache_key side
-  local -u fg_var bg_var text length
+  local -u fg_var bg_var
 
   module="$1"
   side="$2"
@@ -11,8 +11,6 @@ _apollo_set_module_text() {
 
   fg_var="APOLLO_${module}_FG"
   bg_var="APOLLO_${module}_BG"
-  text="_APOLLO_${module}_TEXT"
-  length="_APOLLO_${module}_LENGTH"
 
   # Clear out old message before passing to module
   _APOLLO_RETURN_MESSAGE=""
@@ -23,8 +21,8 @@ _apollo_set_module_text() {
   while read -rt dump <&"${_APOLLO_BUFFER_FD}"; do true; done
 
   if (( ${#_APOLLO_RETURN_MESSAGE} == 0 )); then
-    typeset -gi ${length}="0"
-    typeset -g ${text}=""
+    _APOLLO_MODULE_LENGTH[$module]="0"
+    _APOLLO_MODULE_TEXT[$module]=""
     if [[ -n "$cache_key" ]]; then
       _APOLLO_CACHE["${module}-${cache_key}"]="0|${_APOLLO_RETURN_MESSAGE}"
     fi
@@ -53,13 +51,13 @@ _apollo_set_module_text() {
 
   _apollo_add_separator "$side" "$module"
 
-  typeset -g ${text}="${_APOLLO_RETURN_MESSAGE}${fg_color}${bg_color}${module_text}${transition_fg_color}"
+  _APOLLO_MODULE_TEXT[$module]="${_APOLLO_RETURN_MESSAGE}${fg_color}${bg_color}${module_text}${transition_fg_color}"
 
-  _apollo_get_display_width "${(P)${text}}"
-  typeset -gi ${length}="$_APOLLO_RETURN_MESSAGE"
+  _apollo_get_display_width ${_APOLLO_MODULE_TEXT[$module]}
+  _APOLLO_MODULE_LENGTH[$module]="$_APOLLO_RETURN_MESSAGE"
 
   if [[ -n "$cache_key" ]]; then
-    _APOLLO_CACHE["${module}-${cache_key}"]="${(P)${length}}|${(P)${text}}"
+    _APOLLO_CACHE["${module}-${cache_key}"]="${_APOLLO_MODULE_LENGTH[$module]}|${_APOLLO_MODULE_TEXT[$module]}"
   fi
 
 }

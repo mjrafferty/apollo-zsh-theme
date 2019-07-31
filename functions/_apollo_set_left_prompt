@@ -21,8 +21,8 @@ _apollo_set_left_prompt() {
         ((line_index++));
         ;;
       *)
-        _APOLLO_PROMPT_LINES[line_index]+="\${(e)_APOLLO_${(U)current_module}_TEXT}"
-        _APOLLO_LEFT_LENGTH[line_index]+=" + \$_APOLLO_${(U)current_module}_LENGTH"
+        _APOLLO_PROMPT_LINES[line_index]+="\${(e)_APOLLO_MODULE_TEXT[$current_module]}"
+        _APOLLO_LEFT_LENGTH[line_index]+=" + \$_APOLLO_MODULE_LENGTH[$current_module]"
         ;;
     esac
 

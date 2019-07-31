@@ -18,8 +18,8 @@ _apollo_make_rprompt(){
         break;
         ;;
       *)
-        rprompt+="\${(e)_APOLLO_${(U)current_module}_TEXT}"
-        _APOLLO_RIGHT_LENGTH[line_index]+=" + \$_APOLLO_${(U)current_module}_LENGTH"
+        rprompt+="\${(e)_APOLLO_MODULE_TEXT[$current_module]}"
+        _APOLLO_RIGHT_LENGTH[line_index]+=" + \$_APOLLO_MODULE_LENGTH[$current_module]"
         ;;
     esac
 
