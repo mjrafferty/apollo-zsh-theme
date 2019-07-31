@@ -28,10 +28,10 @@ _apollo_add_links() {
   ml="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_ML_LINK}%f"
   sl="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_SL_LINK}%f"
   bl="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_BL_LINK}%f"
-  tr="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_TR_LINK}%f"
-  mr="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_MR_LINK}%f"
-  sr="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_SR_LINK}%f"
-  br="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_BR_LINK}%f"
+  tr="%k%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_TR_LINK}%f"
+  mr="%k%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_MR_LINK}%f"
+  sr="%k%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_SR_LINK}%f"
+  br="%k%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_BR_LINK}%f"
   nl="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_NL_LINK}%f"
 
   line_index="$1";
@@ -86,7 +86,7 @@ _apollo_add_links() {
       2)
         case "$line" in
           "$line_index")
-            _APOLLO_PROMPT_LINES[line]="${_APOLLO_PROMPT_LINES[line]}${br}" ;;
+            _APOLLO_RIGHT_LINK[line]="${br}";;
           1)
             _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${tr}"; ;;
           *)
@@ -217,11 +217,6 @@ _apollo_add_links() {
     esac
 
   done
-
-  ## TODO integrate this into above logic. Should at least be testing length of RPROMPT rather than not null
-  if [[ "$APOLLO_LINE_LINKS" == "true" && -n "$RPROMPT" ]]; then
-    RPROMPT+="${br}"
-  fi
 
   if (( APOLLO_PROFILER > 0 )); then
     printf "%25s: %f\n" "line links" "$((EPOCHREALTIME-start))"

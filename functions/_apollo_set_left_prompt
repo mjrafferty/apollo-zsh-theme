@@ -33,7 +33,11 @@ _apollo_set_left_prompt() {
   for ((line=1;line<=line_index;line++)); do
 
     if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
-      PROMPT+="\${_APOLLO_LEFT_LINK[$line]}\${(e)_APOLLO_PROMPT_LINES[$line]}\${_APOLLO_RIGHT_LINK[$line]}"
+      if ((line < line_index)); then
+        PROMPT+="\${_APOLLO_LEFT_LINK[$line]}\${(e)_APOLLO_PROMPT_LINES[$line]}\${_APOLLO_RIGHT_LINK[$line]}"
+      else
+        PROMPT+="\${_APOLLO_LEFT_LINK[$line]}\${(e)_APOLLO_PROMPT_LINES[$line]}"
+      fi
     else
       PROMPT+="\${(e)_APOLLO_PROMPT_LINES[$line]}"
     fi

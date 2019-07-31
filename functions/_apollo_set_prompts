@@ -5,7 +5,12 @@ _apollo_set_prompts(){
   _apollo_set_left_prompt
 
   _apollo_make_rprompt "${#_APOLLO_PROMPT_LINES}"
-  RPROMPT="${_APOLLO_RETURN_MESSAGE}"
+
+  if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
+    RPROMPT="${_APOLLO_RETURN_MESSAGE}\${_APOLLO_RIGHT_LINK[${#_APOLLO_PROMPT_LINES}]}"
+  else
+    RPROMPT="${_APOLLO_RETURN_MESSAGE}"
+  fi
 
 }
 
