@@ -41,7 +41,7 @@ prompt_apollo_setup() {
 
   local module
 
-  prompt_opts=(bang cr sp percent subst)
+  setopt prompt_bang prompt_cr prompt_sp prompt_percent prompt_subst
 
   zmodload zsh/datetime
 
