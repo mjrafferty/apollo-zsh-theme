@@ -17,22 +17,25 @@ typeset -ga _APOLLO_RIGHT_LINK
 # Logic for adding link lines. Don't look it's ugly
 _apollo_add_links() {
 
-  local line line_index start
+  local line line_index start link_color
   local tl ml sl bl tr mr sr br nl
 
   if (( APOLLO_PROFILER > 0 )); then
     start="$EPOCHREALTIME"
   fi
 
-  tl="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_TL_LINK}%f"
-  ml="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_ML_LINK}%f"
-  sl="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_SL_LINK}%f"
-  bl="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_BL_LINK}%f"
-  tr="%k%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_TR_LINK}%f"
-  mr="%k%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_MR_LINK}%f"
-  sr="%k%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_SR_LINK}%f"
-  br="%k%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_BR_LINK}%f"
-  nl="%F{${__APOLLO_COLORS[${APOLLO_LINK_COLOR}]}}${APOLLO_NL_LINK}%f"
+  _apollo_set_colors "$APOLLO_LINK_COLOR" "clear"
+  link_color="$_APOLLO_RETURN_MESSAGE"
+
+  tl="${link_color}${APOLLO_TL_LINK}%f"
+  ml="${link_color}${APOLLO_ML_LINK}%f"
+  sl="${link_color}${APOLLO_SL_LINK}%f"
+  bl="${link_color}${APOLLO_BL_LINK}%f"
+  tr="${link_color}${APOLLO_TR_LINK}%f"
+  mr="${link_color}${APOLLO_MR_LINK}%f"
+  sr="${link_color}${APOLLO_SR_LINK}%f"
+  br="${link_color}${APOLLO_BR_LINK}%f"
+  nl="${link_color}${APOLLO_NL_LINK}%f"
 
   line_index="$1";
 
