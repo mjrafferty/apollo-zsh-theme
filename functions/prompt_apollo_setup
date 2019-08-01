@@ -87,6 +87,8 @@ prompt_apollo_setup() {
 
   _apollo_set_prompts
 
+  unfunction _apollo_add_newline _apollo_make_rprompt _apollo_set_left_prompt _apollo_set_prompts
+
 }
 
 prompt_apollo_setup "$@"
