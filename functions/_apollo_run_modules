@@ -8,7 +8,7 @@ _apollo_run_modules() {
 
   lines="${#_APOLLO_PROMPT_LINES[@]}"
 
-  for module in "${APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"; do
+  for module in "${APOLLO_RIGHT_PROMPT_MODULES[@]}"; do
     if ((${+functions[_apollo_${module}_run]} > 0)); then
       _apollo_get_module_text "$module" "right"
     fi

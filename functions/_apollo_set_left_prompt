@@ -2,15 +2,15 @@
 
 _apollo_set_left_prompt() {
 
-  local element prompt_length module_text current_module
+  local module prompt_length module_text current_module
   local -i line_index
 
   line_index=1;
-  prompt_length="${#APOLLO_LEFT_PROMPT_ELEMENTS[@]}"
+  prompt_length="${#APOLLO_LEFT_PROMPT_MODULES[@]}"
 
-  for ((element=1; element<=prompt_length;element++)); do
+  for ((module=1; module<=prompt_length;module++)); do
 
-    current_module="${APOLLO_LEFT_PROMPT_ELEMENTS[element]}"
+    current_module="${APOLLO_LEFT_PROMPT_MODULES[module]}"
 
     _APOLLO_LINE_MODULES[line_index]+="${current_module} "
 

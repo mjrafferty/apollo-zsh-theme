@@ -6,11 +6,11 @@ _apollo_make_rprompt(){
 
   line_index="$1"
 
-  prompt_length="${#APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"
+  prompt_length="${#APOLLO_RIGHT_PROMPT_MODULES[@]}"
 
   while ((_APOLLO_CURRENT_RPROMPT <= prompt_length)); do
 
-    current_module="${APOLLO_RIGHT_PROMPT_ELEMENTS[_APOLLO_CURRENT_RPROMPT]}"
+    current_module="${APOLLO_RIGHT_PROMPT_MODULES[_APOLLO_CURRENT_RPROMPT]}"
     ((_APOLLO_CURRENT_RPROMPT++));
 
     case "${current_module}" in

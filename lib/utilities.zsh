@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 
 typeset -g _APOLLO_BYTE_SUFFIX
 _APOLLO_BYTE_SUFFIX=('B' 'K' 'M' 'G' 'T' 'P' 'E' 'Z' 'Y')

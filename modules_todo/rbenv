@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 _apollo_read_rbenv_version_file() {
   [[ -r $1 ]] || return
   local content

@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Segment to display Swap information
 prompt_swap() {

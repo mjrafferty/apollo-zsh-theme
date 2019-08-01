@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Segment that indicates usage level of current partition.
 prompt_disk_usage() {

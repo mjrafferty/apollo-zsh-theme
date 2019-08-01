@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Segment to display Symfony2-Version
 prompt_symfony2_version() {

@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Segment that displays the battery status in levels and colors
 #

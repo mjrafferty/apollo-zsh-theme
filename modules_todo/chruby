@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Segment to display chruby information
 # see https://github.com/postmodern/chruby/issues/245 for chruby_auto issue with ZSH

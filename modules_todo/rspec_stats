@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 # RSpec test ratio
 prompt_rspec_stats() {
   if [[ -d app && -d spec ]]; then

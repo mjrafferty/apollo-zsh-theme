@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 # Almost the same as `nvm_version default` but faster. The differences shouldn't affect
 # the observable behavior of Powerlevel10k.
 _apollo_nvm_ls_default() {

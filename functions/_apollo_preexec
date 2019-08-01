@@ -3,9 +3,9 @@
 _apollo_preexec() {
 
   # Run preexec hooks for modules
-  for element in "${APOLLO_LEFT_PROMPT_ELEMENTS[@]}" "${APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"; do
-    if ((${+functions[_apollo_${element}_preexec]})); then
-      "_apollo_${element}_preexec";
+  for module in "${APOLLO_LEFT_PROMPT_MODULES[@]}" "${APOLLO_RIGHT_PROMPT_MODULES[@]}"; do
+    if ((${+functions[_apollo_${module}_preexec]})); then
+      "_apollo_${module}_preexec";
     fi
   done
 

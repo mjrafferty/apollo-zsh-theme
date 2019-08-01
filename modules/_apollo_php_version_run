@@ -17,7 +17,7 @@ _apollo_php_version_run() {
 
   setopt extendedglob
 
-  php --version 2> /dev/null
+  php --no-php-ini --version 2> /dev/null
 
   read -r -t _APOLLO_RETURN_MESSAGE <&${_APOLLO_BUFFER_FD}
 

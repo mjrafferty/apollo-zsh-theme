@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 # Specifies the format of java version.
 #
 #   APOLLO_JAVA_VERSION_FULL=true  => 1.8.0_212-8u212-b03-0ubuntu1.18.04.1-b03

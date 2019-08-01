@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # GIT module: shows the state of your repository, if you are in a folder under
 # version control

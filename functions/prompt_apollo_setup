@@ -1,16 +1,16 @@
 # vim:ft=zsh
 
 ## Configurables
-typeset -ga APOLLO_LEFT_PROMPT_ELEMENTS
-typeset -ga APOLLO_RIGHT_PROMPT_ELEMENTS
+typeset -ga APOLLO_LEFT_PROMPT_MODULES
+typeset -ga APOLLO_RIGHT_PROMPT_MODULES
 typeset -gi APOLLO_PROFILER=0
 typeset -g  APOLLO_LEFT_SEPARATOR=""
 typeset -g  APOLLO_RIGHT_SEPARATOR=""
 typeset -g  APOLLO_PROMPT_END="> "
 typeset -g  APOLLO_LINE_LINKS="true"
 
-APOLLO_LEFT_PROMPT_ELEMENTS=(newline public_ip virtualenv newline root_indicator context dir vi_mode ruler )
-APOLLO_RIGHT_PROMPT_ELEMENTS=(command_execution_time background_jobs game newline status php_version)
+APOLLO_LEFT_PROMPT_MODULES=(newline public_ip virtualenv newline root_indicator context dir vi_mode ruler )
+APOLLO_RIGHT_PROMPT_MODULES=(command_execution_time background_jobs game newline status php_version)
 
 ## Necessary global variables
 typeset -gA _APOLLO_CACHE
@@ -39,7 +39,7 @@ typeset -g  _APOLLO_NEWLINE='
 
 prompt_apollo_setup() {
 
-  local element
+  local module
 
   prompt_opts=(bang cr sp percent subst)
 
@@ -72,13 +72,13 @@ prompt_apollo_setup() {
   done
 
   # Load enabled modules and run setup hooks
-  for element in "${APOLLO_LEFT_PROMPT_ELEMENTS[@]}" "${APOLLO_RIGHT_PROMPT_ELEMENTS[@]}"; do
+  for module in "${APOLLO_LEFT_PROMPT_MODULES[@]}" "${APOLLO_RIGHT_PROMPT_MODULES[@]}"; do
 
-    if [[ "$element" == "newline" || "$element" == "ruler" ]]; then
+    if [[ "$module" == "newline" || "$module" == "ruler" ]]; then
       continue;
     fi
 
-    autoload -Uz +X "_apollo_${element}_run"
+    autoload -Uz +X "_apollo_${module}_run"
 
   done
 

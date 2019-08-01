@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Segment to display pyenv information
 # https://github.com/pyenv/pyenv#choosing-the-python-version

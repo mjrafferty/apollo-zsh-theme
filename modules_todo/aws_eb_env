@@ -1,4 +1,4 @@
-# vim:ft=bash
+# vim:ft=zsh
 ################################################################
 # Current Elastic Beanstalk environment
 prompt_aws_eb_env() {
