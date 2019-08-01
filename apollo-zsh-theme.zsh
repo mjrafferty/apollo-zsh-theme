@@ -5,6 +5,5 @@ _APOLLO_INSTALL_DIR="${_APOLLO_INSTALL_DIR%/*}"
 
 fpath+=("${_APOLLO_INSTALL_DIR}/functions")
 
-autoload -Uz promptinit && promptinit
-
-prompt apollo
+autoload -Uz prompt_apollo_setup
+prompt_apollo_setup
