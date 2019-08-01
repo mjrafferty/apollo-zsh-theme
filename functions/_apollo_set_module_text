@@ -2,7 +2,7 @@
 
 _apollo_set_module_text() {
 
-  local module module_text fg_color bg_color transition_fg_color cache_key side
+  local module module_text modules_colors transition_fg cache_key side
   local -u fg_var bg_var
 
   module="$1"
@@ -31,27 +31,17 @@ _apollo_set_module_text() {
 
   ## TODO padding
   ## TODO icons?
-  ## TODO rework colors
   module_text=" ${_APOLLO_RETURN_MESSAGE} "
 
-  _apollo_translate_color "${(P)${fg_var}}"
-  fg_color="${_APOLLO_RETURN_MESSAGE}"
+  _apollo_set_colors "${(P)${fg_var}}" "${(P)${bg_var}}"
+  module_colors="${_APOLLO_RETURN_MESSAGE}"
 
-  _apollo_foreground "${fg_color}"
-  fg_color="${_APOLLO_RETURN_MESSAGE}"
-
-  _apollo_translate_color "${(P)${bg_var}}"
-  bg_color="${_APOLLO_RETURN_MESSAGE}"
-
-  _apollo_foreground "${bg_color}"
-  transition_fg_color="${_APOLLO_RETURN_MESSAGE}"
-
-  _apollo_background "${bg_color}"
-  bg_color="${_APOLLO_RETURN_MESSAGE}"
+  _apollo_set_colors "${(P)${bg_var}}" "keep"
+  transition_fg="${_APOLLO_RETURN_MESSAGE}"
 
   _apollo_add_separator "$side" "$module"
 
-  _APOLLO_MODULE_TEXT[$module]="${_APOLLO_RETURN_MESSAGE}${fg_color}${bg_color}${module_text}${transition_fg_color}"
+  _APOLLO_MODULE_TEXT[$module]="${_APOLLO_RETURN_MESSAGE}${module_colors}${module_text}${transition_fg}"
 
   _apollo_get_display_width ${_APOLLO_MODULE_TEXT[$module]}
   _APOLLO_MODULE_LENGTH[$module]="$_APOLLO_RETURN_MESSAGE"

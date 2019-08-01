@@ -1,10 +1,4 @@
-# vim:ft=bash
-################################################################
-# Color functions
-# This file holds some color-functions for
-# the apollo-ZSH-theme
-# https://github.com/bhilburn/apollo
-################################################################
+# vim:ft=zsh
 
 # https://jonasjacek.github.io/colors/
 # use color names by default to allow dark/light themes to adjust colors based on names
@@ -270,72 +264,49 @@ __APOLLO_COLORS=(
   grey93 255
 )
 
-# For user convenience: type `getColorCode background` or `getColorCode foreground` to see
-# the list of predefined colors.
-getColorCode() {
-  if (( ARGC == 1 )); then
-    case $1 in
-      foreground)
-        local k
-        for k in "${(k@)__APOLLO_COLORS}"; do
-          local v=${__APOLLO_COLORS[$k]}
-          print -P "%F{$v}$v - $k%f"
-        done
-        return
+_apollo_set_colors() {
+
+  local fg bg
+
+  fg="$1"
+  bg="$2"
+
+  if [[ -n "$fg" ]]; then
+    case "$fg" in
+      "keep")
+        fg=""
         ;;
-      background)
-        local k
-        for k in "${(k@)__APOLLO_COLORS}"; do
-          local v=${__APOLLO_COLORS[$k]}
-          print -P "%K{$v}$v - $k%k"
-        done
-        return
+      "clear")
+        fg="%f"
+        ;;
+      ^[a-z]*$)
+        fg="%F{$__APOLLO_COLORS[$1]}"
+        ;;
+      *)
+        fg="%F{$1}"
         ;;
     esac
   fi
-  echo "Usage: getColorCode background|foreground" >&2
-  return 1
-}
 
-_apollo_translate_color() {
-
-  if [[ $1 == '<->' ]]; then     # decimal color code: 255
-    _APOLLO_RETURN_MESSAGE=$1
-  elif [[ $1 == '#'* ]]; then  # hexademical color code: #ffffff
-    _APOLLO_RETURN_MESSAGE=$1
-  else                         # named color: red
-    # Strip prifixes if there are any.
-    _APOLLO_RETURN_MESSAGE=$__APOLLO_COLORS[${${${1#bg-}#fg-}#br}]
+  if [[ -n "$bg" ]]; then
+    case "$bg" in
+      "keep")
+        bg=""
+        ;;
+      "clear")
+        bg="%k"
+        ;;
+      ^[a-z]*$)
+        bg="%K{$__APOLLO_COLORS[$2]}"
+        ;;
+      *)
+        bg="%K{$2}"
+        ;;
+    esac
   fi
 
-}
-
-# Resolves a color to its numerical value, or an empty string. Communicates the result back
-# by setting _APOLLO_RETURN_MESSAGE.
-_apollo_color() {
-
-  local user_var=APOLLO_${(U)${2}#prompt_}_${3}
-
-  _apollo_translate_color ${${(P)user_var}:-${1}}
+  _APOLLO_RETURN_MESSAGE="${fg}${bg}"
 
 }
 
-_apollo_background() {
-
-  if [[ -n $1 ]]; then
-    _APOLLO_RETURN_MESSAGE="%K{$1}"
-  else
-    _APOLLO_RETURN_MESSAGE="%k"
-  fi
-
-}
-
-_apollo_foreground() {
-
-  if [[ -n $1 ]]; then
-    _APOLLO_RETURN_MESSAGE="%F{$1}";
-  else
-    _APOLLO_RETURN_MESSAGE="%f"
-  fi
-
-}
+_apollo_set_colors "$@"

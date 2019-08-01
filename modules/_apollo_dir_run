@@ -267,8 +267,7 @@ _apollo_dir_run() {
 
   # Highlight last dir
   if [[ -n $APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND ]]; then
-    _apollo_translate_color $APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND
-    _apollo_foreground $_APOLLO_RETURN_MESSAGE
+    _apollo_set_colors $APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND "keep"
     last_fg+=$_APOLLO_RETURN_MESSAGE
   fi
 
@@ -280,8 +279,7 @@ _apollo_dir_run() {
 
   ## Set separator color
   if [[ -n $APOLLO_DIR_PATH_SEPARATOR_FOREGROUND ]]; then
-    _apollo_translate_color $APOLLO_DIR_PATH_SEPARATOR_FOREGROUND
-    _apollo_foreground $_APOLLO_RETURN_MESSAGE
+    _apollo_set_colors $APOLLO_DIR_PATH_SEPARATOR_FOREGROUND "keep"
     sep="$_APOLLO_RETURN_MESSAGE$sep%f"
   fi
 
