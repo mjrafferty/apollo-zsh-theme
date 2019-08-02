@@ -21,7 +21,7 @@ _apollo_set_module_text() {
   while read -rt dump <&"${_APOLLO_BUFFER_FD}"; do true; done
 
   if (( ${#_APOLLO_RETURN_MESSAGE} == 0 )); then
-    _APOLLO_MODULE_LENGTH[$module]="0"
+    _APOLLO_MODULE_HAS_LENGTH[$module]="0"
     _APOLLO_MODULE_TEXT[$module]=""
     if [[ -n "$cache_key" ]]; then
       _APOLLO_CACHE["${module}-${cache_key}"]="0|${_APOLLO_RETURN_MESSAGE}"
@@ -39,15 +39,12 @@ _apollo_set_module_text() {
   _apollo_set_colors "${(P)${bg_var}}" "keep"
   transition_fg="${_APOLLO_RETURN_MESSAGE}"
 
-  _apollo_add_separator "$side" "$module"
+  _APOLLO_MODULE_TEXT[$module]="${module_colors}${module_text}${transition_fg}"
 
-  _APOLLO_MODULE_TEXT[$module]="${_APOLLO_RETURN_MESSAGE}${module_colors}${module_text}${transition_fg}"
-
-  _apollo_get_display_width ${_APOLLO_MODULE_TEXT[$module]}
-  _APOLLO_MODULE_LENGTH[$module]="$_APOLLO_RETURN_MESSAGE"
+  _APOLLO_MODULE_HAS_LENGTH[$module]="1"
 
   if [[ -n "$cache_key" ]]; then
-    _APOLLO_CACHE["${module}-${cache_key}"]="${_APOLLO_MODULE_LENGTH[$module]}|${_APOLLO_MODULE_TEXT[$module]}"
+    _APOLLO_CACHE["${module}-${cache_key}"]="${_APOLLO_MODULE_HAS_LENGTH[$module]}|${_APOLLO_MODULE_TEXT[$module]}"
   fi
 
 }

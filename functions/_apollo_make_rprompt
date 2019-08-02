@@ -19,7 +19,7 @@ _apollo_make_rprompt(){
         ;;
       *)
         rprompt+="\${(e)_APOLLO_MODULE_TEXT[$current_module]}"
-        _APOLLO_RIGHT_LENGTH[line_index]+=" + \$_APOLLO_MODULE_LENGTH[$current_module]"
+        _APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + \$_APOLLO_MODULE_HAS_LENGTH[$current_module]"
         ;;
     esac
 

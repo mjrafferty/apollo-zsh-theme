@@ -38,21 +38,15 @@ _apollo_run_modules() {
     done
 
     if (( _APOLLO_LINES_META[line] == 0 )); then
-      if (( ( 0 ${(e)_APOLLO_LEFT_LENGTH[line]}) > 0 )); then
+      if (( ( 0 ${(e)_APOLLO_LEFT_HAS_LENGTH[line]}) > 0 )); then
         ((_APOLLO_LINES_META[line]+=1));
       fi
-      if (( ( 0 ${(e)_APOLLO_RIGHT_LENGTH[line]}) > 0 )); then
+      if (( ( 0 ${(e)_APOLLO_RIGHT_HAS_LENGTH[line]}) > 0 )); then
         ((_APOLLO_LINES_META[line]+=2));
       fi
     fi
 
   done
-
-  if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
-    _apollo_add_links "${#_APOLLO_PROMPT_LINES}"
-  fi
-
-  _apollo_update_lengths
 
 }
 

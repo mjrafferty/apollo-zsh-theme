@@ -18,13 +18,15 @@ _apollo_get_module_text() {
   fi
 
   if [[ -n "$cache" ]]; then
-    if [[ "$side" == "left" ]]; then
-      _APOLLO_FIRST_SEPARATOR_ON_LINE="$module"
-    fi
     _APOLLO_MODULE_TEXT[$module]="${cache##*|}"
-    _APOLLO_MODULE_LENGTH[$module]="${cache%%|*}"
+    _APOLLO_MODULE_HAS_LENGTH[$module]="${cache%%|*}"
   else
     _apollo_set_module_text "$module" "$side" "$cache_key"
+  fi
+
+  if (( _APOLLO_MODULE_HAS_LENGTH[$module] > 0 )); then
+    _apollo_add_separator "$side" "$module"
+    _APOLLO_MODULE_TEXT[$module]="${_APOLLO_RETURN_MESSAGE}${_APOLLO_MODULE_TEXT[$module]}"
   fi
 
   if ((APOLLO_PROFILER > 0)); then
