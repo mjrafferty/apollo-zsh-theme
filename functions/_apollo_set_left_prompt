@@ -34,13 +34,13 @@ _apollo_set_left_prompt() {
 
     if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
       if ((line < line_index)); then
-        PROMPT+="\${_APOLLO_LEFT_LINK[$line]}\${(e)_APOLLO_PROMPT_LINES[$line]}\${_APOLLO_RIGHT_LINK[$line]}"
+        _APOLLO_PROMPT_LINES[$line]="\${_APOLLO_LEFT_LINK[$line]}${_APOLLO_PROMPT_LINES[$line]}\${_APOLLO_RIGHT_LINK[$line]}"
       else
-        PROMPT+="\${_APOLLO_LEFT_LINK[$line]}\${(e)_APOLLO_PROMPT_LINES[$line]}"
+        _APOLLO_PROMPT_LINES[$line]="\${_APOLLO_LEFT_LINK[$line]}${_APOLLO_PROMPT_LINES[$line]}"
       fi
-    else
-      PROMPT+="\${(e)_APOLLO_PROMPT_LINES[$line]}"
     fi
+
+    PROMPT+="\${(e)_APOLLO_PROMPT_LINES[$line]}"
 
     if ((line < line_index)); then
       PROMPT+="${_APOLLO_NEWLINE}"

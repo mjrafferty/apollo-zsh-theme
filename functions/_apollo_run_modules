@@ -16,7 +16,6 @@ _apollo_run_modules() {
 
   for ((line=1;line<=lines;line++)); do
 
-    _APOLLO_NEWLINE_SEP_LENGTH[line]="0"
     _APOLLO_FIRST_SEPARATOR_ON_LINE=""
     _APOLLO_LINES_META[line]=0;
 
@@ -52,6 +51,8 @@ _apollo_run_modules() {
   if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
     _apollo_add_links "${#_APOLLO_PROMPT_LINES}"
   fi
+
+  _apollo_update_lengths
 
 }
 

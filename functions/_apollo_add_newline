@@ -12,11 +12,9 @@ _apollo_add_newline() {
 
   ## TODO hardcoded link widths: 5. should be 1 + \$LINK_WIDTH evaluated at prompt draw time
   if [[ "${current_module}" == "newline" ]]; then
-    _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_NEWLINE_SEP_TEXT[$line_index]}\${(el.((\$COLUMNS - 5 \
-      - ( \${_APOLLO_NEWLINE_SEP_LENGTH[$line_index]}${_APOLLO_LEFT_LENGTH[line_index]}${_APOLLO_RIGHT_LENGTH[line_index]}))).. .)}"
+      _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_NEWLINE_SEP_TEXT[$line_index]}\${(el.\${_APOLLO_PROMPT_LINE_LENGTH[$line_index]}.. .)}"
   else
-    _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_NEWLINE_SEP_TEXT[$line_index]}\${(el.((\$COLUMNS - 5 \
-      - ( \${_APOLLO_NEWLINE_SEP_LENGTH[$line_index]}${_APOLLO_LEFT_LENGTH[line_index]}${_APOLLO_RIGHT_LENGTH[line_index]})))..─.)}"
+      _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_NEWLINE_SEP_TEXT[$line_index]}\${(el.\${_APOLLO_PROMPT_LINE_LENGTH[$line_index]}..─.)}"
   fi
 
   _APOLLO_PROMPT_LINES[line_index]+="${faux_rprompt}%f%k"
@@ -24,3 +22,4 @@ _apollo_add_newline() {
 }
 
 _apollo_add_newline "$@"
+

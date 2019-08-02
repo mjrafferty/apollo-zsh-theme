@@ -1,0 +1,21 @@
+# vim:ft=zsh
+
+_apollo_update_lengths () {
+
+  local lines
+
+  lines="${#_APOLLO_PROMPT_LINES[@]}"
+
+  for ((line=1;line<=lines;line++)); do
+
+    _APOLLO_PROMPT_LINE_LENGTH[line]="0"
+    _apollo_get_display_width "${(e)_APOLLO_PROMPT_LINES[line]}"
+
+    ## The 1 here is to avoid line overflow on older zsh versions.
+    ((_APOLLO_PROMPT_LINE_LENGTH[line]= COLUMNS - 1 - _APOLLO_RETURN_MESSAGE));
+
+  done
+
+}
+
+_apollo_update_lengths "$@"

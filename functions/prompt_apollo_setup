@@ -19,8 +19,8 @@ typeset -gi _APOLLO_BUFFER_FD
 typeset -gA _APOLLO_MODULE_TEXT
 typeset -gA _APOLLO_MODULE_LENGTH
 typeset -g  _APOLLO_FIRST_SEPARATOR_ON_LINE
-typeset -ga _APOLLO_NEWLINE_SEP_LENGTH
 typeset -ga _APOLLO_NEWLINE_SEP_TEXT
+typeset -ga _APOLLO_PROMPT_LINE_LENGTH
 typeset -g  _APOLLO_PROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
 typeset -ga _APOLLO_LINES_META
 typeset -ga _APOLLO_LEFT_LENGTH
@@ -49,12 +49,13 @@ prompt_apollo_setup() {
   #fpath+=("${_APOLLO_INSTALL_DIR}/functions")
   fpath+=("${_APOLLO_INSTALL_DIR}/modules")
 
+  # TODO move necessary utilities into functions
   source "${_APOLLO_INSTALL_DIR}/lib/utilities.zsh"
 
   autoload -Uz +X _apollo_add_links _apollo_add_separator _apollo_get_module_text \
     _apollo_precmd _apollo_run_modules _apollo_set_module_text _apollo_add_newline \
     _apollo_cleanup _apollo_make_rprompt _apollo_preexec _apollo_set_left_prompt \
-    _apollo_set_prompts _apollo_set_colors
+    _apollo_set_prompts _apollo_set_colors _apollo_update_lengths
 
   autoload -Uz add-zsh-hook
   add-zsh-hook precmd _apollo_precmd
@@ -71,7 +72,7 @@ prompt_apollo_setup() {
     source "${conf}";
   done
 
-  # Load enabled modules and run setup hooks
+  # Load enabled modules
   for module in "${APOLLO_LEFT_PROMPT_MODULES[@]}" "${APOLLO_RIGHT_PROMPT_MODULES[@]}"; do
 
     if [[ "$module" == "newline" || "$module" == "ruler" ]]; then

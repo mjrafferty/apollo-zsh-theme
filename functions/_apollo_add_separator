@@ -16,7 +16,6 @@ _apollo_add_separator() {
       if [[ -n "${_APOLLO_FIRST_SEPARATOR_ON_LINE}" ]]; then
 
         if [[ "$current_module" == "newline" ]]; then
-          _APOLLO_NEWLINE_SEP_LENGTH[line]="1" # TODO hardcoded separator length
           _APOLLO_NEWLINE_SEP_TEXT[line]="%k${APOLLO_LEFT_SEPARATOR}%f"
         else
           transition_bg_color="%K{${__APOLLO_COLORS[${(P)${bg_var}}]}}"
