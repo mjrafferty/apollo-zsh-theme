@@ -15,12 +15,22 @@ _apollo_set_left_prompt() {
     _APOLLO_LINE_MODULES[line_index]+="${current_module} "
 
     case "${current_module}" in
-      "newline"|"ruler")
-        _apollo_add_newline "${current_module}" "${line_index}"
+      "newline")
+        _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_LEFT_SEPARATORS[$module]}"
+        _apollo_add_newline "newline" "${line_index}"
         ((line_index++));
+        _APOLLO_MODULE_HAS_LENGTH[$current_module]=1;
+        ;;
+      "ruler")
+        _APOLLO_LEFT_HAS_LENGTH[line_index]+=" + 1"
+        _APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + 1"
+        _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_LEFT_SEPARATORS[$module]}"
+        _apollo_add_newline "ruler" "${line_index}"
+        ((line_index++));
+        _APOLLO_MODULE_HAS_LENGTH[$current_module]=1;
         ;;
       *)
-        _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_MODULE_TEXT[$current_module]}"
+        _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_LEFT_SEPARATORS[$module]}\${_APOLLO_MODULE_TEXT[$current_module]}"
         _APOLLO_LEFT_HAS_LENGTH[line_index]+=" + \$_APOLLO_MODULE_HAS_LENGTH[$current_module]"
         ;;
     esac

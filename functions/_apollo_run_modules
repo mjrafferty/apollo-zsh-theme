@@ -2,12 +2,10 @@
 
 _apollo_run_modules() {
 
-  local line module lines
+  local line module
 
   PROMPT="$_APOLLO_PROMPT_COPY"
   RPROMPT="$_APOLLO_RPROMPT_COPY"
-
-  lines="${#_APOLLO_PROMPT_LINES[@]}"
 
   for module in "${APOLLO_RIGHT_PROMPT_MODULES[@]}"; do
     if ((${+functions[_apollo_${module}_run]} > 0)); then
@@ -15,38 +13,10 @@ _apollo_run_modules() {
     fi
   done
 
-  for ((line=1;line<=lines;line++)); do
-
-    _APOLLO_FIRST_SEPARATOR_ON_LINE=""
-    _APOLLO_LINES_META[line]=0;
-
-    line_modules=( ${(s: :)_APOLLO_LINE_MODULES[line]} )
-
-    for module in ${line_modules[@]}; do
-      case "${module}" in
-        "newline"|"ruler")
-
-          _apollo_add_separator "left" "newline" "$line"
-
-          if [[ "$module" == "ruler" ]]; then
-            ((_APOLLO_LINES_META[line]=3));
-          fi
-          ;;
-        *)
-          _apollo_get_module_text "$module" "left"
-          ;;
-      esac
-    done
-
-    if (( _APOLLO_LINES_META[line] == 0 )); then
-      if (( ( 0 ${(e)_APOLLO_LEFT_HAS_LENGTH[line]}) > 0 )); then
-        ((_APOLLO_LINES_META[line]+=1));
-      fi
-      if (( ( 0 ${(e)_APOLLO_RIGHT_HAS_LENGTH[line]}) > 0 )); then
-        ((_APOLLO_LINES_META[line]+=2));
-      fi
+  for module in "${APOLLO_LEFT_PROMPT_MODULES[@]}"; do
+    if ((${+functions[_apollo_${module}_run]} > 0)); then
+      _apollo_get_module_text "$module" "left"
     fi
-
   done
 
 }

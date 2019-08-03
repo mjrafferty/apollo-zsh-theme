@@ -24,11 +24,6 @@ _apollo_get_module_text() {
     _apollo_set_module_text "$module" "$side" "$cache_key"
   fi
 
-  if (( _APOLLO_MODULE_HAS_LENGTH[$module] > 0 )); then
-    _apollo_add_separator "$side" "$module"
-    _APOLLO_MODULE_TEXT[$module]="${_APOLLO_RETURN_MESSAGE}${_APOLLO_MODULE_TEXT[$module]}"
-  fi
-
   if ((APOLLO_PROFILER > 0)); then
     runtime="$((EPOCHREALTIME-start))"
     printf "%25s: %f\n" "$module" "$runtime"

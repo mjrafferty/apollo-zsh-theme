@@ -2,6 +2,8 @@
 
 _apollo_preexec() {
 
+  local module
+
   # Run preexec hooks for modules
   for module in "${APOLLO_LEFT_PROMPT_MODULES[@]}" "${APOLLO_RIGHT_PROMPT_MODULES[@]}"; do
     if ((${+functions[_apollo_${module}_preexec]})); then

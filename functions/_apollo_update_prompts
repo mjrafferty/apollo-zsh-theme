@@ -6,6 +6,8 @@ _apollo_update_prompts() {
     _apollo_add_links "${#_APOLLO_PROMPT_LINES}"
   fi
 
+  _apollo_add_separators
+
   _apollo_update_lengths
 
 }

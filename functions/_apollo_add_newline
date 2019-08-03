@@ -11,9 +11,9 @@ _apollo_add_newline() {
   faux_rprompt="${_APOLLO_RETURN_MESSAGE}"
 
   if [[ "${current_module}" == "newline" ]]; then
-      _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_NEWLINE_SEP_TEXT[$line_index]}\${(el.\${_APOLLO_PROMPT_LINE_LENGTH[$line_index]}.. .)}"
+      _APOLLO_PROMPT_LINES[line_index]+="\${(el.\${_APOLLO_PROMPT_LINE_LENGTH[$line_index]}.. .)}"
   else
-      _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_NEWLINE_SEP_TEXT[$line_index]}\${(el.\${_APOLLO_PROMPT_LINE_LENGTH[$line_index]}..─.)}"
+      _APOLLO_PROMPT_LINES[line_index]+="\${(el.\${_APOLLO_PROMPT_LINE_LENGTH[$line_index]}..─.)}"
   fi
 
   _APOLLO_PROMPT_LINES[line_index]+="${faux_rprompt}%f%k"
