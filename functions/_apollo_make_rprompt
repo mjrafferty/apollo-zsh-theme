@@ -2,11 +2,13 @@
 
 _apollo_make_rprompt(){
 
-  local prompt_length module_text current_module rprompt line_index
+  local prompt_length current_module line_index
 
   line_index="$1"
 
   prompt_length="${#APOLLO_RIGHT_PROMPT_MODULES[@]}"
+
+  _APOLLO_RETURN_MESSAGE=""
 
   while ((_APOLLO_CURRENT_RPROMPT <= prompt_length)); do
 
@@ -18,14 +20,12 @@ _apollo_make_rprompt(){
         break;
         ;;
       *)
-        rprompt+="\${(e)_APOLLO_MODULE_TEXT[$current_module]}"
+        _APOLLO_RETURN_MESSAGE+="\${_APOLLO_MODULE_TEXT[$current_module]}"
         _APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + \$_APOLLO_MODULE_HAS_LENGTH[$current_module]"
         ;;
     esac
 
   done
-
-  _APOLLO_RETURN_MESSAGE="${rprompt}"
 
 }
 

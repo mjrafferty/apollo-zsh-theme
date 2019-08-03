@@ -10,7 +10,6 @@ _apollo_add_newline() {
   _apollo_make_rprompt "$line_index"
   faux_rprompt="${_APOLLO_RETURN_MESSAGE}"
 
-  ## TODO hardcoded link widths: 5. should be 1 + \$LINK_WIDTH evaluated at prompt draw time
   if [[ "${current_module}" == "newline" ]]; then
       _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_NEWLINE_SEP_TEXT[$line_index]}\${(el.\${_APOLLO_PROMPT_LINE_LENGTH[$line_index]}.. .)}"
   else

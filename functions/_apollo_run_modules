@@ -5,6 +5,7 @@ _apollo_run_modules() {
   local line module lines
 
   PROMPT="$_APOLLO_PROMPT_COPY"
+  RPROMPT="$_APOLLO_RPROMPT_COPY"
 
   lines="${#_APOLLO_PROMPT_LINES[@]}"
 

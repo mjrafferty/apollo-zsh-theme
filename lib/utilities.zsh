@@ -110,32 +110,3 @@ _apollo_read_file() {
   [[ -n $_APOLLO_RETURN_MESSAGE ]]
 
 }
-
-_apollo_escape_rcurly() {
-  _APOLLO_RETURN_MESSAGE=${${1//\\/\\\\}//\}/\\\}}
-}
-
-# Returns 1 if the cursor is at the very end of the screen.
-_apollo_left_prompt_end_line() {
-
-  _apollo_get_icon LEFT_SEGMENT_SEPARATOR
-  _apollo_escape_rcurly $_APOLLO_RETURN_MESSAGE
-
-  _APOLLO_PROMPT+="%k%b"
-  _APOLLO_PROMPT+="\${_APOLLO_N::=}"
-  _APOLLO_PROMPT+="\${\${\${_APOLLO_BG:#NONE}:-\${_APOLLO_N:=1}}+}"
-  _APOLLO_PROMPT+="\${\${_APOLLO_N:=2}+}"
-  _APOLLO_PROMPT+="\${\${_APOLLO_T[2]::=%F{\$_APOLLO_BG\}$_APOLLO_RETURN_MESSAGE}+}"
-  _APOLLO_PROMPT+="\${_APOLLO_T[\$_APOLLO_N]}"
-  _APOLLO_PROMPT+="%f$1%f%k%b"
-
-  if (( ! _APOLLO_RPROMPT_DONE )); then
-    _APOLLO_PROMPT+=$_APOLLO_ALIGNED_RPROMPT
-    _APOLLO_RPROMPT_DONE=1
-    return 1
-  fi
-}
-
-_apollo_zle_keymap_select() {
-  zle && zle .reset-prompt && zle -R
-}

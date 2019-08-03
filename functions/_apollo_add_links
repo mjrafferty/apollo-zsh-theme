@@ -35,7 +35,7 @@ _apollo_add_links() {
   mr="${link_color}${APOLLO_MR_LINK}%f"
   sr="${link_color}${APOLLO_SR_LINK}%f"
   br="${link_color}${APOLLO_BR_LINK}%f"
-  nl="${link_color}${APOLLO_NL_LINK}%f"
+  nl="${APOLLO_NL_LINK}"
 
   line_index="$1";
 

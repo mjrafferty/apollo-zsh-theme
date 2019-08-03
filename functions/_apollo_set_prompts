@@ -12,6 +12,10 @@ _apollo_set_prompts(){
     RPROMPT="${_APOLLO_RETURN_MESSAGE}"
   fi
 
+  _APOLLO_RPROMPT_COPY="$RPROMPT"
+
+  unset _APOLLO_CURRENT_RPROMPT;
+
 }
 
 _apollo_set_prompts "$@"

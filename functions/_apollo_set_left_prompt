@@ -2,7 +2,7 @@
 
 _apollo_set_left_prompt() {
 
-  local module prompt_length module_text current_module
+  local module prompt_length current_module
   local -i line_index
 
   line_index=1;
@@ -17,18 +17,15 @@ _apollo_set_left_prompt() {
     case "${current_module}" in
       "newline"|"ruler")
         _apollo_add_newline "${current_module}" "${line_index}"
-        _APOLLO_FIRST_SEPARATOR_ON_LINE=""
         ((line_index++));
         ;;
       *)
-        _APOLLO_PROMPT_LINES[line_index]+="\${(e)_APOLLO_MODULE_TEXT[$current_module]}"
+        _APOLLO_PROMPT_LINES[line_index]+="\${_APOLLO_MODULE_TEXT[$current_module]}"
         _APOLLO_LEFT_HAS_LENGTH[line_index]+=" + \$_APOLLO_MODULE_HAS_LENGTH[$current_module]"
         ;;
     esac
 
   done
-
-  _APOLLO_PROMPT_LINES[line_index]+="${_APOLLO_RETURN_MESSAGE}"
 
   for ((line=1;line<=line_index;line++)); do
 

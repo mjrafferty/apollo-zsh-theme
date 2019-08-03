@@ -279,7 +279,7 @@ _apollo_set_colors() {
       "clear")
         fg="%f"
         ;;
-      ^[a-z]*$)
+      [a-z]*)
         fg="%F{$__APOLLO_COLORS[$1]}"
         ;;
       *)
@@ -296,7 +296,7 @@ _apollo_set_colors() {
       "clear")
         bg="%k"
         ;;
-      ^[a-z]*$)
+      [a-z]*)
         bg="%K{$__APOLLO_COLORS[$2]}"
         ;;
       *)

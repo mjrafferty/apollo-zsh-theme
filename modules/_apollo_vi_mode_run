@@ -8,15 +8,15 @@
 typeset -g APOLLO_VI_MODE_FG="white"
 typeset -g APOLLO_VI_MODE_BG="grey30"
 
+typeset -g _APOLLO_VI_MODE="INSERT"
+
 _apollo_vi_mode_cache_key() {
   _APOLLO_RETURN_MESSAGE="1"
 }
 
 _apollo_vi_mode_run() {
 
-	_APOLLO_VI_MODE="INSERT"
-
-  _APOLLO_RETURN_MESSAGE='${_APOLLO_VI_MODE}'
+  _APOLLO_RETURN_MESSAGE="${_APOLLO_VI_MODE}"
 
 }
 
@@ -46,8 +46,7 @@ zle-keymap-select() {
   esac
 
   if [[ "$_APOLLO_VI_MODE" != "$last_mode" ]]; then
-    _apollo_update_lengths
-    zle && zle reset-prompt
+    _apollo_async_update "vi_mode"
   fi
 
 }
@@ -59,8 +58,7 @@ zle-line-init() {
 	_APOLLO_VI_MODE="INSERT"
 
   if [[ "$_APOLLO_VI_MODE" != "$last_mode" ]]; then
-    _apollo_update_lengths
-    zle && zle reset-prompt
+    _apollo_async_update "vi_mode"
   fi
 }
 
@@ -73,8 +71,7 @@ _apollo_vi_mode_visual_mode() {
   zle && zle visual-mode
 
   if [[ "$_APOLLO_VI_MODE" != "$last_mode" ]]; then
-    _apollo_update_lengths
-    zle && zle reset-prompt
+    _apollo_async_update "vi_mode"
   fi
 
 }
@@ -88,8 +85,7 @@ _apollo_vi_mode_cmd_mode() {
   zle && zle deactivate-region
 
   if [[ "$_APOLLO_VI_MODE" != "$last_mode" ]]; then
-    _apollo_update_lengths
-    zle && zle reset-prompt
+    _apollo_async_update "vi_mode"
   fi
 }
 
