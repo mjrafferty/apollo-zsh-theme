@@ -11,7 +11,7 @@ _apollo_add_newline() {
   faux_rprompt="${_APOLLO_RETURN_MESSAGE}"
 
   if [[ "${current_module}" == "newline" ]]; then
-      _APOLLO_PROMPT_LINES[line_index]+="\${(el.\${_APOLLO_PROMPT_LINE_LENGTH[$line_index]}.. .)}"
+      _APOLLO_PROMPT_LINES[line_index]+="%k\${(el.\${_APOLLO_PROMPT_LINE_LENGTH[$line_index]}.. .)}"
   else
       _apollo_set_colors "$APOLLO_RULER_COLOR" "clear"
       _APOLLO_PROMPT_LINES[line_index]+="${_APOLLO_RETURN_MESSAGE}\${(el.\${_APOLLO_PROMPT_LINE_LENGTH[$line_index]}..─.)}"
