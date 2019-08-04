@@ -4,55 +4,76 @@ _apollo_add_separators() {
 
   local current_module
   local -i first_skipped=0
+  local -i prompt_length module
   local -u bg_var
+  local start
 
-  prompt_length="${#APOLLO_LEFT_PROMPT_MODULES[@]}"
+  if (( APOLLO_PROFILER > 0 )); then
+    start="$EPOCHREALTIME"
+  fi
 
-  for ((module=1; module<=prompt_length;module++)); do
+  if [[ -n "$APOLLO_LEFT_SEPARATOR" ]]; then
 
-    current_module="${APOLLO_LEFT_PROMPT_MODULES[module]}"
+    prompt_length="${#APOLLO_LEFT_PROMPT_MODULES[@]}"
 
-    if (( _APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
+    for ((module=1; module<=prompt_length;module++)); do
 
-      if ((first_skipped > 0)); then
+      current_module="${APOLLO_LEFT_PROMPT_MODULES[module]}"
 
-        if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
-          first_skipped=0
-          _apollo_set_colors "keep" "clear"
+      if (( _APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
+
+        if ((first_skipped > 0)); then
+
+          if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
+            first_skipped=0
+            _apollo_set_colors "keep" "clear"
+          else
+            bg_var="APOLLO_${current_module}_BG"
+            _apollo_set_colors "keep" "${(P)${bg_var}}"
+          fi
+
+          _APOLLO_LEFT_SEPARATORS[module]="${_APOLLO_RETURN_MESSAGE}${APOLLO_LEFT_SEPARATOR}"
+
         else
-          bg_var="APOLLO_${current_module}_BG"
-          _apollo_set_colors "keep" "${(P)${bg_var}}"
+          _APOLLO_LEFT_SEPARATORS[module]=""
+          if [[ "$current_module" != "newline" && "$current_module" != "ruler" ]]; then
+            first_skipped=1
+          fi
         fi
 
-        _APOLLO_LEFT_SEPARATORS[module]="${_APOLLO_RETURN_MESSAGE}${APOLLO_LEFT_SEPARATOR}"
-
-      else
-        if [[ "$current_module" != "newline" && "$current_module" != "ruler" ]]; then
-          first_skipped=1
-        fi
       fi
 
-    fi
+    done
 
-  done
+  fi
 
-  prompt_length="${#APOLLO_RIGHT_PROMPT_MODULES[@]}"
+  if [[ -n "$APOLLO_RIGHT_SEPARATOR" ]]; then
 
-  for ((module=1; module<=prompt_length;module++)); do
+    prompt_length="${#APOLLO_RIGHT_PROMPT_MODULES[@]}"
 
-    current_module="${APOLLO_RIGHT_PROMPT_MODULES[module]}"
+    for ((module=1; module<=prompt_length;module++)); do
 
-    if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
-      continue;
-    fi
+      current_module="${APOLLO_RIGHT_PROMPT_MODULES[module]}"
 
-    if (( _APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
-      bg_var="APOLLO_${current_module}_BG"
-      _apollo_set_colors "${(P)${bg_var}}" "keep"
-      _APOLLO_RIGHT_SEPARATORS[module]="${_APOLLO_RETURN_MESSAGE}${APOLLO_RIGHT_SEPARATOR}"
-    fi
+      if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
+        continue;
+      fi
 
-  done
+      if (( _APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
+        bg_var="APOLLO_${current_module}_BG"
+        _apollo_set_colors "${(P)${bg_var}}" "keep"
+        _APOLLO_RIGHT_SEPARATORS[module]="${_APOLLO_RETURN_MESSAGE}${APOLLO_RIGHT_SEPARATOR}"
+      else
+        _APOLLO_RIGHT_SEPARATORS[module]=""
+      fi
+
+    done
+
+  fi
+
+  if (( APOLLO_PROFILER > 0 )); then
+    printf "%25s: %f\n" "separators" "$((EPOCHREALTIME-start))"
+  fi
 
 }
 

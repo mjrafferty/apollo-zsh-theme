@@ -8,8 +8,11 @@ typeset -g  APOLLO_LEFT_SEPARATOR=""
 typeset -g  APOLLO_RIGHT_SEPARATOR=""
 typeset -g  APOLLO_PROMPT_END="> "
 typeset -g  APOLLO_LINE_LINKS="true"
+typeset -g  APOLLO_RULER_COLOR="white"
+typeset -g  APOLLO_MODULE_SURROUND_LEFT=" "
+typeset -g  APOLLO_MODULE_SURROUND_RIGHT=" "
 
-APOLLO_LEFT_PROMPT_MODULES=(newline public_ip virtualenv newline root_indicator context dir vi_mode ruler )
+APOLLO_LEFT_PROMPT_MODULES=(virtualenv newline public_ip newline root_indicator context dir vi_mode ruler )
 APOLLO_RIGHT_PROMPT_MODULES=(command_execution_time background_jobs game newline status php_version)
 
 ## Necessary global variables

@@ -31,7 +31,7 @@ _apollo_set_module_text() {
 
   ## TODO padding
   ## TODO icons?
-  module_text=" ${_APOLLO_RETURN_MESSAGE} "
+  module_text="${APOLLO_MODULE_SURROUND_LEFT}${_APOLLO_RETURN_MESSAGE}${APOLLO_MODULE_SURROUND_RIGHT}"
 
   _apollo_set_colors "${(P)${fg_var}}" "${(P)${bg_var}}"
   module_colors="${_APOLLO_RETURN_MESSAGE}"

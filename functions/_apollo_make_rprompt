@@ -13,15 +13,16 @@ _apollo_make_rprompt(){
   while ((_APOLLO_CURRENT_RPROMPT <= prompt_length)); do
 
     current_module="${APOLLO_RIGHT_PROMPT_MODULES[_APOLLO_CURRENT_RPROMPT]}"
-    ((_APOLLO_CURRENT_RPROMPT++));
 
     case "${current_module}" in
       "newline")
+        ((_APOLLO_CURRENT_RPROMPT++));
         break;
         ;;
       *)
         _APOLLO_RETURN_MESSAGE+="\${_APOLLO_RIGHT_SEPARATORS[$_APOLLO_CURRENT_RPROMPT]}\${_APOLLO_MODULE_TEXT[$current_module]}"
         _APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + \$_APOLLO_MODULE_HAS_LENGTH[$current_module]"
+        ((_APOLLO_CURRENT_RPROMPT++));
         ;;
     esac
 

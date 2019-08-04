@@ -19,12 +19,15 @@ _apollo_precmd() {
 
   _apollo_run_modules
 
+  if ((APOLLO_PROFILER > 0)); then
+    printf "%25s: %f\n" "modules_total" "$_APOLLO_PROFILER_TOTAL"
+    ((_APOLLO_PROFILER_TOTAL=0));
+  fi
+
   _apollo_update_prompts
 
   if ((APOLLO_PROFILER > 0)); then
-    printf "%25s: %f\n" "modules_total" "$_APOLLO_PROFILER_TOTAL"
     printf "%25s: %f\n" "total" "$((EPOCHREALTIME-start))"
-    ((_APOLLO_PROFILER_TOTAL=0));
   fi
 
 }
