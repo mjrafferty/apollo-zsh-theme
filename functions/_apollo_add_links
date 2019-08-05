@@ -112,34 +112,34 @@ _apollo_add_links() {
             case "$below" in
               3)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
+                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${mr}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
+                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${tr}"; lines_meta[line]=3;;
+                  0) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
                 esac
                 ;;
               2)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
+                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${mr}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
+                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${tr}"; lines_meta[line]=3;;
+                  0) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
                 esac
                 ;;
               1)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
+                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${br}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
+                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${nl}"; lines_meta[line]=1;;
+                  0) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${nl}"; lines_meta[line]=0;;
                 esac
                 ;;
               0)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
+                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${br}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
+                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${nl}"; lines_meta[line]=1;;
+                  0) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${nl}"; lines_meta[line]=0;;
                 esac
                 ;;
             esac
@@ -148,32 +148,32 @@ _apollo_add_links() {
             case "$below" in
               3)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
+                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${sr}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${sr}"; lines_meta[line]=3;;
+                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}"; lines_meta[line]=3;;
+                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}"; lines_meta[line]=3;;
                 esac
                 ;;
               2)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
+                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${sr}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${sr}"; lines_meta[line]=3;;
+                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}"; lines_meta[line]=3;;
+                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}"; lines_meta[line]=3;;
                 esac
                 ;;
               1)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
+                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}"; lines_meta[line]=3;;
                   1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
                   0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
                 esac
                 ;;
               0)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
+                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}"; lines_meta[line]=3;;
                   1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
                   0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
                 esac
@@ -184,34 +184,34 @@ _apollo_add_links() {
             case "$below" in
               3)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
+                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${sr}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${sr}"; lines_meta[line]=3;;
+                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${tr}"; lines_meta[line]=3;;
+                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}"; lines_meta[line]=3;;
                 esac
                 ;;
               2)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
+                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${mr}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}"; lines_meta[line]=3;;
+                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${tr}"; lines_meta[line]=3;;
+                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}"; lines_meta[line]=3;;
                 esac
                 ;;
               1)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
+                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${br}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}"; lines_meta[line]=3;;
+                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${nl}"; lines_meta[line]=3;;
+                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}"; lines_meta[line]=1;;
                 esac
                 ;;
               0)
                 case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
+                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${br}"; lines_meta[line]=3;;
+                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}"; lines_meta[line]=3;;
+                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${nl}"; lines_meta[line]=1;;
+                  0) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
                 esac
                 ;;
             esac
@@ -233,147 +233,35 @@ _apollo_add_links() {
       *)
         case "${lines_meta[line]}" in
           3)
-            case "$below" in
-              3)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                esac
-                ;;
-              2)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                esac
-                ;;
-              1)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                esac
-                ;;
-              0)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                esac
-                ;;
+            case "$above" in
+              3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
+              2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
+              1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
+              0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
             esac
             ;;
           2)
-            case "$below" in
-              3)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                esac
-                ;;
-              2)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                esac
-                ;;
-              1)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                esac
-                ;;
-              0)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                esac
-                ;;
+            case "$above" in
+              3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${mr}"; lines_meta[line]=3;;
+              2) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
+              1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${tr}"; lines_meta[line]=3;;
+              0) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
             esac
             ;;
           1)
-            case "$below" in
-              3)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                esac
-                ;;
-              2)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                esac
-                ;;
-              1)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                esac
-                ;;
-              0)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                esac
-                ;;
+            case "$above" in
+              3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${sr}"; lines_meta[line]=3;;
+              2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${sr}"; lines_meta[line]=3;;
+              1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
+              0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
             esac
             ;;
           0)
-            case "$below" in
-              3)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                esac
-                ;;
-              2)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${mr}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${tr}";;
-                esac
-                ;;
-              1)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                esac
-                ;;
-              0)
-                case "$above" in
-                  3) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  2) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${br}";;
-                  1) _APOLLO_LEFT_LINK[line]="${ml}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                  0) _APOLLO_LEFT_LINK[line]="${tl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
-                esac
-                ;;
+            case "$above" in
+              3) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${sr}"; lines_meta[line]=3;;
+              2) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${sr}"; lines_meta[line]=2;;
+              1) _APOLLO_LEFT_LINK[line]="${sl}"; _APOLLO_RIGHT_LINK[line]="${nl}"; lines_meta[line]=1;;
+              0) _APOLLO_LEFT_LINK[line]="${nl}"; _APOLLO_RIGHT_LINK[line]="${nl}";;
             esac
             ;;
         esac
