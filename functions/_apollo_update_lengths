@@ -3,6 +3,11 @@
 _apollo_update_lengths () {
 
   local lines
+  local start
+
+  if ((APOLLO_PROFILER > 0)); then
+    start="$EPOCHREALTIME"
+  fi
 
   lines="${#_APOLLO_PROMPT_LINES[@]}"
 
@@ -15,6 +20,10 @@ _apollo_update_lengths () {
     ((_APOLLO_PROMPT_LINE_LENGTH[line]= COLUMNS - 1 - _APOLLO_RETURN_MESSAGE));
 
   done
+
+  if ((APOLLO_PROFILER > 0)); then
+    printf "%25s: %f\n" "update length" "$((EPOCHREALTIME - start))"
+  fi
 
 }
 

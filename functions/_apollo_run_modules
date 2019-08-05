@@ -3,6 +3,11 @@
 _apollo_run_modules() {
 
   local line module
+  local start
+
+  if ((APOLLO_PROFILER > 0)); then
+    start=${EPOCHREALTIME}
+  fi
 
   PROMPT="$_APOLLO_PROMPT_COPY"
   RPROMPT="$_APOLLO_RPROMPT_COPY"
@@ -18,6 +23,10 @@ _apollo_run_modules() {
       _apollo_get_module_text "$module" "left"
     fi
   done
+
+  if ((APOLLO_PROFILER > 0)); then
+    printf "%25s: %f\n" "modules_total" "$((EPOCHREALTIME - start))"
+  fi
 
 }
 

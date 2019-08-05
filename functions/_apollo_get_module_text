@@ -2,7 +2,7 @@
 
 _apollo_get_module_text() {
 
-  local module side start cache_key cache runtime
+  local module side start cache_key cache
 
   module="$1"
   side="$2"
@@ -25,9 +25,7 @@ _apollo_get_module_text() {
   fi
 
   if ((APOLLO_PROFILER > 0)); then
-    runtime="$((EPOCHREALTIME-start))"
-    printf "%25s: %f\n" "$module" "$runtime"
-    ((_APOLLO_PROFILER_TOTAL+=runtime))
+    printf "%25s: %f\n" "$module" "$((EPOCHREALTIME - start))"
   fi
 
 }
