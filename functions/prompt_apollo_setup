@@ -16,6 +16,7 @@ APOLLO_LEFT_PROMPT_MODULES=(virtualenv newline public_ip newline root_indicator 
 APOLLO_RIGHT_PROMPT_MODULES=(command_execution_time background_jobs game newline status php_version)
 
 ## Necessary global variables
+typeset -gA _APOLLO_CONFIG
 typeset -gA _APOLLO_CACHE
 typeset -g 	_APOLLO_BUFFER_NAME
 typeset -gi _APOLLO_BUFFER_FD
@@ -40,6 +41,12 @@ typeset -g  _APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to
 
 typeset -g  _APOLLO_NEWLINE='
 '
+
+_apollo_set_config () {
+
+  local context key value
+
+}
 
 prompt_apollo_setup() {
 
