@@ -13,11 +13,11 @@ __apollo_update_lengths () {
 
   for ((line=1;line<=lines;line++)); do
 
-    __APOLLO_PROMPT_LINE_LENGTH[line]="0"
+    __APOLLO_PROMPT_LINE_LENGTH[line]="$COLUMNS"
     __apollo_get_display_width "${(e)__APOLLO_PROMPT_LINES[line]}"
 
     ## The 1 here is to avoid line overflow on older zsh versions.
-    ((__APOLLO_PROMPT_LINE_LENGTH[line]= COLUMNS - 1 - __APOLLO_RETURN_MESSAGE));
+    ((__APOLLO_PROMPT_LINE_LENGTH[line]=__APOLLO_RETURN_MESSAGE + 1));
 
   done
 
