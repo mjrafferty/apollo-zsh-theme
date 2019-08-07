@@ -1,19 +1,12 @@
 # vim:ft=zsh
 
 ## Configurables
-typeset -ga APOLLO_LEFT_PROMPT_MODULES
-typeset -ga APOLLO_RIGHT_PROMPT_MODULES
 typeset -gi APOLLO_PROFILER=0
 typeset -g  APOLLO_LEFT_SEPARATOR=""
 typeset -g  APOLLO_RIGHT_SEPARATOR=""
 typeset -g  APOLLO_PROMPT_END="> "
 typeset -g  APOLLO_LINE_LINKS="true"
 typeset -g  APOLLO_RULER_COLOR="white"
-typeset -g  APOLLO_MODULE_SURROUND_LEFT=" "
-typeset -g  APOLLO_MODULE_SURROUND_RIGHT=" "
-
-APOLLO_LEFT_PROMPT_MODULES=(virtualenv newline public_ip newline root_indicator context dir vi_mode ruler )
-APOLLO_RIGHT_PROMPT_MODULES=(command_execution_time background_jobs game newline status php_version)
 
 ## Necessary global variables
 typeset -gA _APOLLO_CONFIG
@@ -51,10 +44,19 @@ _apollo_set_config () {
 prompt_apollo_setup() {
 
   local module
+  local -a left_modules right_modules
 
   setopt prompt_bang prompt_cr prompt_sp prompt_percent prompt_subst
 
   zmodload zsh/datetime
+
+  # Load config files
+  for conf in "${_APOLLO_INSTALL_DIR}/conf/"*.conf; do
+    source "${conf}";
+  done
+
+  zstyle -a 'apollo:core:modules:left' modules left_modules
+  zstyle -a 'apollo:core:modules:right' modules right_modules
 
   # TODO check fpath and update if necessary
   #fpath+=("${_APOLLO_INSTALL_DIR}/functions")
@@ -79,13 +81,8 @@ prompt_apollo_setup() {
   mkfifo "${_APOLLO_BUFFER_NAME}"
   exec {_APOLLO_BUFFER_FD}<> "${_APOLLO_BUFFER_NAME}"
 
-  # Load config files
-  for conf in "${_APOLLO_INSTALL_DIR}/conf/"*.conf; do
-    source "${conf}";
-  done
-
   # Load enabled modules
-  for module in "${APOLLO_LEFT_PROMPT_MODULES[@]}" "${APOLLO_RIGHT_PROMPT_MODULES[@]}"; do
+  for module in "${left_modules[@]}" "${right_modules[@]}"; do
 
     if [[ "$module" == "newline" || "$module" == "ruler" ]]; then
       continue;

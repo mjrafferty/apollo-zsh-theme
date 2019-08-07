@@ -2,12 +2,15 @@
 
 _apollo_set_module_text() {
 
-  local module module_text modules_colors transition_fg cache_key side
+  local module module_text modules_colors transition_fg cache_key side left_surround right_surround
   local -u fg_var bg_var
 
   module="$1"
   side="$2"
   cache_key="$3"
+
+  zstyle -s 'apollo:core:modules:left' surround left_surround
+  zstyle -s 'apollo:core:modules:right' surround right_surround
 
   fg_var="APOLLO_${module}_FG"
   bg_var="APOLLO_${module}_BG"
@@ -31,7 +34,7 @@ _apollo_set_module_text() {
 
   ## TODO padding
   ## TODO icons?
-  module_text="${APOLLO_MODULE_SURROUND_LEFT}${_APOLLO_RETURN_MESSAGE}${APOLLO_MODULE_SURROUND_RIGHT}"
+  module_text="${left_surround}${_APOLLO_RETURN_MESSAGE}${right_surround}"
 
   _apollo_set_colors "${(P)${fg_var}}" "${(P)${bg_var}}"
   module_colors="${_APOLLO_RETURN_MESSAGE}"

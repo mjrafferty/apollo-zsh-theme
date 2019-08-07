@@ -7,6 +7,10 @@ _apollo_add_separators() {
   local -i prompt_length module
   local -u bg_var
   local start
+  local -a left_modules right_modules
+
+  zstyle -a 'apollo:core:modules:left' modules left_modules
+  zstyle -a 'apollo:core:modules:right' modules right_modules
 
   if (( APOLLO_PROFILER > 0 )); then
     start="$EPOCHREALTIME"
@@ -14,11 +18,11 @@ _apollo_add_separators() {
 
   if [[ -n "$APOLLO_LEFT_SEPARATOR" ]]; then
 
-    prompt_length="${#APOLLO_LEFT_PROMPT_MODULES[@]}"
+    prompt_length="${#left_modules[@]}"
 
     for ((module=1; module<=prompt_length;module++)); do
 
-      current_module="${APOLLO_LEFT_PROMPT_MODULES[module]}"
+      current_module="${left_modules[module]}"
 
       if (( _APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
 
@@ -49,11 +53,11 @@ _apollo_add_separators() {
 
   if [[ -n "$APOLLO_RIGHT_SEPARATOR" ]]; then
 
-    prompt_length="${#APOLLO_RIGHT_PROMPT_MODULES[@]}"
+    prompt_length="${#right_modules[@]}"
 
     for ((module=1; module<=prompt_length;module++)); do
 
-      current_module="${APOLLO_RIGHT_PROMPT_MODULES[module]}"
+      current_module="${right_modules[module]}"
 
       if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
         continue;

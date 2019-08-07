@@ -3,16 +3,20 @@
 _apollo_make_rprompt(){
 
   local prompt_length current_module line_index
+  local -a left_modules right_modules
+
+  zstyle -a 'apollo:core:modules:left' modules left_modules
+  zstyle -a 'apollo:core:modules:right' modules right_modules
 
   line_index="$1"
 
-  prompt_length="${#APOLLO_RIGHT_PROMPT_MODULES[@]}"
+  prompt_length="${#right_modules[@]}"
 
   _APOLLO_RETURN_MESSAGE=""
 
   while ((_APOLLO_CURRENT_RPROMPT <= prompt_length)); do
 
-    current_module="${APOLLO_RIGHT_PROMPT_MODULES[_APOLLO_CURRENT_RPROMPT]}"
+    current_module="${right_modules[_APOLLO_CURRENT_RPROMPT]}"
 
     case "${current_module}" in
       "newline")

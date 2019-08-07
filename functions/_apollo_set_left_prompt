@@ -4,13 +4,17 @@ _apollo_set_left_prompt() {
 
   local module prompt_length current_module
   local -i line_index
+  local -a left_modules right_modules
+
+  zstyle -a 'apollo:core:modules:left' modules left_modules
+  zstyle -a 'apollo:core:modules:right' modules right_modules
 
   line_index=1;
-  prompt_length="${#APOLLO_LEFT_PROMPT_MODULES[@]}"
+  prompt_length="${#left_modules[@]}"
 
   for ((module=1; module<=prompt_length;module++)); do
 
-    current_module="${APOLLO_LEFT_PROMPT_MODULES[module]}"
+    current_module="${left_modules[module]}"
 
     _APOLLO_LINE_MODULES[line_index]+="${current_module} "
 
