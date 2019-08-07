@@ -51,7 +51,7 @@ prompt_apollo_setup() {
 
   # TODO check fpath and update if necessary
   #fpath+=("${__APOLLO_INSTALL_DIR}/functions")
-  fpath+=("${__APOLLO_INSTALL_DIR}/modules.zwc")
+  fpath+=("${__APOLLO_INSTALL_DIR}/modules")
 
   # TODO move necessary utilities into functions
   source "${__APOLLO_INSTALL_DIR}/lib/utilities.zsh"
