@@ -7,7 +7,7 @@ __apollo_get_module_text() {
   module="$1"
   side="$2"
 
-  if ((APOLLO_PROFILER > 0)); then
+  if zstyle -m 'apollo:core:profiler' enabled true; then
     start=${EPOCHREALTIME}
   fi
 
@@ -24,7 +24,7 @@ __apollo_get_module_text() {
     __apollo_set_module_text "$module" "$side" "$cache_key"
   fi
 
-  if ((APOLLO_PROFILER > 0)); then
+  if zstyle -m 'apollo:core:profiler' enabled true; then
     printf "%25s: %f\n" "$module" "$((EPOCHREALTIME - start))"
   fi
 

@@ -54,7 +54,7 @@ __apollo_set_left_prompt() {
     PROMPT+="\${(e)__APOLLO_PROMPT_LINES[$line]}"
 
     if ((line < line_index)); then
-      PROMPT+="${__APOLLO_NEWLINE}"
+      PROMPT+=$'\n'
     fi
 
   done

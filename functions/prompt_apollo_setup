@@ -1,21 +1,16 @@
 # vim:ft=zsh
 
 ## Configurables
-typeset -gi APOLLO_PROFILER=0
-typeset -g  APOLLO_LEFT_SEPARATOR=""
-typeset -g  APOLLO_RIGHT_SEPARATOR=""
 typeset -g  APOLLO_PROMPT_END="> "
 typeset -g  APOLLO_LINE_LINKS="true"
 typeset -g  APOLLO_RULER_COLOR="white"
 
 ## Necessary global variables
-typeset -gA __APOLLO_CONFIG
 typeset -gA __APOLLO_CACHE
 typeset -g 	__APOLLO_BUFFER_NAME
 typeset -gi __APOLLO_BUFFER_FD
 typeset -gA __APOLLO_MODULE_TEXT
 typeset -gA __APOLLO_MODULE_HAS_LENGTH
-typeset -ga __APOLLO_NEWLINE_SEP_TEXT
 typeset -ga __APOLLO_PROMPT_LINE_LENGTH
 typeset -g  __APOLLO_PROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
 typeset -g  __APOLLO_RPROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
@@ -27,13 +22,9 @@ typeset -ga __APOLLO_LINE_MODULES
 typeset -ga __APOLLO_PROMPT_LINES
 typeset -gi __APOLLO_BREAK_CACHE_COUNTER
 typeset -gi __APOLLO_CURRENT_RPROMPT=1
-typeset -g  __APOLLO_PROFILER_TOTAL=0
 typeset -gi __APOLLO_EXIT_CODE
 typeset -g  __APOLLO_PIPE_EXIT_CODES
 typeset -g  __APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
-
-typeset -g  __APOLLO_NEWLINE='
-'
 
 __apollo_set_config () {
 

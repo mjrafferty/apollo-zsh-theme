@@ -22,7 +22,7 @@ __apollo_add_links() {
   local tl ml sl bl tr mr sr br nl
   local -a lines_meta
 
-  if (( APOLLO_PROFILER > 0 )); then
+  if zstyle -m 'apollo:core:profiler' enabled true; then
     start="$EPOCHREALTIME"
   fi
 
@@ -270,7 +270,7 @@ __apollo_add_links() {
 
   done
 
-  if (( APOLLO_PROFILER > 0 )); then
+  if zstyle -m 'apollo:core:profiler' enabled true; then
     printf "%25s: %f\n" "line links" "$((EPOCHREALTIME-start))"
   fi
 

@@ -2,21 +2,22 @@
 
 __apollo_add_separators() {
 
-  local current_module
+  local start current_module left_sep right_sep
   local -i first_skipped=0
   local -i prompt_length module
   local -u bg_var
-  local start
   local -a left_modules right_modules
 
   zstyle -a 'apollo:core:modules:left' modules left_modules
   zstyle -a 'apollo:core:modules:right' modules right_modules
 
-  if (( APOLLO_PROFILER > 0 )); then
+  if zstyle -m 'apollo:core:profiler' enabled true; then
     start="$EPOCHREALTIME"
   fi
 
-  if [[ -n "$APOLLO_LEFT_SEPARATOR" ]]; then
+  if ! zstyle -T 'apollo:core:modules:left' separator; then
+
+    zstyle -s 'apollo:core:modules:left' separator left_sep
 
     prompt_length="${#left_modules[@]}"
 
@@ -36,7 +37,7 @@ __apollo_add_separators() {
             __apollo_set_colors "keep" "${(P)${bg_var}}"
           fi
 
-          __APOLLO_LEFT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}${APOLLO_LEFT_SEPARATOR}"
+          __APOLLO_LEFT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}${left_sep}"
 
         else
           __APOLLO_LEFT_SEPARATORS[module]=""
@@ -51,7 +52,9 @@ __apollo_add_separators() {
 
   fi
 
-  if [[ -n "$APOLLO_RIGHT_SEPARATOR" ]]; then
+  if ! zstyle -T 'apollo:core:modules:right' separator; then
+
+    zstyle -s 'apollo:core:modules:right' separator right_sep
 
     prompt_length="${#right_modules[@]}"
 
@@ -66,7 +69,7 @@ __apollo_add_separators() {
       if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
         bg_var="APOLLO_${current_module}_BG"
         __apollo_set_colors "${(P)${bg_var}}" "keep"
-        __APOLLO_RIGHT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}${APOLLO_RIGHT_SEPARATOR}"
+        __APOLLO_RIGHT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}${right_sep}"
       else
         __APOLLO_RIGHT_SEPARATORS[module]=""
       fi
@@ -75,7 +78,7 @@ __apollo_add_separators() {
 
   fi
 
-  if (( APOLLO_PROFILER > 0 )); then
+  if zstyle -m 'apollo:core:profiler' enabled true; then
     printf "%25s: %f\n" "separators" "$((EPOCHREALTIME-start))"
   fi
 

@@ -9,7 +9,7 @@ __apollo_run_modules() {
   zstyle -a 'apollo:core:modules:left' modules left_modules
   zstyle -a 'apollo:core:modules:right' modules right_modules
 
-  if ((APOLLO_PROFILER > 0)); then
+  if zstyle -m 'apollo:core:profiler' enabled true; then
     start=${EPOCHREALTIME}
   fi
 
@@ -28,7 +28,7 @@ __apollo_run_modules() {
     fi
   done
 
-  if ((APOLLO_PROFILER > 0)); then
+  if zstyle -m 'apollo:core:profiler' enabled true; then
     printf "%25s: %f\n" "modules_total" "$((EPOCHREALTIME - start))"
   fi
 
