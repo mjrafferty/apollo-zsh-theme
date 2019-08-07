@@ -10,16 +10,16 @@ typeset -g APOLLO_USER_BG
 APOLLO_USER_FG="white"
 APOLLO_USER_BG="green"
 
-_apollo_user_run() {
+__apollo_user_run() {
 
   local user
   user="$USER"
 
   if [[ $APOLLO_ALWAYS_SHOW_USER != true && $user == $DEFAULT_USER ]]; then
-    _APOLLO_RETURN_MESSAGE="";
+    __APOLLO_RETURN_MESSAGE="";
     return;
   fi
 
-  _APOLLO_RETURN_MESSAGE="$USER";
+  __APOLLO_RETURN_MESSAGE="$USER";
 
 }

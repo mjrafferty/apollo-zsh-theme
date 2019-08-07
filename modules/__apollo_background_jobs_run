@@ -8,7 +8,7 @@ typeset -g APOLLO_BACKGROUND_JOBS_BG="cyan"
 typeset -g APOLLO_BACKGROUND_JOBS_VERBOSE="true"
 typeset -g APOLLO_BACKGROUND_JOBS_VERBOSE_ALWAYS="true"
 
-_apollo_background_jobs_run() {
+__apollo_background_jobs_run() {
 
   local msg
 
@@ -20,8 +20,8 @@ _apollo_background_jobs_run() {
     fi
   fi
 
-  _APOLLO_RETURN_MESSAGE="${(e)msg}"
+  __APOLLO_RETURN_MESSAGE="${(e)msg}"
 
 }
 
-_apollo_background_jobs_run "$@"
+__apollo_background_jobs_run "$@"

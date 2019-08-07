@@ -1,0 +1,13 @@
+# vim:ft=zsh
+
+__apollo_async_update() {
+
+  __apollo_set_module_text "$1"
+
+  __apollo_update_prompts
+
+  zle && zle .reset-prompt
+
+}
+
+__apollo_async_update "$@"

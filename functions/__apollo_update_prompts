@@ -1,0 +1,15 @@
+# vim:ft=zsh
+
+__apollo_update_prompts() {
+
+  if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
+    __apollo_add_links "${#__APOLLO_PROMPT_LINES}"
+  fi
+
+  __apollo_add_separators
+
+  __apollo_update_lengths
+
+}
+
+__apollo_update_prompts "$@"

@@ -7,16 +7,16 @@
 typeset -g APOLLO_VIRTUALENV_FG="white"
 typeset -g APOLLO_VIRTUALENV_BG="blue"
 
-_apollo_virtualenv_cache_key() {
-  _APOLLO_RETURN_MESSAGE="$VIRTUAL_ENV"
+__apollo_virtualenv_cache_key() {
+  __APOLLO_RETURN_MESSAGE="$VIRTUAL_ENV"
 }
 
-_apollo_virtualenv_run() {
+__apollo_virtualenv_run() {
 
   if [[ -n "$VIRTUAL_ENV" ]]; then
-    _APOLLO_RETURN_MESSAGE="${${VIRTUAL_ENV:t}//\%/%%}"
+    __APOLLO_RETURN_MESSAGE="${${VIRTUAL_ENV:t}//\%/%%}"
   fi
 
 }
 
-_apollo_virtualenv_run "$@"
+__apollo_virtualenv_run "$@"

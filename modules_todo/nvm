@@ -1,7 +1,7 @@
 # vim:ft=zsh
 # Almost the same as `nvm_version default` but faster. The differences shouldn't affect
 # the observable behavior of Powerlevel10k.
-_apollo_nvm_ls_default() {
+__apollo_nvm_ls_default() {
   local v=default
   local -a seen
   seen=($v)
@@ -17,7 +17,7 @@ _apollo_nvm_ls_default() {
       return 1
     ;;
     system|v)
-      _APOLLO_RETVAL=system
+      __APOLLO_RETVAL=system
       return
     ;;
     iojs-[0-9]*)
@@ -30,10 +30,10 @@ _apollo_nvm_ls_default() {
 
   if [[ $v == v*.*.* ]]; then
     if [[ -x $NVM_DIR/versions/node/$v/bin/node || -x $NVM_DIR/$v/bin/node ]]; then
-      _APOLLO_RETVAL=$v
+      __APOLLO_RETVAL=$v
       return
     elif [[ -x $NVM_DIR/versions/io.js/$v/bin/node ]]; then
-      _APOLLO_RETVAL=iojs-$v
+      __APOLLO_RETVAL=iojs-$v
       return
     else
       return 1
@@ -73,27 +73,27 @@ _apollo_nvm_ls_default() {
     v=${(j::)${(@l:6::0:)match}}
     [[ $v > $max ]] || continue
     max=$v
-    _APOLLO_RETVAL=${path:t}
-    [[ ${path:h:t} != io.js ]] || _APOLLO_RETVAL=iojs-$_APOLLO_RETVAL
+    __APOLLO_RETVAL=${path:t}
+    [[ ${path:h:t} != io.js ]] || __APOLLO_RETVAL=iojs-$__APOLLO_RETVAL
   done
 
   [[ -n $max ]]
 }
 
 # The same as `nvm_version current` but faster.
-_apollo_nvm_ls_current() {
+__apollo_nvm_ls_current() {
   local node_path=${commands[node]:A}
   [[ -n $node_path ]] || return
 
   local nvm_dir=${NVM_DIR:A}
   if [[ -n $nvm_dir && $node_path == $nvm_dir/versions/io.js/* ]]; then
-    _apollo_cached_cmd_stdout iojs --version || return
-    _APOLLO_RETVAL=iojs-v${_APOLLO_RETVAL#v}
+    __apollo_cached_cmd_stdout iojs --version || return
+    __APOLLO_RETVAL=iojs-v${__APOLLO_RETVAL#v}
   elif [[ -n $nvm_dir && $node_path == $nvm_dir/* ]]; then
-    _apollo_cached_cmd_stdout node --version || return
-    _APOLLO_RETVAL=v${_APOLLO_RETVAL#v}
+    __apollo_cached_cmd_stdout node --version || return
+    __APOLLO_RETVAL=v${__APOLLO_RETVAL#v}
   else
-    _APOLLO_RETVAL=system
+    __APOLLO_RETVAL=system
   fi
 }
 
@@ -101,8 +101,8 @@ _apollo_nvm_ls_current() {
 # Segment to display Node version from NVM
 # Only prints the module if different than the default value
 prompt_nvm() {
-  [[ -n $NVM_DIR ]] && _apollo_nvm_ls_current || return
-  local current=$_APOLLO_RETVAL
-  ! _apollo_nvm_ls_default || [[ $_APOLLO_RETVAL != $current ]] || return
+  [[ -n $NVM_DIR ]] && __apollo_nvm_ls_current || return
+  local current=$__APOLLO_RETVAL
+  ! __apollo_nvm_ls_default || [[ $__APOLLO_RETVAL != $current ]] || return
   $1_prompt_module "$0" "$2" "magenta" "black" 'NODE_ICON' 0 '' "${${current#v}//\%/%%}"
 }

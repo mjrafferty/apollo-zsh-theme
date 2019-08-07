@@ -19,14 +19,14 @@ exit_code_or_status() {
   local ec=$1
 
   if [[ "$APOLLO_STATUS_HIDE_SIGNAME" = true ]] || (( ec <= 128 )); then
-    _APOLLO_RETURN_MESSAGE=$ec
+    __APOLLO_RETURN_MESSAGE=$ec
   else
-    _APOLLO_RETURN_MESSAGE="SIG${signals[$((sig + 1))]}($((ec - 128)))"
+    __APOLLO_RETURN_MESSAGE="SIG${signals[$((sig + 1))]}($((ec - 128)))"
   fi
 
 }
 
-_apollo_status_run() {
+__apollo_status_run() {
 
     local ec_text
     local ec_sum
@@ -36,30 +36,30 @@ _apollo_status_run() {
 
     if [[ $APOLLO_STATUS_SHOW_PIPESTATUS == true ]]; then
 
-      if (( $#_APOLLO_PIPE_EXIT_CODES > 1 )); then
-        ec_sum=${_APOLLO_PIPE_EXIT_CODES[1]}
-        exit_code_or_status "${_APOLLO_PIPE_EXIT_CODES[1]}"
+      if (( $#__APOLLO_PIPE_EXIT_CODES > 1 )); then
+        ec_sum=${__APOLLO_PIPE_EXIT_CODES[1]}
+        exit_code_or_status "${__APOLLO_PIPE_EXIT_CODES[1]}"
 
       else
-        ec_sum=${_APOLLO_EXIT_CODE}
-        exit_code_or_status "${_APOLLO_EXIT_CODE}"
+        ec_sum=${__APOLLO_EXIT_CODE}
+        exit_code_or_status "${__APOLLO_EXIT_CODE}"
       fi
 
-      ec_text=$_APOLLO_RETURN_MESSAGE
+      ec_text=$__APOLLO_RETURN_MESSAGE
 
-      for ec in "${(@)_APOLLO_PIPE_EXIT_CODES[2,-1]}"; do
+      for ec in "${(@)__APOLLO_PIPE_EXIT_CODES[2,-1]}"; do
         (( ec_sum += ec ))
         exit_code_or_status "$ec"
-        ec_text+="|$_APOLLO_RETURN_MESSAGE"
+        ec_text+="|$__APOLLO_RETURN_MESSAGE"
       done
 
     else
 
-      ec_sum=${_APOLLO_EXIT_CODE}
-      # We use _APOLLO_EXIT_CODE instead of the right-most _APOLLO_PIPE_EXIT_CODES item because
+      ec_sum=${__APOLLO_EXIT_CODE}
+      # We use __APOLLO_EXIT_CODE instead of the right-most __APOLLO_PIPE_EXIT_CODES item because
       # PIPE_FAIL may be set.
-      exit_code_or_status "${_APOLLO_EXIT_CODE}"
-      ec_text=$_APOLLO_RETURN_MESSAGE
+      exit_code_or_status "${__APOLLO_EXIT_CODE}"
+      ec_text=$__APOLLO_RETURN_MESSAGE
 
     fi
 
@@ -68,24 +68,24 @@ _apollo_status_run() {
 
       APOLLO_STATUS_BG="red"
       if [[ "$APOLLO_STATUS_VERBOSE" == true ]]; then
-        #_APOLLO_CACHE_VAL=("$0_ERROR" "$2" red yellow1 CARRIAGE_RETURN_ICON 0 '' "$ec_text")
-        _APOLLO_RETURN_MESSAGE="$ec_text"
+        #__APOLLO_CACHE_VAL=("$0_ERROR" "$2" red yellow1 CARRIAGE_RETURN_ICON 0 '' "$ec_text")
+        __APOLLO_RETURN_MESSAGE="$ec_text"
       else
-        #_APOLLO_CACHE_VAL=("$0_ERROR" "$2" "$DEFAULT_COLOR" red FAIL_ICON 0 '' '')
-        _APOLLO_RETURN_MESSAGE="BAD"
+        #__APOLLO_CACHE_VAL=("$0_ERROR" "$2" "$DEFAULT_COLOR" red FAIL_ICON 0 '' '')
+        __APOLLO_RETURN_MESSAGE="BAD"
       fi
 
     elif [[ "$APOLLO_STATUS_OK" == true ]] && [[ "$APOLLO_STATUS_VERBOSE" == true || "$APOLLO_STATUS_OK_IN_NON_VERBOSE" == true ]]; then
 
-      #_APOLLO_CACHE_VAL=("$0_OK" "$2" "$DEFAULT_COLOR" green OK_ICON 0 '' '')
-      _APOLLO_RETURN_MESSAGE="OK"
+      #__APOLLO_CACHE_VAL=("$0_OK" "$2" "$DEFAULT_COLOR" green OK_ICON 0 '' '')
+      __APOLLO_RETURN_MESSAGE="OK"
 
     else
 
-      _APOLLO_RETURN_MESSAGE=""
+      __APOLLO_RETURN_MESSAGE=""
 
     fi
 
 }
 
-_apollo_status_run "$@"
+__apollo_status_run "$@"

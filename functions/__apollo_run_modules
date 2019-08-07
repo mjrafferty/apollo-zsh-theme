@@ -1,6 +1,6 @@
 # vim:ft=zsh
 
-_apollo_run_modules() {
+__apollo_run_modules() {
 
   local line module
   local start
@@ -13,18 +13,18 @@ _apollo_run_modules() {
     start=${EPOCHREALTIME}
   fi
 
-  PROMPT="$_APOLLO_PROMPT_COPY"
-  RPROMPT="$_APOLLO_RPROMPT_COPY"
+  PROMPT="$__APOLLO_PROMPT_COPY"
+  RPROMPT="$__APOLLO_RPROMPT_COPY"
 
   for module in "${right_modules[@]}"; do
-    if ((${+functions[_apollo_${module}_run]} > 0)); then
-      _apollo_get_module_text "$module" "right"
+    if ((${+functions[__apollo_${module}_run]} > 0)); then
+      __apollo_get_module_text "$module" "right"
     fi
   done
 
   for module in "${left_modules[@]}"; do
-    if ((${+functions[_apollo_${module}_run]} > 0)); then
-      _apollo_get_module_text "$module" "left"
+    if ((${+functions[__apollo_${module}_run]} > 0)); then
+      __apollo_get_module_text "$module" "left"
     fi
   done
 
@@ -34,4 +34,4 @@ _apollo_run_modules() {
 
 }
 
-_apollo_run_modules "$@"
+__apollo_run_modules "$@"

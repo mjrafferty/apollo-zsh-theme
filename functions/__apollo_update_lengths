@@ -1,6 +1,6 @@
 # vim:ft=zsh
 
-_apollo_update_lengths () {
+__apollo_update_lengths () {
 
   local lines
   local start
@@ -9,15 +9,15 @@ _apollo_update_lengths () {
     start="$EPOCHREALTIME"
   fi
 
-  lines="${#_APOLLO_PROMPT_LINES[@]}"
+  lines="${#__APOLLO_PROMPT_LINES[@]}"
 
   for ((line=1;line<=lines;line++)); do
 
-    _APOLLO_PROMPT_LINE_LENGTH[line]="0"
-    _apollo_get_display_width "${(e)_APOLLO_PROMPT_LINES[line]}"
+    __APOLLO_PROMPT_LINE_LENGTH[line]="0"
+    __apollo_get_display_width "${(e)__APOLLO_PROMPT_LINES[line]}"
 
     ## The 1 here is to avoid line overflow on older zsh versions.
-    ((_APOLLO_PROMPT_LINE_LENGTH[line]= COLUMNS - 1 - _APOLLO_RETURN_MESSAGE));
+    ((__APOLLO_PROMPT_LINE_LENGTH[line]= COLUMNS - 1 - __APOLLO_RETURN_MESSAGE));
 
   done
 
@@ -27,4 +27,4 @@ _apollo_update_lengths () {
 
 }
 
-_apollo_update_lengths "$@"
+__apollo_update_lengths "$@"

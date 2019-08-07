@@ -1,14 +1,14 @@
 # vim:ft=zsh
-_apollo_read_rbenv_version_file() {
+__apollo_read_rbenv_version_file() {
   [[ -r $1 ]] || return
   local content
   read -r content <$1 2>/dev/null
-  _APOLLO_RETVAL="${${(A)=content}[1]}"
-  [[ -n $_APOLLO_RETVAL ]]
+  __APOLLO_RETVAL="${${(A)=content}[1]}"
+  [[ -n $__APOLLO_RETVAL ]]
 }
 
-_apollo_rbenv_global_version() {
-  _apollo_read_rbenv_version_file ${RBENV_ROOT:-$HOME/.rbenv}/version || _APOLLO_RETVAL=system
+__apollo_rbenv_global_version() {
+  __apollo_read_rbenv_version_file ${RBENV_ROOT:-$HOME/.rbenv}/version || __APOLLO_RETVAL=system
 }
 
 ################################################################
@@ -19,14 +19,14 @@ prompt_rbenv() {
   if [[ -z $v ]]; then
     [[ $RBENV_DIR == /* ]] && local dir=$RBENV_DIR || local dir="$PWD/$RBENV_DIR"
     while true; do
-      if _apollo_read_rbenv_version_file $dir/.ruby-version; then
-        v=$_APOLLO_RETVAL
+      if __apollo_read_rbenv_version_file $dir/.ruby-version; then
+        v=$__APOLLO_RETVAL
         break
       fi
       if [[ $dir == / ]]; then
         [[ $APOLLO_RBENV_PROMPT_ALWAYS_SHOW == true ]] || return
-        _apollo_rbenv_global_version
-        v=$_APOLLO_RETVAL
+        __apollo_rbenv_global_version
+        v=$__APOLLO_RETVAL
         break
       fi
       dir=${dir:h}
@@ -34,8 +34,8 @@ prompt_rbenv() {
   fi
 
   if [[ $APOLLO_RBENV_PROMPT_ALWAYS_SHOW == false ]]; then
-    _apollo_rbenv_global_version
-    [[ $v == $_APOLLO_RETVAL ]] && return
+    __apollo_rbenv_global_version
+    [[ $v == $__APOLLO_RETVAL ]] && return
   fi
 
   "$1_prompt_module" "$0" "$2" "red" "$DEFAULT_COLOR" 'RUBY_ICON' 0 '' "${v//\%/%%}"

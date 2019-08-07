@@ -18,22 +18,22 @@ prompt_load() {
     ;;
     *)
       [[ -r /proc/loadavg ]] || return
-      _apollo_read_file /proc/loadavg || return
-      load=${${(A)=_APOLLO_RETVAL}[bucket]//,/.}
+      __apollo_read_file /proc/loadavg || return
+      load=${${(A)=__APOLLO_RETVAL}[bucket]//,/.}
     ;;
   esac
 
-  if (( ! $+_APOLLO_NUM_CPUS )); then
+  if (( ! $+__APOLLO_NUM_CPUS )); then
     case $OS in
-      OSX) (( $+commands[sysctl] )) && _APOLLO_NUM_CPUS=$(command sysctl -n hw.logicalcpu 2>/dev/null) || return;;
-      BSD) (( $+commands[sysctl] )) && _APOLLO_NUM_CPUS=$(command sysctl -n hw.ncpu 2>/dev/null) || return;;
-      *)   (( $+commands[nproc]  )) && _APOLLO_NUM_CPUS=$(command nproc 2>/dev/null) || return;;
+      OSX) (( $+commands[sysctl] )) && __APOLLO_NUM_CPUS=$(command sysctl -n hw.logicalcpu 2>/dev/null) || return;;
+      BSD) (( $+commands[sysctl] )) && __APOLLO_NUM_CPUS=$(command sysctl -n hw.ncpu 2>/dev/null) || return;;
+      *)   (( $+commands[nproc]  )) && __APOLLO_NUM_CPUS=$(command nproc 2>/dev/null) || return;;
     esac
   fi
 
-  if (( load > 0.7 * _APOLLO_NUM_CPUS )); then
+  if (( load > 0.7 * __APOLLO_NUM_CPUS )); then
     local state=critical bg=red
-  elif (( load > 0.5 * _APOLLO_NUM_CPUS )); then
+  elif (( load > 0.5 * __APOLLO_NUM_CPUS )); then
     local state=warning bg=yellow
   else
     local state=normal bg=green

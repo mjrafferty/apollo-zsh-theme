@@ -1,0 +1,21 @@
+# vim:ft=zsh
+
+__apollo_set_prompts(){
+
+  __apollo_set_left_prompt
+
+  __apollo_make_rprompt "${#__APOLLO_PROMPT_LINES}"
+
+  if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
+    RPROMPT="${__APOLLO_RETURN_MESSAGE}\${__APOLLO_RIGHT_LINK[${#__APOLLO_PROMPT_LINES}]}"
+  else
+    RPROMPT="${__APOLLO_RETURN_MESSAGE}"
+  fi
+
+  __APOLLO_RPROMPT_COPY="$RPROMPT"
+
+  unset __APOLLO_CURRENT_RPROMPT;
+
+}
+
+__apollo_set_prompts "$@"

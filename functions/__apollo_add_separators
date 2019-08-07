@@ -1,6 +1,6 @@
 # vim:ft=zsh
 
-_apollo_add_separators() {
+__apollo_add_separators() {
 
   local current_module
   local -i first_skipped=0
@@ -24,22 +24,22 @@ _apollo_add_separators() {
 
       current_module="${left_modules[module]}"
 
-      if (( _APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
+      if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
 
         if ((first_skipped > 0)); then
 
           if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
             first_skipped=0
-            _apollo_set_colors "keep" "clear"
+            __apollo_set_colors "keep" "clear"
           else
             bg_var="APOLLO_${current_module}_BG"
-            _apollo_set_colors "keep" "${(P)${bg_var}}"
+            __apollo_set_colors "keep" "${(P)${bg_var}}"
           fi
 
-          _APOLLO_LEFT_SEPARATORS[module]="${_APOLLO_RETURN_MESSAGE}${APOLLO_LEFT_SEPARATOR}"
+          __APOLLO_LEFT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}${APOLLO_LEFT_SEPARATOR}"
 
         else
-          _APOLLO_LEFT_SEPARATORS[module]=""
+          __APOLLO_LEFT_SEPARATORS[module]=""
           if [[ "$current_module" != "newline" && "$current_module" != "ruler" ]]; then
             first_skipped=1
           fi
@@ -63,12 +63,12 @@ _apollo_add_separators() {
         continue;
       fi
 
-      if (( _APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
+      if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
         bg_var="APOLLO_${current_module}_BG"
-        _apollo_set_colors "${(P)${bg_var}}" "keep"
-        _APOLLO_RIGHT_SEPARATORS[module]="${_APOLLO_RETURN_MESSAGE}${APOLLO_RIGHT_SEPARATOR}"
+        __apollo_set_colors "${(P)${bg_var}}" "keep"
+        __APOLLO_RIGHT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}${APOLLO_RIGHT_SEPARATOR}"
       else
-        _APOLLO_RIGHT_SEPARATORS[module]=""
+        __APOLLO_RIGHT_SEPARATORS[module]=""
       fi
 
     done
@@ -81,4 +81,4 @@ _apollo_add_separators() {
 
 }
 
-_apollo_add_separators "$@"
+__apollo_add_separators "$@"

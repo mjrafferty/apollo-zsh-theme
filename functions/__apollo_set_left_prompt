@@ -1,0 +1,67 @@
+# vim:ft=zsh
+
+__apollo_set_left_prompt() {
+
+  local module prompt_length current_module
+  local -i line_index
+  local -a left_modules right_modules
+
+  zstyle -a 'apollo:core:modules:left' modules left_modules
+  zstyle -a 'apollo:core:modules:right' modules right_modules
+
+  line_index=1;
+  prompt_length="${#left_modules[@]}"
+
+  for ((module=1; module<=prompt_length;module++)); do
+
+    current_module="${left_modules[module]}"
+
+    __APOLLO_LINE_MODULES[line_index]+="${current_module} "
+
+    case "${current_module}" in
+      "newline")
+        __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_SEPARATORS[$module]}"
+        __apollo_add_newline "newline" "${line_index}"
+        ((line_index++));
+        __APOLLO_MODULE_HAS_LENGTH[$current_module]=1;
+        ;;
+      "ruler")
+        __APOLLO_LEFT_HAS_LENGTH[line_index]+=" + 1"
+        __APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + 1"
+        __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_SEPARATORS[$module]}"
+        __apollo_add_newline "ruler" "${line_index}"
+        ((line_index++));
+        __APOLLO_MODULE_HAS_LENGTH[$current_module]=1;
+        ;;
+      *)
+        __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_SEPARATORS[$module]}\${__APOLLO_MODULE_TEXT[$current_module]}"
+        __APOLLO_LEFT_HAS_LENGTH[line_index]+=" + \$__APOLLO_MODULE_HAS_LENGTH[$current_module]"
+        ;;
+    esac
+
+  done
+
+  for ((line=1;line<=line_index;line++)); do
+
+    if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
+      if ((line < line_index)); then
+        __APOLLO_PROMPT_LINES[$line]="\${__APOLLO_LEFT_LINK[$line]}${__APOLLO_PROMPT_LINES[$line]}\${__APOLLO_RIGHT_LINK[$line]}"
+      else
+        __APOLLO_PROMPT_LINES[$line]="\${__APOLLO_LEFT_LINK[$line]}${__APOLLO_PROMPT_LINES[$line]}"
+      fi
+    fi
+
+    PROMPT+="\${(e)__APOLLO_PROMPT_LINES[$line]}"
+
+    if ((line < line_index)); then
+      PROMPT+="${__APOLLO_NEWLINE}"
+    fi
+
+  done
+
+  PROMPT+="$APOLLO_PROMPT_END"
+  __APOLLO_PROMPT_COPY="$PROMPT"
+
+}
+
+__apollo_set_left_prompt "$@"

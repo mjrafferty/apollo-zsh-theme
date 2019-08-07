@@ -1,0 +1,25 @@
+# vim:ft=zsh
+
+__apollo_add_newline() {
+
+  local current_module faux_rprompt line_index
+
+  current_module="$1"
+  line_index="$2"
+
+  __apollo_make_rprompt "$line_index"
+  faux_rprompt="${__APOLLO_RETURN_MESSAGE}"
+
+  if [[ "${current_module}" == "newline" ]]; then
+      __APOLLO_PROMPT_LINES[line_index]+="%k\${(el.\${__APOLLO_PROMPT_LINE_LENGTH[$line_index]}.. .)}"
+  else
+      __apollo_set_colors "$APOLLO_RULER_COLOR" "clear"
+      __APOLLO_PROMPT_LINES[line_index]+="${__APOLLO_RETURN_MESSAGE}\${(el.\${__APOLLO_PROMPT_LINE_LENGTH[$line_index]}..─.)}"
+  fi
+
+  __APOLLO_PROMPT_LINES[line_index]+="${faux_rprompt}%f%k"
+
+}
+
+__apollo_add_newline "$@"
+

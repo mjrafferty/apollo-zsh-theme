@@ -2,10 +2,10 @@
 ################################################################
 # GO prompt
 prompt_go_version() {
-  _apollo_cached_cmd_stdout go version || return
+  __apollo_cached_cmd_stdout go version || return
   emulate -L zsh && setopt extendedglob
   local -a match
-  [[ $_APOLLO_RETVAL == (#b)*(go[[:digit:].]##)* ]] || return
+  [[ $__APOLLO_RETVAL == (#b)*(go[[:digit:].]##)* ]] || return
   local v=$match[1]
   local p=$GOPATH
   if [[ -z $p ]]; then

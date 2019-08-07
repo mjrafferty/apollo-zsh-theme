@@ -3,11 +3,11 @@
 typeset -g  APOLLO_GAME_BG="darkblue"
 typeset -g  APOLLO_GAME_FG="white"
 
-typeset -gi _APOLLO_GAME_CASH=1000
+typeset -gi __APOLLO_GAME_CASH=1000
 
-typeset -ag _APOLLO_GAME_SYMBOLS
+typeset -ag __APOLLO_GAME_SYMBOLS
 
-_APOLLO_GAME_SYMBOLS=(
+__APOLLO_GAME_SYMBOLS=(
   "%F{1}🍒%F{7}"
   "%F{10}🍏%F{7}"
   "%F{9}🍓%F{7}"
@@ -18,7 +18,7 @@ _APOLLO_GAME_SYMBOLS=(
   "%F{10}💵%F{7}"
   )
 
-_apollo_game_run (){
+__apollo_game_run (){
 
   local slots
   local win=0
@@ -32,19 +32,19 @@ _apollo_game_run (){
 
     if (((n1==n2) && (n1==n3))); then
       ((win=100*(n1)));
-      winst=" ${_APOLLO_GAME_SYMBOLS[7]} ${win} ${_APOLLO_GAME_SYMBOLS[7]} "
+      winst=" ${__APOLLO_GAME_SYMBOLS[7]} ${win} ${__APOLLO_GAME_SYMBOLS[7]} "
     else
       win=10;
-      winst="${_APOLLO_GAME_SYMBOLS[6]}"
+      winst="${__APOLLO_GAME_SYMBOLS[6]}"
     fi
 
   fi
 
-  ((_APOLLO_GAME_CASH+=(win-10)))
+  ((__APOLLO_GAME_CASH+=(win-10)))
 
-  slots="[${_APOLLO_GAME_SYMBOLS[n1]}|${_APOLLO_GAME_SYMBOLS[n2]}|${_APOLLO_GAME_SYMBOLS[n3]}]"
-  _APOLLO_RETURN_MESSAGE="%B${slots}${winst}${_APOLLO_GAME_SYMBOLS[8]}:${_APOLLO_GAME_CASH}%b"
+  slots="[${__APOLLO_GAME_SYMBOLS[n1]}|${__APOLLO_GAME_SYMBOLS[n2]}|${__APOLLO_GAME_SYMBOLS[n3]}]"
+  __APOLLO_RETURN_MESSAGE="%B${slots}${winst}${__APOLLO_GAME_SYMBOLS[8]}:${__APOLLO_GAME_CASH}%b"
 
 }
 
-_apollo_game_run "$@"
+__apollo_game_run "$@"

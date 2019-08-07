@@ -7,15 +7,15 @@ typeset -g APOLLO_BATTERY_LOW_THRESHOLD
 typeset -g APOLLO_BATTERY_LEVEL_BACKGROUND
 typeset -g APOLLO_BATTERY_HIDE_ABOVE_THRESHOLD
 
-typeset -gA _APOLLO_BATTERY_STATES
-_APOLLO_BATTERY_STATES=(
+typeset -gA __APOLLO_BATTERY_STATES
+__APOLLO_BATTERY_STATES=(
   'low'           'red'
   'charging'      'yellow'
   'charged'       'green'
   'disconnected'  "$DEFAULT_COLOR_INVERTED"
 )
 
-_apollo_battery_osx() {
+__apollo_battery_osx() {
 
   (( $+commands[pmset] )) || return
 
@@ -48,7 +48,7 @@ _apollo_battery_osx() {
 
 }
 
-_apollo_battery_linux() {
+__apollo_battery_linux() {
 
   local -a bats
   local bat_status dir
@@ -64,17 +64,17 @@ _apollo_battery_linux() {
 
     pow=0
 
-    if _apollo_read_file $dir/(energy|charge)_now(N); then
-      (( energy_now+=_APOLLO_RETURN_MESSAGE ))
+    if __apollo_read_file $dir/(energy|charge)_now(N); then
+      (( energy_now+=__APOLLO_RETURN_MESSAGE ))
     fi
-    if _apollo_read_file $dir/(energy|charge)_full(N); then
-      (( energy_full+=_APOLLO_RETURN_MESSAGE ))
+    if __apollo_read_file $dir/(energy|charge)_full(N); then
+      (( energy_full+=__APOLLO_RETURN_MESSAGE ))
     fi
-    if _apollo_read_file $dir/(power|current)_now(N); then
-      (( power_now+=${pow::=$_APOLLO_RETURN_MESSAGE} ))
+    if __apollo_read_file $dir/(power|current)_now(N); then
+      (( power_now+=${pow::=$__APOLLO_RETURN_MESSAGE} ))
     fi
-    if _apollo_read_file $dir/status(N); then
-      bat_status=$_APOLLO_RETURN_MESSAGE
+    if __apollo_read_file $dir/status(N); then
+      bat_status=$__APOLLO_RETURN_MESSAGE
     else
       continue
     fi
@@ -130,26 +130,26 @@ _apollo_battery_linux() {
   fi
 }
 
-_apollo_battery_run() {
+__apollo_battery_run() {
 
   local state remain raw_data
   local -i bat_percent
 
   case $OS in
     OSX)
-      _apollo_battery_osx
+      __apollo_battery_osx
       ;;
     Linux|Android)
-      _apollo_battery_linux
+      __apollo_battery_linux
       ;;
     *)
-      _APOLLO_RETURN_MESSAGE=""
+      __APOLLO_RETURN_MESSAGE=""
       return;
       ;;
   esac
 
   if (( bat_percent >= APOLLO_BATTERY_HIDE_ABOVE_THRESHOLD )); then
-    _APOLLO_RETURN_MESSAGE=""
+    __APOLLO_RETURN_MESSAGE=""
     return;
   fi
 
@@ -180,5 +180,5 @@ _apollo_battery_run() {
 
   fi
 
-  $1_prompt_module $0_$state $2 "$bg" "$_APOLLO_BATTERY_STATES[$state]" $icon 0 '' $msg
+  $1_prompt_module $0_$state $2 "$bg" "$__APOLLO_BATTERY_STATES[$state]" $icon 0 '' $msg
 }

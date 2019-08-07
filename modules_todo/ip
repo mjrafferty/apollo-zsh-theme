@@ -6,10 +6,10 @@ typeset -g APOLLO_IP_FG="white"
 typeset -g APOLLO_IP_BG="cyan"
 typeset -g APOLLO_IP_INTERFACE="en0"
 
-_apollo_ip_run() {
+__apollo_ip_run() {
 
-  _apollo_parse_ip $APOLLO_IP_INTERFACE || return
+  __apollo_parse_ip $APOLLO_IP_INTERFACE || return
 
-  _APOLLO_RETURN_MESSAGE="${_APOLLO_RETURN_MESSAGE//\%/%%}"
+  __APOLLO_RETURN_MESSAGE="${__APOLLO_RETURN_MESSAGE//\%/%%}"
 
 }

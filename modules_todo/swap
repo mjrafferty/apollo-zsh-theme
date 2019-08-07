@@ -24,6 +24,6 @@ prompt_swap() {
     (( used_bytes *= 1024 ))
   fi
 
-  _apollo_human_readable_bytes $used_bytes
-  $1_prompt_module $0 $2 yellow "$DEFAULT_COLOR" SWAP_ICON 0 '' $_APOLLO_RETVAL
+  __apollo_human_readable_bytes $used_bytes
+  $1_prompt_module $0 $2 yellow "$DEFAULT_COLOR" SWAP_ICON 0 '' $__APOLLO_RETVAL
 }

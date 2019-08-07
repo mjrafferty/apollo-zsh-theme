@@ -5,6 +5,6 @@
 typeset -g APOLLO_HISTORY_FG="white"
 typeset -g APOLLO_HISTORY_BG="grey50"
 
-_apollo_history_run() {
-  _APOLLO_RETURN_MESSAGE="%h"
+__apollo_history_run() {
+  __APOLLO_RETURN_MESSAGE="%h"
 }

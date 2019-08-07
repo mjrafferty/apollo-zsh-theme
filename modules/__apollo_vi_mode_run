@@ -1,0 +1,104 @@
+# vim:ft=zsh
+################################################################
+# Vi Mode: show editing mode (NORMAL|INSERT|VISUAL)
+#
+# VISUAL mode is shown as NORMAL unless APOLLO_VI_VISUAL_MODE_STRING is explicitly set.
+# Your ZSH version must be >= 5.3 if you set this parameter.
+
+typeset -g APOLLO_VI_MODE_FG="white"
+typeset -g APOLLO_VI_MODE_BG="grey30"
+
+typeset -g __APOLLO_VI_MODE="INSERT"
+
+__apollo_vi_mode_cache_key() {
+  __APOLLO_RETURN_MESSAGE="1"
+}
+
+__apollo_vi_mode_run() {
+
+  __APOLLO_RETURN_MESSAGE="${__APOLLO_VI_MODE}"
+
+}
+
+zle-keymap-select() {
+
+  local last_mode="$__APOLLO_VI_MODE"
+
+  case "$KEYMAP" in
+    "vicmd")
+      if ((REGION_ACTIVE == 1)); then
+        __APOLLO_VI_MODE="VISUAL"
+      else
+        __APOLLO_VI_MODE="NORMAL"
+      fi
+      ;;
+    "main")
+      case $ZLE_STATE in
+        *insert)
+          __APOLLO_VI_MODE="INSERT"
+          ;;
+        *overwrite)
+          __APOLLO_VI_MODE="REPLACE"
+          ;;
+      esac
+      ;;
+    *);;
+  esac
+
+  if [[ "$__APOLLO_VI_MODE" != "$last_mode" ]]; then
+    __apollo_async_update "vi_mode"
+  fi
+
+}
+
+zle-line-init() {
+
+  local last_mode="$__APOLLO_VI_MODE"
+
+	__APOLLO_VI_MODE="INSERT"
+
+  if [[ "$__APOLLO_VI_MODE" != "$last_mode" ]]; then
+    __apollo_async_update "vi_mode"
+  fi
+}
+
+__apollo_vi_mode_visual_mode() {
+
+  local last_mode="$__APOLLO_VI_MODE"
+
+  __APOLLO_VI_MODE="VISUAL"
+
+  zle && zle visual-mode
+
+  if [[ "$__APOLLO_VI_MODE" != "$last_mode" ]]; then
+    __apollo_async_update "vi_mode"
+  fi
+
+}
+
+__apollo_vi_mode_cmd_mode() {
+
+  local last_mode="$__APOLLO_VI_MODE"
+
+  __APOLLO_VI_MODE="NORMAL"
+
+  zle && zle deactivate-region
+
+  if [[ "$__APOLLO_VI_MODE" != "$last_mode" ]]; then
+    __apollo_async_update "vi_mode"
+  fi
+}
+
+zle -N zle-keymap-select
+zle -N zle-line-init
+
+autoload -Uz is-at-least
+
+if is-at-least 5.3; then
+  zle -N __apollo_vi_mode_visual_mode
+  bindkey -M vicmd v __apollo_vi_mode_visual_mode
+  zle -N __apollo_vi_mode_cmd_mode
+  bindkey -M visual '\e' __apollo_vi_mode_cmd_mode
+fi
+
+__apollo_vi_mode_run "$@"

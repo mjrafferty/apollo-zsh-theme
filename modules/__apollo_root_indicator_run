@@ -5,8 +5,8 @@
 typeset -g APOLLO_ROOT_INDICATOR_FG="yellow"
 typeset -g APOLLO_ROOT_INDICATOR_BG="black"
 
-_apollo_root_indicator_run() {
-  _APOLLO_RETURN_MESSAGE="${${(%):-%#}:#%}"
+__apollo_root_indicator_run() {
+  __APOLLO_RETURN_MESSAGE="${${(%):-%#}:#%}"
 }
 
-_apollo_root_indicator_run "$@"
+__apollo_root_indicator_run "$@"

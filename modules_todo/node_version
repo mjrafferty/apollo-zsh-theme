@@ -13,6 +13,6 @@ prompt_node_version() {
     done
   fi
 
-  _apollo_cached_cmd_stdout node --version && [[ $_APOLLO_RETVAL == v?* ]] || return
-  "$1_prompt_module" "$0" "$2" "green" "white" 'NODE_ICON' 0 '' "${_APOLLO_RETVAL#v}"
+  __apollo_cached_cmd_stdout node --version && [[ $__APOLLO_RETVAL == v?* ]] || return
+  "$1_prompt_module" "$0" "$2" "green" "white" 'NODE_ICON' 0 '' "${__APOLLO_RETVAL#v}"
 }

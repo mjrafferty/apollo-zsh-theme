@@ -19,11 +19,11 @@ typeset -g APOLLO_SHORTEN_DELIMITER_LENGTH
 typeset -g APOLLO_SHORTEN_FOLDER_MARKER
 typeset -g APOLLO_SHORTEN_STRATEGY=""
 
-_apollo_dir_cache_key() {
-  _APOLLO_RETURN_MESSAGE="$PWD"
+__apollo_dir_cache_key() {
+  __APOLLO_RETURN_MESSAGE="$PWD"
 }
 
-_apollo_dir_truncate_to_unique() {
+__apollo_dir_truncate_to_unique() {
 
   local shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
   local delim=${APOLLO_SHORTEN_DELIMITER-$'\u2026'}
@@ -39,8 +39,8 @@ _apollo_dir_truncate_to_unique() {
 
   delim=${APOLLO_SHORTEN_DELIMITER-'*'}
 
-  _apollo_get_display_width "$delim"
-  real_delim_len="$_APOLLO_RETURN_MESSAGE"
+  __apollo_get_display_width "$delim"
+  real_delim_len="$__APOLLO_RETURN_MESSAGE"
 
   d=${APOLLO_SHORTEN_DELIMITER_LENGTH:--1}
 
@@ -92,7 +92,7 @@ _apollo_dir_truncate_to_unique() {
 }
 
 # Dir text will be the last $APOLLO_SHORTEN_DIR_LENGTH characters of path
-_apollo_dir_truncate_absolute() {
+__apollo_dir_truncate_absolute() {
 
   local shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
   local delim=${APOLLO_SHORTEN_DELIMITER-$'\u2026'}
@@ -101,9 +101,9 @@ _apollo_dir_truncate_absolute() {
 
   if (( shortenlen > 0 && $#p > shortenlen )); then
 
-    _apollo_shorten_delim_len $delim
+    __apollo_shorten_delim_len $delim
 
-    if (( $#p > shortenlen + $_APOLLO_RETURN_MESSAGE )); then
+    if (( $#p > shortenlen + $__APOLLO_RETURN_MESSAGE )); then
 
       n=shortenlen
       i=$#parts
@@ -128,7 +128,7 @@ _apollo_dir_truncate_absolute() {
 
 }
 
-_apollo_dir_truncate_with_folder_marker(){
+__apollo_dir_truncate_with_folder_marker(){
 
   local dir
   local -a m
@@ -156,7 +156,7 @@ _apollo_dir_truncate_with_folder_marker(){
 
 }
 
-_apollo_dir_truncate_to_first_and_last(){
+__apollo_dir_truncate_to_first_and_last(){
 
   local shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
 
@@ -170,11 +170,11 @@ _apollo_dir_truncate_to_first_and_last(){
 
 }
 
-_apollo_dir_truncate_middle(){
+__apollo_dir_truncate_middle(){
   #TODO
 }
 
-_apollo_dir_run() {
+__apollo_dir_run() {
 
   emulate -L zsh && setopt extended_glob
 
@@ -218,19 +218,19 @@ _apollo_dir_run() {
 
   case $APOLLO_SHORTEN_STRATEGY in
     truncate_absolute)
-      _apollo_dir_truncate_absolute
+      __apollo_dir_truncate_absolute
       ;;
     truncate_middle)
-      _apollo_dir_truncate_middle
+      __apollo_dir_truncate_middle
       ;;
     truncate_to_first_and_last)
-      _apollo_dir_truncate_to_first_and_last
+      __apollo_dir_truncate_to_first_and_last
       ;;
     truncate_to_unique)
-      _apollo_truncate_to_unique
+      __apollo_truncate_to_unique
       ;;
     truncate_with_folder_marker)
-      _apollo_dir_truncate_with_folder_marker
+      __apollo_dir_truncate_with_folder_marker
       ;;
     truncate_to_last)
       fake_first=$(($#parts > 1))
@@ -267,8 +267,8 @@ _apollo_dir_run() {
 
   # Highlight last dir
   if [[ -n $APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND ]]; then
-    _apollo_set_colors $APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND "keep"
-    last_fg+=$_APOLLO_RETURN_MESSAGE
+    __apollo_set_colors $APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND "keep"
+    last_fg+=$__APOLLO_RETURN_MESSAGE
   fi
 
   parts[-1]=$last_fg${parts[-1]//$'\0'/$'\0'}%b
@@ -279,18 +279,18 @@ _apollo_dir_run() {
 
   ## Set separator color
   if [[ -n $APOLLO_DIR_PATH_SEPARATOR_FOREGROUND ]]; then
-    _apollo_set_colors $APOLLO_DIR_PATH_SEPARATOR_FOREGROUND "keep"
-    sep="$_APOLLO_RETURN_MESSAGE$sep%f"
+    __apollo_set_colors $APOLLO_DIR_PATH_SEPARATOR_FOREGROUND "keep"
+    sep="$__APOLLO_RETURN_MESSAGE$sep%f"
   fi
 
   ## Not compatible with older ZSH versions
-  #_APOLLO_RETURN_MESSAGE="${(pj.$sep.)parts}"
-  _APOLLO_RETURN_MESSAGE=""
+  #__APOLLO_RETURN_MESSAGE="${(pj.$sep.)parts}"
+  __APOLLO_RETURN_MESSAGE=""
   for ((part=1;part<=${#parts[*]};part++)); do
     if ((part > 1)); then
-      _APOLLO_RETURN_MESSAGE+="${sep}"
+      __APOLLO_RETURN_MESSAGE+="${sep}"
     fi
-    _APOLLO_RETURN_MESSAGE+="${parts[part]}"
+    __APOLLO_RETURN_MESSAGE+="${parts[part]}"
   done
 
 
@@ -309,4 +309,4 @@ _apollo_dir_run() {
 
 }
 
-_apollo_dir_run "$@"
+__apollo_dir_run "$@"

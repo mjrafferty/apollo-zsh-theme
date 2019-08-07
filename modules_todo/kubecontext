@@ -38,7 +38,7 @@ prompt_kubecontext() {
     key+=($cfg $stat[inode] $stat[mtime] $stat[size] $stat[mode])
   done
 
-  if ! _apollo_cache_get $0 "${key[@]}"; then
+  if ! __apollo_cache_get $0 "${key[@]}"; then
     local ctx=$(command kubectl config view -o=jsonpath='{.current-context}')
     if [[ -n $ctx ]]; then
       local p="{.contexts[?(@.name==\"$ctx\")].context.namespace}"
@@ -57,9 +57,9 @@ prompt_kubecontext() {
         fi
       done
     fi
-    _apollo_cache_set "$ctx" "$suf"
+    __apollo_cache_set "$ctx" "$suf"
   fi
 
-  [[ -n $_APOLLO_CACHE_VAL[1] ]] || return
-  $1_prompt_module $0$_APOLLO_CACHE_VAL[2] $2 magenta white KUBERNETES_ICON 0 '' "${_APOLLO_CACHE_VAL[1]//\%/%%}"
+  [[ -n $__APOLLO_CACHE_VAL[1] ]] || return
+  $1_prompt_module $0$__APOLLO_CACHE_VAL[2] $2 magenta white KUBERNETES_ICON 0 '' "${__APOLLO_CACHE_VAL[1]//\%/%%}"
 }

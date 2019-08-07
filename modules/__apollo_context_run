@@ -10,11 +10,11 @@ typeset -g APOLLO_CONTEXT_BG="navy"
 typeset -g APOLLO_CONTEXT_ALWAYS_SHOW_USER="false"
 typeset -g APOLLO_CONTEXT_ALWAYS_SHOW="false"
 
-_apollo_context_cache_key() {
-  _APOLLO_RETURN_MESSAGE="1"
+__apollo_context_cache_key() {
+  __APOLLO_RETURN_MESSAGE="1"
 }
 
-_apollo_context_run() {
+__apollo_context_run() {
 
   local content user
   local current_state="DEFAULT"
@@ -32,7 +32,7 @@ _apollo_context_run() {
     elif [[ $APOLLO_CONTEXT_ALWAYS_SHOW_USER == true ]]; then
       content="${user//\%/%%}"
     else
-      _APOLLO_RETURN_MESSAGE=""
+      __APOLLO_RETURN_MESSAGE=""
       return
     fi
 
@@ -56,8 +56,8 @@ _apollo_context_run() {
 
   fi
 
-  _APOLLO_RETURN_MESSAGE="$content"
+  __APOLLO_RETURN_MESSAGE="$content"
 
 }
 
-_apollo_context_run "$@"
+__apollo_context_run "$@"

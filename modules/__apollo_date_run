@@ -6,7 +6,7 @@ typeset -g APOLLO_DATE_FORMAT="%D{%m-%d-%y}"
 typeset -g APOLLO_DATE_FG="white"
 typeset -g APOLLO_DATE_BG="blue"
 
-_apollo_date_run() {
+__apollo_date_run() {
 
   local d=$APOLLO_DATE_FORMAT
 
@@ -14,8 +14,8 @@ _apollo_date_run() {
     d=${(%)d}
   fi
 
-  _APOLLO_RETURN_MESSAGE="${d//\%/%%}"
+  __APOLLO_RETURN_MESSAGE="${d//\%/%%}"
 
 }
 
-_apollo_date_run "$@"
+__apollo_date_run "$@"

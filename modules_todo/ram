@@ -24,6 +24,6 @@ prompt_ram() {
     ;;
   esac
 
-  _apollo_human_readable_bytes $free_bytes
-  $1_prompt_module $0 $2 yellow "$DEFAULT_COLOR" RAM_ICON 0 '' $_APOLLO_RETVAL
+  __apollo_human_readable_bytes $free_bytes
+  $1_prompt_module $0 $2 yellow "$DEFAULT_COLOR" RAM_ICON 0 '' $__APOLLO_RETVAL
 }

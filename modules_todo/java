@@ -8,8 +8,8 @@
 
 # print Java version number
 prompt_java_version() {
-  _apollo_cached_cmd_stdout_stderr java -fullversion || return
-  local v=$_APOLLO_RETVAL
+  __apollo_cached_cmd_stdout_stderr java -fullversion || return
+  local v=$__APOLLO_RETVAL
   v=${${v#*\"}%\"*}
   [[ $APOLLO_JAVA_VERSION_FULL == true ]] || v=${v%%-*}
   [[ -n $v ]] || return

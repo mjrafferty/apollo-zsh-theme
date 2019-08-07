@@ -2,8 +2,8 @@
 
 # https://jonasjacek.github.io/colors/
 # use color names by default to allow dark/light themes to adjust colors based on names
-typeset -gAh __APOLLO_COLORS
-__APOLLO_COLORS=(
+typeset -gAh ___APOLLO_COLORS
+___APOLLO_COLORS=(
   black 000
   red 001
   green 002
@@ -264,7 +264,7 @@ __APOLLO_COLORS=(
   grey93 255
 )
 
-_apollo_set_colors() {
+__apollo_set_colors() {
 
   local fg bg
 
@@ -280,7 +280,7 @@ _apollo_set_colors() {
         fg="%f"
         ;;
       [a-z]*)
-        fg="%F{$__APOLLO_COLORS[$1]}"
+        fg="%F{$___APOLLO_COLORS[$1]}"
         ;;
       *)
         fg="%F{$1}"
@@ -297,7 +297,7 @@ _apollo_set_colors() {
         bg="%k"
         ;;
       [a-z]*)
-        bg="%K{$__APOLLO_COLORS[$2]}"
+        bg="%K{$___APOLLO_COLORS[$2]}"
         ;;
       *)
         bg="%K{$2}"
@@ -305,8 +305,8 @@ _apollo_set_colors() {
     esac
   fi
 
-  _APOLLO_RETURN_MESSAGE="${fg}${bg}"
+  __APOLLO_RETURN_MESSAGE="${fg}${bg}"
 
 }
 
-_apollo_set_colors "$@"
+__apollo_set_colors "$@"

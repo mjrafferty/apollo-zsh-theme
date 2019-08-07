@@ -1,0 +1,30 @@
+# vim:ft=zsh
+
+__apollo_precmd() {
+
+  __APOLLO_EXIT_CODE=$?
+  __APOLLO_PIPE_EXIT_CODES=( "${pipestatus[@]}" )
+
+  local start
+
+  # Forcefully refresh cache by pressing enter a few times
+  if ((__APOLLO_BREAK_CACHE_COUNTER++ >= 2)); then
+    __APOLLO_CACHE=();
+    __APOLLO_BREAK_CACHE_COUNTER=0;
+  fi
+
+  if ((APOLLO_PROFILER > 0)); then
+    start="$EPOCHREALTIME"
+  fi
+
+  __apollo_run_modules
+
+  __apollo_update_prompts
+
+  if ((APOLLO_PROFILER > 0)); then
+    printf "%25s: %f\n" "total" "$((EPOCHREALTIME-start))"
+  fi
+
+}
+
+__apollo_precmd "$@"

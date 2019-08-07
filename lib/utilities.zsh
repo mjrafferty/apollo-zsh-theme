@@ -1,32 +1,32 @@
 # vim:ft=zsh
 
-typeset -g _APOLLO_BYTE_SUFFIX
-_APOLLO_BYTE_SUFFIX=('B' 'K' 'M' 'G' 'T' 'P' 'E' 'Z' 'Y')
+typeset -g __APOLLO_BYTE_SUFFIX
+__APOLLO_BYTE_SUFFIX=('B' 'K' 'M' 'G' 'T' 'P' 'E' 'Z' 'Y')
 
-_apollo_get_display_width(){
+__apollo_get_display_width(){
 
   local format_regex='%([BSUbfksu]|([FK]|){*})'
 
-  _APOLLO_RETURN_MESSAGE="${(m)#${(S%%)1//$~format_regex/}}"
+  __APOLLO_RETURN_MESSAGE="${(m)#${(S%%)1//$~format_regex/}}"
 
 }
 
-_apollo_human_readable_bytes() {
+__apollo_human_readable_bytes() {
 
   local suf
   typeset -F 2 n
   n=$1
 
-  for suf in $_APOLLO_BYTE_SUFFIX; do
+  for suf in $__APOLLO_BYTE_SUFFIX; do
     (( n < 100 )) && break
     (( n /= 1024 ))
   done
 
-  _APOLLO_RETURN_MESSAGE=$n$suf
+  __APOLLO_RETURN_MESSAGE=$n$suf
 
 }
 
-_apollo_parse_ip() {
+__apollo_parse_ip() {
 
   local desiredInterface rawInterfaces pattern relevantInterfaces newline interfaceName interface ipFound
   local -a interfaces relevantInterfaces interfaceStates
@@ -71,7 +71,7 @@ _apollo_parse_ip() {
         interfaceStates=(${(s:,:)match[1]})
 
         if (( ${interfaceStates[(I)UP]} )); then
-          _APOLLO_RETURN_MESSAGE=$ipFound
+          __APOLLO_RETURN_MESSAGE=$ipFound
           return
         fi
 
@@ -88,7 +88,7 @@ _apollo_parse_ip() {
 
     for interface in "${(@)interfaces}"; do
       if [[ "$interface" =~ $pattern ]]; then
-        _APOLLO_RETURN_MESSAGE=$match[1]
+        __APOLLO_RETURN_MESSAGE=$match[1]
         return
       fi
     done
@@ -99,14 +99,14 @@ _apollo_parse_ip() {
 
 }
 
-_apollo_read_file() {
+__apollo_read_file() {
 
-  _APOLLO_RETURN_MESSAGE=''
+  __APOLLO_RETURN_MESSAGE=''
 
   if [[ -n $1 ]]; then
-    read -r _APOLLO_RETURN_MESSAGE <$1
+    read -r __APOLLO_RETURN_MESSAGE <$1
   fi
 
-  [[ -n $_APOLLO_RETURN_MESSAGE ]]
+  [[ -n $__APOLLO_RETURN_MESSAGE ]]
 
 }

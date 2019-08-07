@@ -5,11 +5,11 @@
 typeset -g APOLLO_PHP_VERSION_FG="grey93"
 typeset -g APOLLO_PHP_VERSION_BG="fuchsia"
 
-_apollo_php_version_cache_key() {
-  _APOLLO_RETURN_MESSAGE="1"
+__apollo_php_version_cache_key() {
+  __APOLLO_RETURN_MESSAGE="1"
 }
 
-_apollo_php_version_run() {
+__apollo_php_version_run() {
 
   local -a match
   local version
@@ -19,15 +19,15 @@ _apollo_php_version_run() {
 
   php --no-php-ini --version 2> /dev/null
 
-  read -r -t _APOLLO_RETURN_MESSAGE <&${_APOLLO_BUFFER_FD}
+  read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
 
-  if [[ $_APOLLO_RETURN_MESSAGE == (#b)(*$'\n')#(PHP [[:digit:].]##)* ]]; then
+  if [[ $__APOLLO_RETURN_MESSAGE == (#b)(*$'\n')#(PHP [[:digit:].]##)* ]]; then
     version=$match[2]
-    _APOLLO_RETURN_MESSAGE="${version//\%/%%}"
+    __APOLLO_RETURN_MESSAGE="${version//\%/%%}"
   else
     return;
   fi
 
 }
 
-_apollo_php_version_run "$@"
+__apollo_php_version_run "$@"

@@ -1,0 +1,39 @@
+# vim:ft=zsh
+## Show if user is over quota ##
+
+typeset -g APOLLO_QUOTA_FG="white"
+typeset -g APOLLO_QUOTA_BG="red"
+
+typeset -g __APOLLO_QUOTA_COMMAND="$(command -v quota)"
+typeset -g __APOLLO_QUOTA_USER
+
+__apollo_quota_cache_key(){
+
+	local temp
+
+	if [[ $PWD =~ "/((chroot/)?home/|local/)" ]]; then
+		temp=${PWD:${MEND}};
+		__APOLLO_QUOTA_USER="${temp%%/*}"
+    __APOLLO_RETURN_MESSAGE="$__APOLLO_QUOTA_USER"
+	else
+		__APOLLO_QUOTA_USER=""
+    __APOLLO_RETURN_MESSAGE=""
+	fi
+
+}
+
+__apollo_quota_run() {
+
+  if (( OS_VERSION < 7 )) && [[ -n "$__APOLLO_QUOTA_COMMAND" && -n "$__APOLLO_QUOTA_USER" ]]; then
+    "$__APOLLO_QUOTA_COMMAND" -qg "$__APOLLO_QUOTA_USER" 2> /dev/null
+
+    # Read once to clear the header from output, second read gathers what we want.
+    read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
+    read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
+
+  else
+    __APOLLO_RETURN_MESSAGE=""
+  fi
+}
+
+__apollo_quota_run "$@"
