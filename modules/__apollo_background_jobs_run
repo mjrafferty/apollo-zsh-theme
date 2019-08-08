@@ -6,6 +6,10 @@
 typeset -g APOLLO_BACKGROUND_JOBS_VERBOSE="true"
 typeset -g APOLLO_BACKGROUND_JOBS_VERBOSE_ALWAYS="true"
 
+__apollo_background_jobs_cache_key() {
+  __APOLLO_RETURN_MESSAGE="1"
+}
+
 __apollo_background_jobs_run() {
 
   local msg
