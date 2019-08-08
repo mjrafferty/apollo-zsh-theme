@@ -23,7 +23,7 @@ __apollo_set_module_text() {
   # Flush any remaining data in buffer
   while read -rt dump <&"${__APOLLO_BUFFER_FD}"; do true; done
 
-  if (( ${#__APOLLO_RETURN_MESSAGE} == 0 )); then
+  if (( ${#${(%)__APOLLO_RETURN_MESSAGE}} == 0 )); then
     __APOLLO_MODULE_HAS_LENGTH[$module]="0"
     __APOLLO_MODULE_TEXT[$module]=""
     if [[ -n "$cache_key" ]]; then

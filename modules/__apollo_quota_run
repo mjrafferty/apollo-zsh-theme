@@ -15,7 +15,7 @@ __apollo_quota_cache_key(){
     __APOLLO_RETURN_MESSAGE="$__APOLLO_QUOTA_USER"
 	else
 		__APOLLO_QUOTA_USER=""
-    __APOLLO_RETURN_MESSAGE=""
+    __APOLLO_RETURN_MESSAGE="1"
 	fi
 
 }

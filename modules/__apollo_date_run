@@ -4,6 +4,10 @@
 
 typeset -g APOLLO_DATE_FORMAT="%D{%m-%d-%y}"
 
+__apollo_date_cache_key() {
+  __APOLLO_RETURN_MESSAGE="${(%):-%D}"
+}
+
 __apollo_date_run() {
 
   local d=$APOLLO_DATE_FORMAT

@@ -4,25 +4,21 @@
 # Segment to indicate background jobs with an icon.
 
 typeset -g APOLLO_BACKGROUND_JOBS_VERBOSE="true"
-typeset -g APOLLO_BACKGROUND_JOBS_VERBOSE_ALWAYS="true"
+typeset -g APOLLO_BACKGROUND_JOBS_VERBOSE_ALWAYS="false"
 
 __apollo_background_jobs_cache_key() {
-  __APOLLO_RETURN_MESSAGE="1"
+  __APOLLO_RETURN_MESSAGE="${(%):-%j}"
 }
 
 __apollo_background_jobs_run() {
 
-  local msg
-
   if [[ $APOLLO_BACKGROUND_JOBS_VERBOSE == true ]]; then
     if [[ $APOLLO_BACKGROUND_JOBS_VERBOSE_ALWAYS == true ]]; then
-      msg='${(%):-%j}'
+      __APOLLO_RETURN_MESSAGE='%j'
     else
-      msg='${${(%):-%j}:#1}'
+      __APOLLO_RETURN_MESSAGE='%(1j.%j.)'
     fi
   fi
-
-  __APOLLO_RETURN_MESSAGE="${msg}"
 
 }
 

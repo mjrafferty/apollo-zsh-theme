@@ -5,7 +5,7 @@
 # https://virtualenv.pypa.io/en/latest/
 
 __apollo_virtualenv_cache_key() {
-  __APOLLO_RETURN_MESSAGE="$VIRTUAL_ENV"
+  __APOLLO_RETURN_MESSAGE="${VIRTUAL_ENV:-1}"
 }
 
 __apollo_virtualenv_run() {

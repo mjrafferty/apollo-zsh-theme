@@ -24,6 +24,10 @@ exit_code_or_status() {
 
 }
 
+__apollo_status_cache_key(){
+  __APOLLO_RETURN_MESSAGE="$__APOLLO_PIPE_EXIT_CODES"
+}
+
 __apollo_status_run() {
 
     local ec_text
@@ -54,8 +58,6 @@ __apollo_status_run() {
     else
 
       ec_sum=${__APOLLO_EXIT_CODE}
-      # We use __APOLLO_EXIT_CODE instead of the right-most __APOLLO_PIPE_EXIT_CODES item because
-      # PIPE_FAIL may be set.
       exit_code_or_status "${__APOLLO_EXIT_CODE}"
       ec_text=$__APOLLO_RETURN_MESSAGE
 
@@ -66,16 +68,13 @@ __apollo_status_run() {
 
       APOLLO_STATUS_BG="red"
       if [[ "$APOLLO_STATUS_VERBOSE" == true ]]; then
-        #__APOLLO_CACHE_VAL=("$0_ERROR" "$2" red yellow1 CARRIAGE_RETURN_ICON 0 '' "$ec_text")
         __APOLLO_RETURN_MESSAGE="$ec_text"
       else
-        #__APOLLO_CACHE_VAL=("$0_ERROR" "$2" "$DEFAULT_COLOR" red FAIL_ICON 0 '' '')
         __APOLLO_RETURN_MESSAGE="BAD"
       fi
 
     elif [[ "$APOLLO_STATUS_OK" == true ]] && [[ "$APOLLO_STATUS_VERBOSE" == true || "$APOLLO_STATUS_OK_IN_NON_VERBOSE" == true ]]; then
 
-      #__APOLLO_CACHE_VAL=("$0_OK" "$2" "$DEFAULT_COLOR" green OK_ICON 0 '' '')
       __APOLLO_RETURN_MESSAGE="OK"
 
     else
