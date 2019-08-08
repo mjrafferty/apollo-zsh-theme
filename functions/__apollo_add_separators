@@ -11,13 +11,13 @@ __apollo_add_separators() {
   zstyle -a 'apollo:core:modules:left' modules left_modules
   zstyle -a 'apollo:core:modules:right' modules right_modules
 
-  if zstyle -m 'apollo:core:profiler' enabled true; then
+  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
     start="$EPOCHREALTIME"
   fi
 
-  if ! zstyle -T 'apollo:core:modules:left' separator; then
+  zstyle -s 'apollo:core:modules:left' separator left_sep
 
-    zstyle -s 'apollo:core:modules:left' separator left_sep
+  if [[ -n "$left_sep" ]]; then
 
     prompt_length="${#left_modules[@]}"
 
@@ -52,9 +52,9 @@ __apollo_add_separators() {
 
   fi
 
-  if ! zstyle -T 'apollo:core:modules:right' separator; then
+  zstyle -s 'apollo:core:modules:right' separator right_sep
 
-    zstyle -s 'apollo:core:modules:right' separator right_sep
+  if [[ -n "$right_sep" ]]; then
 
     prompt_length="${#right_modules[@]}"
 
@@ -78,7 +78,7 @@ __apollo_add_separators() {
 
   fi
 
-  if zstyle -m 'apollo:core:profiler' enabled true; then
+  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
     printf "%25s: %f\n" "separators" "$((EPOCHREALTIME-start))"
   fi
 

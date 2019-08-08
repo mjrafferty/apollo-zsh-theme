@@ -1,10 +1,5 @@
 # vim:ft=zsh
 
-## Configurables
-typeset -g  APOLLO_PROMPT_END="> "
-typeset -g  APOLLO_LINE_LINKS="true"
-typeset -g  APOLLO_RULER_COLOR="white"
-
 ## Necessary global variables
 typeset -gA __APOLLO_CACHE
 typeset -g 	__APOLLO_BUFFER_NAME
@@ -25,12 +20,6 @@ typeset -gi __APOLLO_CURRENT_RPROMPT=1
 typeset -gi __APOLLO_EXIT_CODE
 typeset -g  __APOLLO_PIPE_EXIT_CODES
 typeset -g  __APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
-
-__apollo_set_config () {
-
-  local context key value
-
-}
 
 prompt_apollo_setup() {
 

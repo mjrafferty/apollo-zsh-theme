@@ -1,16 +1,5 @@
 # vim:ft=zsh
 
-typeset -g  APOLLO_TL_LINK="╭─"
-typeset -g  APOLLO_ML_LINK="├─"
-typeset -g  APOLLO_SL_LINK="│ "
-typeset -g  APOLLO_BL_LINK="╰─"
-typeset -g  APOLLO_TR_LINK="─╮"
-typeset -g  APOLLO_MR_LINK="─┤"
-typeset -g  APOLLO_SR_LINK=" │"
-typeset -g  APOLLO_BR_LINK="─╯"
-typeset -g  APOLLO_NL_LINK="  "
-typeset -g  APOLLO_LINK_COLOR="white"
-
 typeset -ga __APOLLO_LEFT_LINK
 typeset -ga __APOLLO_RIGHT_LINK
 
@@ -22,22 +11,33 @@ __apollo_add_links() {
   local tl ml sl bl tr mr sr br nl
   local -a lines_meta
 
-  if zstyle -m 'apollo:core:profiler' enabled true; then
+  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
     start="$EPOCHREALTIME"
   fi
 
-  __apollo_set_colors "$APOLLO_LINK_COLOR" "clear"
+  zstyle -s 'apollo:core:links' color link_color
+  zstyle -s 'apollo:core:links:left:top' link tl
+  zstyle -s 'apollo:core:links:left:mid' link ml
+  zstyle -s 'apollo:core:links:left:str' link sl
+  zstyle -s 'apollo:core:links:left:bot' link bl
+  zstyle -s 'apollo:core:links:right:top' link tr
+  zstyle -s 'apollo:core:links:right:mid' link mr
+  zstyle -s 'apollo:core:links:right:str' link sr
+  zstyle -s 'apollo:core:links:right:bot' link br
+  zstyle -s 'apollo:core:links:*:none' link nl
+
+  __apollo_set_colors "$link_color" "clear"
   link_color="$__APOLLO_RETURN_MESSAGE"
 
-  tl="${link_color}${APOLLO_TL_LINK}%f"
-  ml="${link_color}${APOLLO_ML_LINK}%f"
-  sl="${link_color}${APOLLO_SL_LINK}%f"
-  bl="${link_color}${APOLLO_BL_LINK}%f"
-  tr="${link_color}${APOLLO_TR_LINK}%f"
-  mr="${link_color}${APOLLO_MR_LINK}%f"
-  sr="${link_color}${APOLLO_SR_LINK}%f"
-  br="${link_color}${APOLLO_BR_LINK}%f"
-  nl="${APOLLO_NL_LINK}"
+  tl="${link_color}${tl}%f"
+  ml="${link_color}${ml}%f"
+  sl="${link_color}${sl}%f"
+  bl="${link_color}${bl}%f"
+  tr="${link_color}${tr}%f"
+  mr="${link_color}${mr}%f"
+  sr="${link_color}${sr}%f"
+  br="${link_color}${br}%f"
+  nl="${nl}"
 
   line_index="$1";
 
@@ -270,7 +270,7 @@ __apollo_add_links() {
 
   done
 
-  if zstyle -m 'apollo:core:profiler' enabled true; then
+  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
     printf "%25s: %f\n" "line links" "$((EPOCHREALTIME-start))"
   fi
 

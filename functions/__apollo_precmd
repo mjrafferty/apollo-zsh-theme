@@ -13,7 +13,7 @@ __apollo_precmd() {
     __APOLLO_BREAK_CACHE_COUNTER=0;
   fi
 
-  if zstyle -m 'apollo:core:profiler' enabled true; then
+  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
     start="$EPOCHREALTIME"
   fi
 
@@ -21,7 +21,7 @@ __apollo_precmd() {
 
   __apollo_update_prompts
 
-  if zstyle -m 'apollo:core:profiler' enabled true; then
+  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
     printf "%25s: %f\n" "total" "$((EPOCHREALTIME-start))"
   fi
 

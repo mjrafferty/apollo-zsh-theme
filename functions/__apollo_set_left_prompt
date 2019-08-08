@@ -2,7 +2,7 @@
 
 __apollo_set_left_prompt() {
 
-  local module prompt_length current_module
+  local module prompt_length current_module prompt_end
   local -i line_index line
   local -a left_modules right_modules
 
@@ -43,7 +43,7 @@ __apollo_set_left_prompt() {
 
   for ((line=1;line<=line_index;line++)); do
 
-    if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
+    if zstyle -t 'apollo:core:links' enabled "true" "yes" "1" "on" ; then
       if ((line < line_index)); then
         __APOLLO_PROMPT_LINES[$line]="\${__APOLLO_LEFT_LINK[$line]}${__APOLLO_PROMPT_LINES[$line]}\${__APOLLO_RIGHT_LINK[$line]}"
       else
@@ -59,7 +59,9 @@ __apollo_set_left_prompt() {
 
   done
 
-  PROMPT+="$APOLLO_PROMPT_END"
+  zstyle -s 'apollo:core:prompt:end' text prompt_end
+
+  PROMPT+="$prompt_end"
   __APOLLO_PROMPT_COPY="$PROMPT"
 
 }

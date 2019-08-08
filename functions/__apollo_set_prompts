@@ -6,7 +6,7 @@ __apollo_set_prompts(){
 
   __apollo_make_rprompt "${#__APOLLO_PROMPT_LINES}"
 
-  if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
+  if zstyle -t 'apollo:core:links' enabled "true" "yes" "1" "on" ; then
     RPROMPT="${__APOLLO_RETURN_MESSAGE}\${__APOLLO_RIGHT_LINK[${#__APOLLO_PROMPT_LINES}]}"
   else
     RPROMPT="${__APOLLO_RETURN_MESSAGE}"

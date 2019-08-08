@@ -5,7 +5,7 @@ __apollo_update_lengths () {
   local lines
   local start
 
-  if zstyle -m 'apollo:core:profiler' enabled true; then
+  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
     start="$EPOCHREALTIME"
   fi
 
@@ -21,7 +21,7 @@ __apollo_update_lengths () {
 
   done
 
-  if zstyle -m 'apollo:core:profiler' enabled true; then
+  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
     printf "%25s: %f\n" "update length" "$((EPOCHREALTIME - start))"
   fi
 

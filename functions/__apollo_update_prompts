@@ -2,7 +2,7 @@
 
 __apollo_update_prompts() {
 
-  if [[ "$APOLLO_LINE_LINKS" == "true" ]]; then
+  if zstyle -t 'apollo:core:links' enabled "true" "yes" "1" "on" ; then
     __apollo_add_links "${#__APOLLO_PROMPT_LINES}"
   fi
 
