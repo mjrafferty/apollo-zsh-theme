@@ -7,16 +7,28 @@ typeset -g __APOLLO_QUOTA_USER
 
 __apollo_quota_cache_key(){
 
-	local temp
-
-	if [[ $PWD =~ "/((chroot/)?home/|local/)" ]]; then
-		temp=${PWD:${MEND}};
-		__APOLLO_QUOTA_USER="${temp%%/*}"
-    __APOLLO_RETURN_MESSAGE="$__APOLLO_QUOTA_USER"
-	else
-		__APOLLO_QUOTA_USER=""
-    __APOLLO_RETURN_MESSAGE="1"
-	fi
+  case "$PWD" in
+    "/home"*)
+      __APOLLO_QUOTA_USER="${${(s|/|)PWD}[2]}"
+      __APOLLO_RETURN_MESSAGE="$__APOLLO_QUOTA_USER"
+      ;;
+    "/chroot/home"*)
+      __APOLLO_QUOTA_USER="${${(s|/|)PWD}[3]}"
+      __APOLLO_RETURN_MESSAGE="$__APOLLO_QUOTA_USER"
+      ;;
+    "/local"*)
+      __APOLLO_QUOTA_USER="${${(s|/|)PWD}[2]}"
+      __APOLLO_RETURN_MESSAGE="$__APOLLO_QUOTA_USER"
+      ;;
+    "/chroot/local"*)
+      __APOLLO_QUOTA_USER="${${(s|/|)PWD}[3]}"
+      __APOLLO_RETURN_MESSAGE="$__APOLLO_QUOTA_USER"
+      ;;
+    *)
+      __APOLLO_QUOTA_USER=""
+      __APOLLO_RETURN_MESSAGE="1"
+      ;;
+    esac
 
 }
 
