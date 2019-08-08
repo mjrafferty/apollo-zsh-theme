@@ -3,13 +3,22 @@
 typeset -g __APOLLO_INSTALL_DIR="${(%):-%N}"
 __APOLLO_INSTALL_DIR="${__APOLLO_INSTALL_DIR%/*}"
 
-#[[ ! -e "${__APOLLO_INSTALL_DIR}/functions.zwc" ]] \
-  #&& zcompile "${__APOLLO_INSTALL_DIR}/functions.zwc" "${__APOLLO_INSTALL_DIR}/functions/"*
+__apollo_compile() {
 
-#[[ ! -e "${__APOLLO_INSTALL_DIR}/modules.zwc" ]] \
-  #&& zcompile "${__APOLLO_INSTALL_DIR}/modules.zwc" "${__APOLLO_INSTALL_DIR}/modules/"*
+  for dir in functions modules conf; do
+    [[ ! -s "${__APOLLO_INSTALL_DIR}/${dir}.zwc" \
+      || "${__APOLLO_INSTALL_DIR}/${dir}" -nt "${__APOLLO_INSTALL_DIR}/${dir}.zwc" ]] \
+      && zcompile "${__APOLLO_INSTALL_DIR}/${dir}.zwc" "${__APOLLO_INSTALL_DIR}/${dir}/"*
+  done
 
-fpath+=("${__APOLLO_INSTALL_DIR}/functions")
+}
+
+__apollo_compile &!
+unfunction __apollo_compile
+
+if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/functions"]} -gt ${#fpath} ]]; then
+    fpath+=("${__APOLLO_INSTALL_DIR}/functions.zwc" "${__APOLLO_INSTALL_DIR}/functions")
+fi
 
 autoload -Uz prompt_apollo_setup
 prompt_apollo_setup

@@ -38,9 +38,13 @@ prompt_apollo_setup() {
   zstyle -a 'apollo:core:modules:left' modules left_modules
   zstyle -a 'apollo:core:modules:right' modules right_modules
 
-  # TODO check fpath and update if necessary
-  #fpath+=("${__APOLLO_INSTALL_DIR}/functions")
-  fpath+=("${__APOLLO_INSTALL_DIR}/modules")
+  if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/functions"]} -gt ${#fpath} ]]; then
+    fpath+=("${__APOLLO_INSTALL_DIR}/functions.zwc" "${__APOLLO_INSTALL_DIR}/functions")
+  fi
+
+  if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/modules"]} -gt ${#fpath} ]]; then
+    fpath+=("${__APOLLO_INSTALL_DIR}/modules.zwc" "${__APOLLO_INSTALL_DIR}/modules")
+  fi
 
   # TODO move necessary utilities into functions
   source "${__APOLLO_INSTALL_DIR}/lib/utilities.zsh"
