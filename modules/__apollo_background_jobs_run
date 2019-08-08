@@ -22,7 +22,7 @@ __apollo_background_jobs_run() {
     fi
   fi
 
-  __APOLLO_RETURN_MESSAGE="${(e)msg}"
+  __APOLLO_RETURN_MESSAGE="${msg}"
 
 }
 
