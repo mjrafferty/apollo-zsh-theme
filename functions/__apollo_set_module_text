@@ -3,7 +3,7 @@
 __apollo_set_module_text() {
 
   local module module_text modules_colors transition_fg cache_key side left_surround right_surround
-  local -u fg_var bg_var
+  local fg_color bg_color
 
   module="$1"
   side="$2"
@@ -12,8 +12,8 @@ __apollo_set_module_text() {
   zstyle -s 'apollo:core:modules:left' surround left_surround
   zstyle -s 'apollo:core:modules:right' surround right_surround
 
-  fg_var="APOLLO_${module}_FG"
-  bg_var="APOLLO_${module}_BG"
+  zstyle -s "apollo:${module}:default:fg" color fg_color
+  zstyle -s "apollo:${module}:default:bg" color bg_color
 
   # Clear out old message before passing to module
   __APOLLO_RETURN_MESSAGE=""
@@ -36,10 +36,10 @@ __apollo_set_module_text() {
   ## TODO icons?
   module_text="${left_surround}${__APOLLO_RETURN_MESSAGE}${right_surround}"
 
-  __apollo_set_colors "${(P)${fg_var}}" "${(P)${bg_var}}"
+  __apollo_set_colors "${fg_color}" "${bg_color}"
   module_colors="${__APOLLO_RETURN_MESSAGE}"
 
-  __apollo_set_colors "${(P)${bg_var}}" "keep"
+  __apollo_set_colors "${bg_color}" "keep"
   transition_fg="${__APOLLO_RETURN_MESSAGE}"
 
   __APOLLO_MODULE_TEXT[$module]="${module_colors}${module_text}${transition_fg}"

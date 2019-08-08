@@ -2,9 +2,6 @@
 ################################################################
 # Segment to display PHP version number
 
-typeset -g APOLLO_PHP_VERSION_FG="grey93"
-typeset -g APOLLO_PHP_VERSION_BG="fuchsia"
-
 __apollo_php_version_cache_key() {
   __APOLLO_RETURN_MESSAGE="1"
 }

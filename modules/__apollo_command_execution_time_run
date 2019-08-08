@@ -3,8 +3,6 @@
 # Display the duration the command needed to run.
 
 typeset -gi APOLLO_COMMAND_EXECUTION_TIME_PRECISION=2
-typeset -g  APOLLO_COMMAND_EXECUTION_TIME_FG="white"
-typeset -g  APOLLO_COMMAND_EXECUTION_TIME_BG="navy"
 
 typeset -gF __APOLLO_COMMAND_DURATION
 typeset -gF __APOLLO_TIMER_START

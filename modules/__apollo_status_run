@@ -5,8 +5,6 @@
 #
 # old options, retro compatibility
 
-typeset -g APOLLO_STATUS_FG="white"
-typeset -g APOLLO_STATUS_BG="green"
 typeset -g APOLLO_STATUS_HIDE_SIGNAME="false"
 typeset -g APOLLO_STATUS_SHOW_PIPESTATUS="true"
 typeset -g APOLLO_STATUS_CROSS="false"

@@ -2,8 +2,6 @@
 ################################################################
 # Public IP module
 
-typeset -g APOLLO_PUBLIC_IP_FG="white"
-typeset -g APOLLO_PUBLIC_IP_BG="darkgreen"
 typeset -ga APOLLO_PUBLIC_IP_METHODS
 APOLLO_PUBLIC_IP_METHODS=(curl)
 typeset -g APOLLO_PUBLIC_IP_HOST="ipv4.nexcess.net"

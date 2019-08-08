@@ -3,8 +3,6 @@
 ################################################################
 # Dir: current working directory
 
-typeset -g APOLLO_DIR_BG="blue"
-typeset -g APOLLO_DIR_FG="white"
 typeset -g APOLLO_DIR_MAX_LENGTH=10
 typeset -g APOLLO_DIR_PACKAGE_FILES
 typeset -g APOLLO_DIR_PATH_ABSOLUTE=false

@@ -5,9 +5,6 @@
 # VISUAL mode is shown as NORMAL unless APOLLO_VI_VISUAL_MODE_STRING is explicitly set.
 # Your ZSH version must be >= 5.3 if you set this parameter.
 
-typeset -g APOLLO_VI_MODE_FG="white"
-typeset -g APOLLO_VI_MODE_BG="grey30"
-
 typeset -g __APOLLO_VI_MODE="INSERT"
 
 __apollo_vi_mode_cache_key() {

@@ -4,9 +4,6 @@
 # More information on virtualenv (Python):
 # https://virtualenv.pypa.io/en/latest/
 
-typeset -g APOLLO_VIRTUALENV_FG="white"
-typeset -g APOLLO_VIRTUALENV_BG="blue"
-
 __apollo_virtualenv_cache_key() {
   __APOLLO_RETURN_MESSAGE="$VIRTUAL_ENV"
 }

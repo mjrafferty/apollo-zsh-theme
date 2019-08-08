@@ -3,8 +3,6 @@
 # System date
 
 typeset -g APOLLO_DATE_FORMAT="%D{%m-%d-%y}"
-typeset -g APOLLO_DATE_FG="white"
-typeset -g APOLLO_DATE_BG="blue"
 
 __apollo_date_run() {
 

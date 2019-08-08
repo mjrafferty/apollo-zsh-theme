@@ -2,9 +2,6 @@
 ################################################################
 # Segment to print an icon if user is root.
 
-typeset -g APOLLO_ROOT_INDICATOR_FG="yellow"
-typeset -g APOLLO_ROOT_INDICATOR_BG="black"
-
 __apollo_root_indicator_run() {
   __APOLLO_RETURN_MESSAGE="${${(%):-%#}:#%}"
 }

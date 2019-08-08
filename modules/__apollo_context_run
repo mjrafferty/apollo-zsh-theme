@@ -5,8 +5,6 @@
 # Note that if $DEFAULT_USER is not set, this prompt module will always print
 
 typeset -g APOLLO_CONTEXT_TEMPLATE="%n@%m"
-typeset -g APOLLO_CONTEXT_FG="white"
-typeset -g APOLLO_CONTEXT_BG="navy"
 typeset -g APOLLO_CONTEXT_ALWAYS_SHOW_USER="false"
 typeset -g APOLLO_CONTEXT_ALWAYS_SHOW="false"
 

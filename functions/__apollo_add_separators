@@ -2,10 +2,9 @@
 
 __apollo_add_separators() {
 
-  local start current_module left_sep right_sep
+  local start current_module left_sep right_sep bg_color
   local -i first_skipped=0
   local -i prompt_length module
-  local -u bg_var
   local -a left_modules right_modules
 
   zstyle -a 'apollo:core:modules:left' modules left_modules
@@ -33,8 +32,8 @@ __apollo_add_separators() {
             first_skipped=0
             __apollo_set_colors "keep" "clear"
           else
-            bg_var="APOLLO_${current_module}_BG"
-            __apollo_set_colors "keep" "${(P)${bg_var}}"
+            zstyle -s "apollo:${current_module}:default:bg" color bg_color
+            __apollo_set_colors "keep" "${bg_color}"
           fi
 
           __APOLLO_LEFT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}${left_sep}"
@@ -67,8 +66,8 @@ __apollo_add_separators() {
       fi
 
       if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
-        bg_var="APOLLO_${current_module}_BG"
-        __apollo_set_colors "${(P)${bg_var}}" "keep"
+        zstyle -s "apollo:${current_module}:default:bg" color bg_color
+        __apollo_set_colors "${bg_color}" "keep"
         __APOLLO_RIGHT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}${right_sep}"
       else
         __APOLLO_RIGHT_SEPARATORS[module]=""

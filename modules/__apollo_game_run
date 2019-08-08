@@ -1,11 +1,8 @@
 # vim:ft=zsh
 
-typeset -g  APOLLO_GAME_BG="darkblue"
-typeset -g  APOLLO_GAME_FG="white"
 
 typeset -gi __APOLLO_GAME_CASH=1000
-
-typeset -ag __APOLLO_GAME_SYMBOLS
+typeset -ga __APOLLO_GAME_SYMBOLS
 
 __APOLLO_GAME_SYMBOLS=(
   "%F{1}🍒%F{7}"
