@@ -2,7 +2,7 @@
 
 __apollo_get_module_text() {
 
-  local module side start cache_key cache
+  local module side start cache_key cache cache_status
 
   module="$1"
   side="$2"
@@ -20,12 +20,14 @@ __apollo_get_module_text() {
   if [[ -n "$cache" ]]; then
     __APOLLO_MODULE_TEXT[$module]="${cache##*|}"
     __APOLLO_MODULE_HAS_LENGTH[$module]="${cache%%|*}"
+    cache_status="HIT"
   else
     __apollo_set_module_text "$module" "$side" "$cache_key"
+    cache_status="MISS"
   fi
 
   if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
-    printf "%25s: %f\n" "$module" "$((EPOCHREALTIME - start))"
+    printf "%25s: %f %s\n" "$module" "$((EPOCHREALTIME - start))" "$cache_status"
   fi
 
 }
