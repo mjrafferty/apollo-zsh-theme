@@ -14,9 +14,9 @@ __apollo_background_jobs_run() {
 
   if [[ $APOLLO_BACKGROUND_JOBS_VERBOSE == true ]]; then
     if [[ $APOLLO_BACKGROUND_JOBS_VERBOSE_ALWAYS == true ]]; then
-      __APOLLO_RETURN_MESSAGE='%j'
+      __APOLLO_RETURN_MESSAGE="${(%):-%j}"
     else
-      __APOLLO_RETURN_MESSAGE='%(1j.%j.)'
+      __APOLLO_RETURN_MESSAGE="${(%):-%(1j.%j.)}"
     fi
   fi
 
