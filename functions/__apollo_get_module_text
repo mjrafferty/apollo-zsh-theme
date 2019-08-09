@@ -18,8 +18,8 @@ __apollo_get_module_text() {
   fi
 
   if [[ -n "$cache" ]]; then
-    __APOLLO_MODULE_TEXT[$module]="${cache##*|}"
-    __APOLLO_MODULE_HAS_LENGTH[$module]="${cache%%|*}"
+    __APOLLO_MODULE_TEXT[$module]="${cache##*,}"
+    __APOLLO_MODULE_HAS_LENGTH[$module]="${cache%%,*}"
     cache_status="HIT"
   else
     __apollo_set_module_text "$module" "$side" "$cache_key"

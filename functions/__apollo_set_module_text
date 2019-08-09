@@ -2,23 +2,19 @@
 
 __apollo_set_module_text() {
 
-  local module module_text modules_colors transition_fg cache_key side left_surround right_surround
-  local fg_color bg_color
+  local module module_text module_colors transition_fg cache_key side fg_color bg_color
+  local left_surround right_surround left_label right_label left_padding right_padding
+  local mode="default"
+  local -i width min_width
 
   module="$1"
   side="$2"
   cache_key="$3"
 
-  zstyle -s 'apollo:core:modules:left' surround left_surround
-  zstyle -s 'apollo:core:modules:right' surround right_surround
-
-  zstyle -s "apollo:${module}:default:fg" color fg_color
-  zstyle -s "apollo:${module}:default:bg" color bg_color
-
   # Clear out old message before passing to module
   __APOLLO_RETURN_MESSAGE=""
 
-   "__apollo_${module}_run" >&"${__APOLLO_BUFFER_FD}"
+  "__apollo_${module}_run" >&"${__APOLLO_BUFFER_FD}"
 
   # Flush any remaining data in buffer
   while read -rt dump <&"${__APOLLO_BUFFER_FD}"; do true; done
@@ -27,14 +23,36 @@ __apollo_set_module_text() {
     __APOLLO_MODULE_HAS_LENGTH[$module]="0"
     __APOLLO_MODULE_TEXT[$module]=""
     if [[ -n "$cache_key" ]]; then
-      __APOLLO_CACHE["${module}-${cache_key}"]="0|${__APOLLO_RETURN_MESSAGE}"
+      __APOLLO_CACHE["${module}-${cache_key}"]="0,${module_text}"
     fi
     return;
   fi
 
-  ## TODO padding
-  ## TODO icons?
-  module_text="${left_surround}${__APOLLO_RETURN_MESSAGE}${right_surround}"
+  module_text="${__APOLLO_RETURN_MESSAGE}"
+
+
+  zstyle -s 'apollo:core:modules:left' surround left_surround
+  zstyle -s 'apollo:core:modules:right' surround right_surround
+  zstyle -s "apollo:${module}:${mode}:fg" color fg_color
+  zstyle -s "apollo:${module}:${mode}:bg" color bg_color
+  zstyle -s "apollo:${module}:${mode}:left" label left_label
+  zstyle -s "apollo:${module}:${mode}:right" label right_label
+  zstyle -s "apollo:${module}:${mode}" width min_width
+
+
+  ## Set padding if necessary
+  if [[ -n "$min_width" ]]; then
+    __apollo_get_display_width "${left_surround}${left_label}${module_text}${right_label}${right_surround}"
+    ((width=__APOLLO_RETURN_MESSAGE));
+    if (( width < min_width )); then
+      left_padding="$(((min_width-width)/2))"
+      right_padding="$(((min_width-width)-left_padding))"
+      left_padding="${(el.${left_padding}.. .)}"
+      right_padding="${(el.${right_padding}.. .)}"
+    fi
+  fi
+
+  module_text="${left_surround}${left_padding}${left_label}${module_text}${right_label}${right_padding}${right_surround}"
 
   __apollo_set_colors "${fg_color}" "${bg_color}"
   module_colors="${__APOLLO_RETURN_MESSAGE}"
@@ -47,7 +65,7 @@ __apollo_set_module_text() {
   __APOLLO_MODULE_HAS_LENGTH[$module]="1"
 
   if [[ -n "$cache_key" ]]; then
-    __APOLLO_CACHE["${module}-${cache_key}"]="${__APOLLO_MODULE_HAS_LENGTH[$module]}|${__APOLLO_MODULE_TEXT[$module]}"
+    __APOLLO_CACHE["${module}-${cache_key}"]="${__APOLLO_MODULE_HAS_LENGTH[$module]},${__APOLLO_MODULE_TEXT[$module]}"
   fi
 
 }

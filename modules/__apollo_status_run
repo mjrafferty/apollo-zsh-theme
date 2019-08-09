@@ -25,7 +25,7 @@ exit_code_or_status() {
 }
 
 __apollo_status_cache_key(){
-  __APOLLO_RETURN_MESSAGE="$__APOLLO_PIPE_EXIT_CODES"
+  __APOLLO_RETURN_MESSAGE="${__APOLLO_PIPE_EXIT_CODES}${__APOLLO_EXIT_CODE}"
 }
 
 __apollo_status_run() {
