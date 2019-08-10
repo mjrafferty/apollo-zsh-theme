@@ -305,7 +305,7 @@ __apollo_set_colors() {
     esac
   fi
 
-  __APOLLO_RETURN_MESSAGE="${fg}${bg}"
+  __APOLLO_RETURN_MESSAGE="%{${fg}${bg}%}"
 
 }
 

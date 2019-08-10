@@ -32,7 +32,7 @@ __apollo_add_separators() {
             first_skipped=0
             __apollo_set_colors "keep" "clear"
           else
-            zstyle -s "apollo:${current_module}:default:bg" color bg_color
+            zstyle -s "apollo:${current_module}:*:*:bg" color bg_color
             __apollo_set_colors "keep" "${bg_color}"
           fi
 
@@ -66,7 +66,7 @@ __apollo_add_separators() {
       fi
 
       if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
-        zstyle -s "apollo:${current_module}:default:bg" color bg_color
+        zstyle -s "apollo:${current_module}:*:*:bg" color bg_color
         __apollo_set_colors "${bg_color}" "keep"
         __APOLLO_RIGHT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}${right_sep}"
       else

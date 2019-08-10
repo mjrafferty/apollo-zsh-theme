@@ -1,0 +1,42 @@
+# vim:ft=zsh
+
+__apollo_format_string() {
+
+  local style string context fg_color bg_color
+  local -a styles
+
+  string="$1"
+  context="$2"
+
+  if [[ -z "$string" ]]; then
+    __APOLLO_RETURN_MESSAGE=""
+    return;
+  fi
+
+  zstyle -a "$context" style styles
+
+  for style in "${styles[@]}"; do
+    case "$style" in
+      "bold")
+        string="%{%B%}${string}%{%b%}"
+        ;;
+      "standout")
+        string="%{%S%}${string}%{%s%}"
+        ;;
+      "underline")
+        string="%{%U%}${string}%{%u%}"
+        ;;
+      *);;
+    esac
+  done
+
+  zstyle -s "${context}:fg" color fg_color
+  zstyle -s "${context}:bg" color bg_color
+
+  __apollo_set_colors "$fg_color" "$bg_color"
+
+  __APOLLO_RETURN_MESSAGE="${__APOLLO_RETURN_MESSAGE}$string"
+
+}
+
+__apollo_format_string "$@"
