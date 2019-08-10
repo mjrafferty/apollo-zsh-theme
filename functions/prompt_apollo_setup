@@ -2,6 +2,7 @@
 
 ## Necessary global variables
 typeset -gA __APOLLO_CACHE
+typeset -gA __APOLLO_CONTEXT_CACHE
 typeset -g 	__APOLLO_BUFFER_NAME
 typeset -gi __APOLLO_BUFFER_FD
 typeset -gA __APOLLO_MODULE_TEXT
@@ -53,7 +54,7 @@ prompt_apollo_setup() {
     __apollo_precmd __apollo_run_modules __apollo_set_module_text __apollo_add_newline \
     __apollo_cleanup __apollo_make_rprompt __apollo_preexec __apollo_set_left_prompt \
     __apollo_set_prompts __apollo_set_colors __apollo_update_lengths __apollo_update_prompts \
-    __apollo_async_update __apollo_format_string
+    __apollo_async_update __apollo_format_string __apollo_format_module __apollo_format_separator
 
   autoload -Uz add-zsh-hook
   add-zsh-hook precmd __apollo_precmd

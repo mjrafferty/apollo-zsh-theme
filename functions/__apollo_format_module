@@ -1,0 +1,70 @@
+# vim:ft=zsh
+
+__apollo_format_module() {
+
+  local context module_text
+  local -i width min_width
+  local left_padding right_padding
+  local left_label right_label
+  local left_surround right_surround
+  local format_string=",,"
+  local -a cache
+
+  context="$1"
+  module_text="$2"
+
+  cache=("${(s:,:)__APOLLO_CONTEXT_CACHE[$context]}")
+
+  if [[ -z "$cache[1]" ]]; then
+
+    __apollo_format_string "${format_string}" "${context}"
+    format_string="${__APOLLO_RETURN_MESSAGE}"
+
+    zstyle -s "${context}:left:label" text left_label
+    __apollo_format_string "$left_label" "${context}:left:label"
+    left_label="$__APOLLO_RETURN_MESSAGE"
+
+    zstyle -s "${context}:right:label" text right_label
+    __apollo_format_string "$right_label" "${context}:right:label"
+    right_label="$__APOLLO_RETURN_MESSAGE"
+
+    format_string="${left_label}${format_string}${right_label}"
+
+    zstyle -s "${context}:left:surround" text left_surround
+    __apollo_format_string "$left_surround" "${context}:left:surround"
+    left_surround="$__APOLLO_RETURN_MESSAGE"
+
+    zstyle -s "${context}:right:surround" text right_surround
+    __apollo_format_string "$right_surround" "${context}:right:surround"
+    right_surround="$__APOLLO_RETURN_MESSAGE"
+
+    format_string="${left_surround},${format_string},${right_surround}"
+
+    cache=("${(s:,:)format_string}")
+    __APOLLO_CONTEXT_CACHE[$context]="$format_string"
+
+  fi
+
+  module_text="${cache[2]}${module_text}${cache[3]}"
+  left_surround="${cache[1]}"
+  right_surround="${cache[4]}"
+
+  zstyle -s "${context}" min_width min_width
+
+  ## Set padding if necessary
+  if [[ -n "$min_width" ]]; then
+    __apollo_get_display_width "${left_surround}${module_text}${right_surround}"
+    ((width=__APOLLO_RETURN_MESSAGE));
+    if (( width < min_width )); then
+      left_padding="$(((min_width-width)/2))"
+      right_padding="$(((min_width-width)-left_padding))"
+      left_padding="${(el.${left_padding}.. .)}"
+      right_padding="${(el.${right_padding}.. .)}"
+    fi
+  fi
+
+  __APOLLO_RETURN_MESSAGE="${left_surround}${left_padding}${module_text}${right_padding}${right_surround}"
+
+}
+
+__apollo_format_module "$@"

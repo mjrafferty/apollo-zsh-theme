@@ -14,68 +14,60 @@ __apollo_add_separators() {
     start="$EPOCHREALTIME"
   fi
 
-  zstyle -s 'apollo:core:modules:left' separator left_sep
+  prompt_length="${#left_modules[@]}"
 
-  if [[ -n "$left_sep" ]]; then
+  for ((module=1; module<=prompt_length;module++)); do
 
-    prompt_length="${#left_modules[@]}"
+    current_module="${left_modules[module]}"
 
-    for ((module=1; module<=prompt_length;module++)); do
+    if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
 
-      current_module="${left_modules[module]}"
+      if ((first_skipped > 0)); then
 
-      if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
-
-        if ((first_skipped > 0)); then
-
-          if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
-            first_skipped=0
-            __apollo_set_colors "keep" "clear"
-          else
-            zstyle -s "apollo:${current_module}:*:*:bg" color bg_color
-            __apollo_set_colors "keep" "${bg_color}"
-          fi
-
-          __APOLLO_LEFT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}${left_sep}"
-
+        if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
+          first_skipped=0
+          # TODO mode
+          zstyle -s "apollo:${current_module}:*:left:separator" text left_sep
+          __apollo_format_separator "apollo:${current_module}:*:left:separator" "$left_sep"
+          __APOLLO_LEFT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}"
         else
-          __APOLLO_LEFT_SEPARATORS[module]=""
-          if [[ "$current_module" != "newline" && "$current_module" != "ruler" ]]; then
-            first_skipped=1
-          fi
+          # TODO mode
+          zstyle -s "apollo:${current_module}:*:left:separator" text left_sep
+          __apollo_format_separator "apollo:${current_module}:*:left:separator" "$left_sep"
+          __APOLLO_LEFT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}"
         fi
 
-      fi
-
-    done
-
-  fi
-
-  zstyle -s 'apollo:core:modules:right' separator right_sep
-
-  if [[ -n "$right_sep" ]]; then
-
-    prompt_length="${#right_modules[@]}"
-
-    for ((module=1; module<=prompt_length;module++)); do
-
-      current_module="${right_modules[module]}"
-
-      if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
-        continue;
-      fi
-
-      if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
-        zstyle -s "apollo:${current_module}:*:*:bg" color bg_color
-        __apollo_set_colors "${bg_color}" "keep"
-        __APOLLO_RIGHT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}${right_sep}"
       else
-        __APOLLO_RIGHT_SEPARATORS[module]=""
+        __APOLLO_LEFT_SEPARATORS[module]=""
+        if [[ "$current_module" != "newline" && "$current_module" != "ruler" ]]; then
+          first_skipped=1
+        fi
       fi
 
-    done
+    fi
 
-  fi
+  done
+
+  prompt_length="${#right_modules[@]}"
+
+  for ((module=1; module<=prompt_length;module++)); do
+
+    current_module="${right_modules[module]}"
+
+    if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
+      continue;
+    fi
+
+    if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
+      # TODO mode
+      zstyle -s "apollo:${current_module}:*:right:separator" text right_sep
+      __apollo_format_separator "apollo:${current_module}:*:right:separator" "$right_sep"
+      __APOLLO_RIGHT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}"
+    else
+      __APOLLO_RIGHT_SEPARATORS[module]=""
+    fi
+
+  done
 
   if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
     printf "%25s: %f\n" "separators" "$((EPOCHREALTIME-start))"

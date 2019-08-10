@@ -1,0 +1,27 @@
+# vim:ft=zsh
+
+__apollo_format_separator() {
+
+  local context text cache
+
+  context="$1"
+  text="$2"
+
+  cache="${__APOLLO_CONTEXT_CACHE[$context]}"
+
+  if [[ -z "$cache" ]]; then
+
+    __apollo_format_string "${text}" "${context}"
+    text="${__APOLLO_RETURN_MESSAGE}"
+
+    __APOLLO_CONTEXT_CACHE[$context]="${text}"
+    __APOLLO_RETURN_MESSAGE="${text}"
+
+  else
+    __APOLLO_RETURN_MESSAGE="${cache}"
+  fi
+
+
+}
+
+__apollo_format_separator "$@"

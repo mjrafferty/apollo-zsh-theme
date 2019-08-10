@@ -33,46 +33,9 @@ __apollo_set_module_text() {
     return;
   fi
 
-  __apollo_format_string "${__APOLLO_RETURN_MESSAGE}" "apollo:${module}:${mode}:${side}"
-  module_text="${__APOLLO_RETURN_MESSAGE}"
+  __apollo_format_module "apollo:${module}:${mode}:${side}" "$__APOLLO_RETURN_MESSAGE"
 
-  zstyle -s "apollo:${module}:${mode}:${side}:left:surround" text left_surround
-  __apollo_format_string "$left_surround" "apollo:${module}:${mode}:${side}:left:surround"
-  left_surround="$__APOLLO_RETURN_MESSAGE"
-
-  zstyle -s "apollo:${module}:${mode}:${side}:right:surround" text right_surround
-  __apollo_format_string "$right_surround" "apollo:${module}:${mode}:${side}:right:surround"
-  right_surround="$__APOLLO_RETURN_MESSAGE"
-
-  zstyle -s "apollo:${module}:${mode}:${side}:left:label" text left_label
-  __apollo_format_string "$left_label" "apollo:${module}:${mode}:${side}:left:label"
-  left_label="$__APOLLO_RETURN_MESSAGE"
-
-  zstyle -s "apollo:${module}:${mode}:${side}:right:label" text right_label
-  __apollo_format_string "$right_label" "apollo:${module}:${mode}:${side}:right:label"
-  right_label="$__APOLLO_RETURN_MESSAGE"
-
-  zstyle -s "apollo:${module}:${mode}:${side}" min_width min_width
-
-  ## Set padding if necessary
-  if [[ -n "$min_width" ]]; then
-    __apollo_get_display_width "${left_surround}${left_label}${module_text}${right_label}${right_surround}"
-    ((width=__APOLLO_RETURN_MESSAGE));
-    if (( width < min_width )); then
-      left_padding="$(((min_width-width)/2))"
-      right_padding="$(((min_width-width)-left_padding))"
-      left_padding="${(el.${left_padding}.. .)}"
-      right_padding="${(el.${right_padding}.. .)}"
-    fi
-  fi
-
-  module_text="${left_surround}${left_padding}${left_label}${module_text}${right_label}${right_padding}${right_surround}"
-
-  ## Set transition foreground color for separator
-  zstyle -s "apollo:${module}:${mode}:${side}:bg" color bg_color
-  __apollo_set_colors "${bg_color}" "keep"
-
-  __APOLLO_MODULE_TEXT[$module]="${module_text}${__APOLLO_RETURN_MESSAGE}"
+  __APOLLO_MODULE_TEXT[$module]="${__APOLLO_RETURN_MESSAGE}"
 
   __APOLLO_MODULE_HAS_LENGTH[$module]="1"
 
