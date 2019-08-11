@@ -2,7 +2,8 @@
 
 __apollo_get_module_text() {
 
-  local module side start cache_key cache cache_status
+  local module side start cache_key cache_status
+  local -a cache
 
   module="$1"
   side="$2"
@@ -14,12 +15,13 @@ __apollo_get_module_text() {
   if ((${+functions[__apollo_${module}_cache_key]})); then
     "__apollo_${module}_cache_key";
     cache_key="${__APOLLO_RETURN_MESSAGE}"
-    cache="${__APOLLO_CACHE["${module}-${cache_key}"]}"
+    cache=("${(s:,:)__APOLLO_CACHE["${module}-${cache_key}"]}")
   fi
 
   if [[ -n "$cache" ]]; then
-    __APOLLO_MODULE_TEXT[$module]="${cache##*,}"
-    __APOLLO_MODULE_HAS_LENGTH[$module]="${cache%%,*}"
+    __APOLLO_MODULE_TEXT[$module]="${cache[2]}"
+    __APOLLO_MODULE_HAS_LENGTH[$module]="${cache[1]}"
+    __APOLLO_MODULE_MODE[$module]="${cache[3]}"
     cache_status="HIT"
   else
     __apollo_set_module_text "$module" "$side" "$cache_key"

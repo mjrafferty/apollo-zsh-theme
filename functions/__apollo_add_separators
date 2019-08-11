@@ -29,6 +29,8 @@ __apollo_add_separators() {
           first_skipped=0
         fi
 
+        mode="${__APOLLO_MODULE_MODE[$current_module]}"
+
         zstyle -s "apollo:${current_module}:${mode}:left:separator" text left_sep
         __apollo_format_separator "apollo:${current_module}:${mode}:left:separator" "$left_sep" "left"
         __APOLLO_LEFT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}"
@@ -55,6 +57,9 @@ __apollo_add_separators() {
     fi
 
     if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
+
+      mode="${__APOLLO_MODULE_MODE[$current_module]}"
+
       zstyle -s "apollo:${current_module}:${mode}:right:separator" text right_sep
       __apollo_format_separator "apollo:${current_module}:${mode}:right:separator" "$right_sep" "right"
       __APOLLO_RIGHT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}"

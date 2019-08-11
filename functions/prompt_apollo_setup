@@ -6,6 +6,7 @@ typeset -gA __APOLLO_CONTEXT_CACHE
 typeset -g 	__APOLLO_BUFFER_NAME
 typeset -gi __APOLLO_BUFFER_FD
 typeset -gA __APOLLO_MODULE_TEXT
+typeset -gA __APOLLO_MODULE_MODE
 typeset -gA __APOLLO_MODULE_HAS_LENGTH
 typeset -ga __APOLLO_PROMPT_LINE_LENGTH
 typeset -g  __APOLLO_PROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT

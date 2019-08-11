@@ -34,8 +34,6 @@ __apollo_status_run() {
     local ec_sum
     local ec
 
-    APOLLO_STATUS_BG="green"
-
     if [[ $APOLLO_STATUS_SHOW_PIPESTATUS == true ]]; then
 
       if (( $#__APOLLO_PIPE_EXIT_CODES > 1 )); then
@@ -66,7 +64,8 @@ __apollo_status_run() {
 
     if (( ec_sum > 0 )); then
 
-      APOLLO_STATUS_BG="red"
+      __APOLLO_MODULE_MODE[status]="bad"
+
       if [[ "$APOLLO_STATUS_VERBOSE" == true ]]; then
         __APOLLO_RETURN_MESSAGE="$ec_text"
       else

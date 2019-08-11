@@ -3,7 +3,6 @@
 __apollo_set_module_text() {
 
   local module side cache_key module_text bg_color
-  local mode="default"
   local always_show module_colors
   local left_label right_label
   local left_surround right_surround
@@ -14,6 +13,8 @@ __apollo_set_module_text() {
   side="$2"
   cache_key="$3"
 
+  __APOLLO_MODULE_MODE[$module]="default"
+
   # Clear out old message before passing to module
   __APOLLO_RETURN_MESSAGE=""
 
@@ -21,6 +22,8 @@ __apollo_set_module_text() {
 
   # Flush any remaining data in buffer
   while read -rt dump <&"${__APOLLO_BUFFER_FD}"; do true; done
+
+  mode="${__APOLLO_MODULE_MODE[$module]}"
 
   zstyle -b "apollo:${module}:${mode}:${side}" always_show always_show
 
@@ -40,7 +43,7 @@ __apollo_set_module_text() {
   __APOLLO_MODULE_HAS_LENGTH[$module]="1"
 
   if [[ -n "$cache_key" ]]; then
-    __APOLLO_CACHE["${module}-${cache_key}"]="${__APOLLO_MODULE_HAS_LENGTH[$module]},${__APOLLO_MODULE_TEXT[$module]}"
+    __APOLLO_CACHE["${module}-${cache_key}"]="${__APOLLO_MODULE_HAS_LENGTH[$module]},${__APOLLO_MODULE_TEXT[$module]},${mode}"
   fi
 
 }
