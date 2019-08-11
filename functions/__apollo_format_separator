@@ -2,16 +2,39 @@
 
 __apollo_format_separator() {
 
-  local context text cache
+  local context text cache blend side
+  local fg_color="keep"
+  local bg_color="keep"
 
   context="$1"
   text="$2"
+  side="$3"
 
   cache="${__APOLLO_CONTEXT_CACHE[$context]}"
 
   if [[ -z "$cache" ]]; then
 
-    __apollo_format_string "${text}" "${context}"
+    zstyle -b "${context}" blend blend
+
+    if [[ "$blend" == "yes" ]]; then
+
+      case "$side" in
+        "left")
+          zstyle -s "${context}:bg" color bg_color
+          ;;
+        "right")
+          zstyle -s "${context}:bg" color fg_color
+          ;;
+      esac
+
+      __apollo_format_string "${text}" "${context}" "${fg_color}" "${bg_color}"
+
+    else
+
+      __apollo_format_string "${text}" "${context}"
+
+    fi
+
     text="${__APOLLO_RETURN_MESSAGE}"
 
     __APOLLO_CONTEXT_CACHE[$context]="${text}"
@@ -20,7 +43,6 @@ __apollo_format_separator() {
   else
     __APOLLO_RETURN_MESSAGE="${cache}"
   fi
-
 
 }
 

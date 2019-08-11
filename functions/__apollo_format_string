@@ -7,6 +7,8 @@ __apollo_format_string() {
 
   string="$1"
   context="$2"
+  fg_color="$3"
+  bg_color="$4"
 
   if [[ -z "$string" ]]; then
     __APOLLO_RETURN_MESSAGE=""
@@ -30,8 +32,13 @@ __apollo_format_string() {
     esac
   done
 
-  zstyle -s "${context}:fg" color fg_color
-  zstyle -s "${context}:bg" color bg_color
+  if [[ -z "$fg_color" ]]; then
+    zstyle -s "${context}:fg" color fg_color
+  fi
+
+  if [[ -z "$bg_color" ]]; then
+    zstyle -s "${context}:bg" color bg_color
+  fi
 
   __apollo_set_colors "$fg_color" "$bg_color"
 
