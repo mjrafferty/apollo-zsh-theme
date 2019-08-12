@@ -3,7 +3,7 @@
 ## Necessary global variables
 typeset -gA __APOLLO_CACHE
 typeset -gA __APOLLO_CONTEXT_CACHE
-typeset -g 	__APOLLO_BUFFER_NAME
+typeset -g	__APOLLO_BUFFER_NAME
 typeset -gi __APOLLO_BUFFER_FD
 typeset -gA __APOLLO_MODULE_TEXT
 typeset -gA __APOLLO_MODULE_MODE
@@ -22,76 +22,86 @@ typeset -gi __APOLLO_EXIT_CODE
 typeset -g  __APOLLO_PIPE_EXIT_CODES
 typeset -g  __APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
 
-__apollo_cleanup() {
+	__apollo_cleanup() {
 
-  exec {__APOLLO_BUFFER_FD}>&-
+		exec {__APOLLO_BUFFER_FD}>&-
 
-  rm "$__APOLLO_BUFFER_NAME"
+		rm "$__APOLLO_BUFFER_NAME"
 
-}
+	}
 
 prompt_apollo_setup() {
 
-  local module conf
-  local -a left_modules right_modules
+	local module conf
+	local -a left_modules right_modules
 
-  setopt prompt_subst prompt_percent
+	setopt prompt_subst prompt_percent
 
-  zmodload zsh/datetime
+	zmodload zsh/datetime
 
-  # Load config files
-  for conf in "${__APOLLO_INSTALL_DIR}/conf/"*.conf; do
-    source "${conf}";
-  done
+	# Load config files
+	for conf in "${__APOLLO_INSTALL_DIR}/conf/"*.conf; do
+		source "${conf}";
+	done
 
-  zstyle -a 'apollo:core:modules:left' modules left_modules
-  zstyle -a 'apollo:core:modules:right' modules right_modules
+	zstyle -a 'apollo:core:modules:left' modules left_modules
+	zstyle -a 'apollo:core:modules:right' modules right_modules
 
-  if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/functions"]} -gt ${#fpath} ]]; then
-    fpath+=("${__APOLLO_INSTALL_DIR}/functions.zwc" "${__APOLLO_INSTALL_DIR}/functions")
-  fi
+	if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/functions"]} -gt ${#fpath} ]]; then
+		fpath+=("${__APOLLO_INSTALL_DIR}/functions.zwc" "${__APOLLO_INSTALL_DIR}/functions")
+	fi
 
-  if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/modules"]} -gt ${#fpath} ]]; then
-    fpath+=("${__APOLLO_INSTALL_DIR}/modules.zwc" "${__APOLLO_INSTALL_DIR}/modules")
-  fi
+	if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/modules"]} -gt ${#fpath} ]]; then
+		fpath+=("${__APOLLO_INSTALL_DIR}/modules.zwc" "${__APOLLO_INSTALL_DIR}/modules")
+	fi
 
-  # TODO move necessary utilities into functions
-  source "${__APOLLO_INSTALL_DIR}/lib/utilities.zsh"
+	# TODO move necessary utilities into functions
+	source "${__APOLLO_INSTALL_DIR}/lib/utilities.zsh"
 
-  autoload -Uz +X __apollo_add_links __apollo_decorate_prompt __apollo_get_module_text \
-    __apollo_precmd __apollo_run_modules __apollo_set_module_text __apollo_add_newline \
-    __apollo_make_rprompt __apollo_preexec __apollo_set_left_prompt __apollo_set_prompts \
-    __apollo_set_colors __apollo_update_prompts __apollo_async_update __apollo_format_string \
-    __apollo_format_module __apollo_format_separator
+	autoload -Uz +X __apollo_add_links __apollo_decorate_prompt __apollo_get_module_text \
+		__apollo_precmd __apollo_set_module_text __apollo_add_newline __apollo_make_rprompt \
+		__apollo_preexec __apollo_set_left_prompt __apollo_set_colors __apollo_update_prompts \
+		__apollo_async_update __apollo_format_string __apollo_format_module __apollo_format_separator
 
-  autoload -Uz add-zsh-hook
-  add-zsh-hook precmd __apollo_precmd
-  add-zsh-hook preexec __apollo_preexec
-  add-zsh-hook zshexit __apollo_cleanup
+	autoload -Uz add-zsh-hook
+	add-zsh-hook precmd __apollo_precmd
+	add-zsh-hook preexec __apollo_preexec
+	add-zsh-hook zshexit __apollo_cleanup
 
-  # Open a buffer for modules to use
-  __APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
-  mkfifo "${__APOLLO_BUFFER_NAME}"
-  exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
+	# Open a buffer for modules to use
+		__APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
+		mkfifo "${__APOLLO_BUFFER_NAME}"
+		exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
 
-  # Load enabled modules
-  for module in "${left_modules[@]}" "${right_modules[@]}"; do
+	# Load enabled modules
+	for module in "${left_modules[@]}" "${right_modules[@]}"; do
 
-    if [[ "$module" == "newline" || "$module" == "ruler" ]]; then
-      continue;
-    fi
+		if [[ "$module" == "newline" || "$module" == "ruler" ]]; then
+			continue;
+		fi
 
-    autoload -Uz +X "__apollo_${module}_run"
+		autoload -Uz +X "__apollo_${module}_run"
 
-  done
+	done
 
-  PROMPT=""
-  RPROMPT=""
+	PROMPT=""
+	RPROMPT=""
 
-  __apollo_set_prompts
+	__apollo_set_left_prompt
 
-  unfunction __apollo_add_newline __apollo_make_rprompt __apollo_set_left_prompt __apollo_set_prompts
-  unset __APOLLO_CURRENT_RPROMPT __APOLLO_INSTALL_DIR
+	__apollo_make_rprompt "${#__APOLLO_PROMPT_LINES}"
+
+	if zstyle -t 'apollo:core:links' enabled "true" "yes" "1" "on" ; then
+		RPROMPT="${__APOLLO_RETURN_MESSAGE}\${__APOLLO_RIGHT_LINK[${#__APOLLO_PROMPT_LINES}]}"
+	else
+		RPROMPT="${__APOLLO_RETURN_MESSAGE}"
+	fi
+
+	__APOLLO_PROMPT_COPY="${PROMPT}"
+	__APOLLO_RPROMPT_COPY="$RPROMPT"
+
+	unfunction __apollo_add_newline __apollo_make_rprompt __apollo_set_left_prompt
+	unset __APOLLO_CURRENT_RPROMPT __APOLLO_INSTALL_DIR
 
 }
 

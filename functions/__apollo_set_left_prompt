@@ -65,7 +65,6 @@ __apollo_set_left_prompt() {
   zstyle -s 'apollo:core:prompt:end' text prompt_end
 
   PROMPT+="$prompt_end"
-  __APOLLO_PROMPT_COPY="$PROMPT"
 
 }
 

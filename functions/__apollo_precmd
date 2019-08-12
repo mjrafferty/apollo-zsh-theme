@@ -5,7 +5,9 @@ __apollo_precmd() {
   __APOLLO_EXIT_CODE=$?
   __APOLLO_PIPE_EXIT_CODES=( "${pipestatus[@]}" )
 
-  local start
+  local start startmod
+	local line module
+  local -a left_modules right_modules
 
   # Forcefully refresh cache by pressing enter a few times
   if ((__APOLLO_BREAK_CACHE_COUNTER++ >= 2)); then
@@ -15,9 +17,30 @@ __apollo_precmd() {
 
   if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
     start="$EPOCHREALTIME"
+    startmod=${EPOCHREALTIME}
   fi
 
-  __apollo_run_modules
+  zstyle -a 'apollo:core:modules:left' modules left_modules
+  zstyle -a 'apollo:core:modules:right' modules right_modules
+
+  PROMPT="$__APOLLO_PROMPT_COPY"
+  RPROMPT="$__APOLLO_RPROMPT_COPY"
+
+  for module in "${right_modules[@]}"; do
+    if ((${+functions[__apollo_${module}_run]} > 0)); then
+      __apollo_get_module_text "$module" "right"
+    fi
+  done
+
+  for module in "${left_modules[@]}"; do
+    if ((${+functions[__apollo_${module}_run]} > 0)); then
+      __apollo_get_module_text "$module" "left"
+    fi
+  done
+
+  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
+    printf "%25s: %f\n" "modules_total" "$((EPOCHREALTIME - startmod))"
+  fi
 
   __apollo_update_prompts
 
