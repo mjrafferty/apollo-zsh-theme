@@ -14,8 +14,6 @@ __apollo_set_prompts(){
 
   __APOLLO_RPROMPT_COPY="$RPROMPT"
 
-  unset __APOLLO_CURRENT_RPROMPT;
-
 }
 
 __apollo_set_prompts "$@"
