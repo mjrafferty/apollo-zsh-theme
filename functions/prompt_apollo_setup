@@ -22,6 +22,14 @@ typeset -gi __APOLLO_EXIT_CODE
 typeset -g  __APOLLO_PIPE_EXIT_CODES
 typeset -g  __APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
 
+__apollo_cleanup() {
+
+  exec {__APOLLO_BUFFER_FD}>&-
+
+  rm "$__APOLLO_BUFFER_NAME"
+
+}
+
 prompt_apollo_setup() {
 
   local module conf
@@ -50,11 +58,11 @@ prompt_apollo_setup() {
   # TODO move necessary utilities into functions
   source "${__APOLLO_INSTALL_DIR}/lib/utilities.zsh"
 
-  autoload -Uz +X __apollo_add_links __apollo_add_separators __apollo_get_module_text \
+  autoload -Uz +X __apollo_add_links __apollo_decorate_prompt __apollo_get_module_text \
     __apollo_precmd __apollo_run_modules __apollo_set_module_text __apollo_add_newline \
-    __apollo_cleanup __apollo_make_rprompt __apollo_preexec __apollo_set_left_prompt \
-    __apollo_set_prompts __apollo_set_colors __apollo_update_lengths __apollo_update_prompts \
-    __apollo_async_update __apollo_format_string __apollo_format_module __apollo_format_separator
+    __apollo_make_rprompt __apollo_preexec __apollo_set_left_prompt __apollo_set_prompts \
+    __apollo_set_colors __apollo_update_prompts __apollo_async_update __apollo_format_string \
+    __apollo_format_module __apollo_format_separator
 
   autoload -Uz add-zsh-hook
   add-zsh-hook precmd __apollo_precmd

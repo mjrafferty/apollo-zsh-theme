@@ -10,9 +10,7 @@ __apollo_make_rprompt(){
 
   line_index="$1"
 
-  __APOLLO_RETURN_MESSAGE=""
-
-  __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_RIGHT_BEGIN[$line_index]}"
+  __APOLLO_RETURN_MESSAGE="\${__APOLLO_RIGHT_BEGIN[$line_index]}"
 
   while ((__APOLLO_CURRENT_RPROMPT <= ${#right_modules[@]} )); do
 

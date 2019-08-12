@@ -1,6 +1,6 @@
 # vim:ft=zsh
 
-__apollo_add_separators() {
+__apollo_decorate_prompt() {
 
   local start current_module left_sep right_sep
   local -i first_skipped=0
@@ -71,4 +71,4 @@ __apollo_add_separators() {
 
 }
 
-__apollo_add_separators "$@"
+__apollo_decorate_prompt "$@"

@@ -2,14 +2,34 @@
 
 __apollo_update_prompts() {
 
+  local lines
+  local start
+
   if zstyle -t 'apollo:core:links' enabled "true" "yes" "1" "on" ; then
     __apollo_add_links "${#__APOLLO_PROMPT_LINES}"
   fi
 
-  __apollo_add_separators
+  __apollo_decorate_prompt
 
-  __apollo_update_lengths
+  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
+    start="$EPOCHREALTIME"
+  fi
+
+  lines="${#__APOLLO_PROMPT_LINES[@]}"
+
+  for ((line=1;line<=lines;line++)); do
+
+    __APOLLO_PROMPT_LINE_LENGTH[line]="$COLUMNS"
+    __apollo_get_display_width "${(e)__APOLLO_PROMPT_LINES[line]}"
+
+    ## The 1 here is to avoid line overflow on older zsh versions.
+    ((__APOLLO_PROMPT_LINE_LENGTH[line]=__APOLLO_RETURN_MESSAGE + 1));
+
+  done
+
+  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
+    printf "%25s: %f\n" "update length" "$((EPOCHREALTIME - start))"
+  fi
 
 }
-
 __apollo_update_prompts "$@"
