@@ -2,7 +2,7 @@
 
 __apollo_set_left_prompt() {
 
-  local module prompt_length current_module prompt_end
+  local module current_module prompt_end
   local -i line_index line
   local -a left_modules right_modules
 
@@ -10,27 +10,30 @@ __apollo_set_left_prompt() {
   zstyle -a 'apollo:core:modules:right' modules right_modules
 
   line_index=1;
-  prompt_length="${#left_modules[@]}"
 
-  for ((module=1; module<=prompt_length;module++)); do
+  __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_BEGIN[$line_index]}"
+
+  for ((module=1; module<=${#left_modules[@]};module++)); do
 
     current_module="${left_modules[module]}"
-
-    __APOLLO_LINE_MODULES[line_index]+="${current_module} "
 
     case "${current_module}" in
       "newline")
         __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_SEPARATORS[$module]}"
+        __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_END[$line_index]}"
         __apollo_add_newline "newline" "${line_index}"
         ((line_index++));
+        __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_BEGIN[$line_index]}"
         __APOLLO_MODULE_HAS_LENGTH[$current_module]=1;
         ;;
       "ruler")
         __APOLLO_LEFT_HAS_LENGTH[line_index]+=" + 1"
         __APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + 1"
         __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_SEPARATORS[$module]}"
+        __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_END[$line_index]}"
         __apollo_add_newline "ruler" "${line_index}"
         ((line_index++));
+        __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_BEGIN[$line_index]}"
         __APOLLO_MODULE_HAS_LENGTH[$current_module]=1;
         ;;
       *)

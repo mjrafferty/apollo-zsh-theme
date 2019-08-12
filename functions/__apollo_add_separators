@@ -2,9 +2,9 @@
 
 __apollo_add_separators() {
 
-  local start current_module left_sep right_sep bg_color
+  local start current_module left_sep right_sep
   local -i first_skipped=0
-  local -i prompt_length module
+  local -i module
   local -a left_modules right_modules
   local mode="default"
 
@@ -15,9 +15,7 @@ __apollo_add_separators() {
     start="$EPOCHREALTIME"
   fi
 
-  prompt_length="${#left_modules[@]}"
-
-  for ((module=1; module<=prompt_length;module++)); do
+  for ((module=1; module<=${#left_modules[@]};module++)); do
 
     current_module="${left_modules[module]}"
 
@@ -46,9 +44,7 @@ __apollo_add_separators() {
 
   done
 
-  prompt_length="${#right_modules[@]}"
-
-  for ((module=1; module<=prompt_length;module++)); do
+  for ((module=1; module<=${#right_modules[@]};module++)); do
 
     current_module="${right_modules[module]}"
 
