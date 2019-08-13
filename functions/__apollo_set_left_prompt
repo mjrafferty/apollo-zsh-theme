@@ -17,6 +17,9 @@ __apollo_set_left_prompt() {
 
     current_module="${left_modules[module]}"
 
+    __APOLLO_LEFT_MODULE_MAP[module]="$current_module"
+    __APOLLO_LEFT_LINE_MAP[line_index]+="${module},"
+
     case "${current_module}" in
       "newline"|"ruler")
         __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_SEPARATORS[$module]}\${__APOLLO_LEFT_END[$line_index]}"

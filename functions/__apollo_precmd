@@ -6,8 +6,9 @@ __apollo_precmd() {
   __APOLLO_PIPE_EXIT_CODES=( "${pipestatus[@]}" )
 
   local start startmod profiler
-	local line module
-  local -a left_modules right_modules
+	local module
+  local -a line_modules
+  local -i line num
 
   # Forcefully refresh cache by pressing enter a few times
   if ((__APOLLO_BREAK_CACHE_COUNTER++ >= 2)); then
@@ -22,30 +23,43 @@ __apollo_precmd() {
     startmod=${EPOCHREALTIME}
   fi
 
-  zstyle -a 'apollo:core:modules:left' modules left_modules
-  zstyle -a 'apollo:core:modules:right' modules right_modules
-
   PROMPT="$__APOLLO_PROMPT_COPY"
   RPROMPT="$__APOLLO_RPROMPT_COPY"
 
-  for module in "${right_modules[@]}"; do
-    case "$module" in
-      "newline");;
-      "ruler");;
-      *)
-        __apollo_get_module_text "$module" "right"
-        ;;
-    esac
-  done
+  for ((line=1; line <= ${#__APOLLO_PROMPT_LINES[@]}; line++)); do
 
-  for module in "${left_modules[@]}"; do
-    case "$module" in
-      "newline");;
-      "ruler");;
-      *)
-        __apollo_get_module_text "$module" "left"
-        ;;
-    esac
+    line_modules=(${(s:,:)__APOLLO_RIGHT_LINE_MAP[line]})
+
+    for num in "${line_modules[@]}"; do
+
+      module="${__APOLLO_RIGHT_MODULE_MAP[num]}"
+
+      case "$module" in
+        "newline");;
+        "ruler");;
+        *)
+          __apollo_get_module_text "$module" "right" "$line"
+          ;;
+      esac
+
+    done
+
+    line_modules=(${(s:,:)__APOLLO_LEFT_LINE_MAP[line]})
+
+    for num in "${line_modules[@]}"; do
+
+      module="${__APOLLO_LEFT_MODULE_MAP[num]}"
+
+      case "$module" in
+        "newline");;
+        "ruler");;
+        *)
+          __apollo_get_module_text "$module" "left" "$line"
+          ;;
+      esac
+
+    done
+
   done
 
   if [[ "$profiler" == "yes" ]] ; then

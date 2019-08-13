@@ -3,24 +3,36 @@
 ## Necessary global variables
 typeset -gA __APOLLO_CACHE
 typeset -gA __APOLLO_CONTEXT_CACHE
+
 typeset -g	__APOLLO_BUFFER_NAME
 typeset -gi __APOLLO_BUFFER_FD
-typeset -gA __APOLLO_MODULE_TEXT
-typeset -gA __APOLLO_MODULE_MODE
-typeset -gA __APOLLO_MODULE_HAS_LENGTH
-typeset -ga __APOLLO_PROMPT_LINE_LENGTH
+
 typeset -g  __APOLLO_PROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
 typeset -g  __APOLLO_RPROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
-typeset -ga __APOLLO_LEFT_HAS_LENGTH
-typeset -ga __APOLLO_RIGHT_HAS_LENGTH
+
+typeset -ga __APOLLO_LEFT_MODULE_MAP
+typeset -ga __APOLLO_RIGHT_MODULE_MAP
+typeset -ga __APOLLO_LEFT_LINE_MAP
+typeset -ga __APOLLO_RIGHT_LINE_MAP
+
+typeset -gA __APOLLO_MODULE_MODE
+
+typeset -ga __APOLLO_PROMPT_LINES
+typeset -gA __APOLLO_MODULE_TEXT
 typeset -ga __APOLLO_LEFT_SEPARATORS
 typeset -ga __APOLLO_RIGHT_SEPARATORS
-typeset -ga __APOLLO_PROMPT_LINES
+
+typeset -gA __APOLLO_MODULE_HAS_LENGTH
+typeset -ga __APOLLO_PROMPT_LINE_LENGTH
+typeset -ga __APOLLO_LEFT_HAS_LENGTH
+typeset -ga __APOLLO_RIGHT_HAS_LENGTH
+
 typeset -gi __APOLLO_BREAK_CACHE_COUNTER
-typeset -gi __APOLLO_CURRENT_RPROMPT=1
 typeset -gi __APOLLO_EXIT_CODE
 typeset -g  __APOLLO_PIPE_EXIT_CODES
 typeset -g  __APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
+
+typeset -gi __APOLLO_CURRENT_RPROMPT=1
 
 	__apollo_cleanup() {
 

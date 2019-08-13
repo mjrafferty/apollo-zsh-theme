@@ -2,10 +2,9 @@
 
 __apollo_decorate_prompt() {
 
-  local start current_module left_sep right_sep
+  local start module left_sep right_sep
   local -i first_skipped=0
-  local -i module
-  local -a left_modules right_modules
+  local -a line_modules
   local do_decorate
   local mode="default"
 
@@ -15,60 +14,65 @@ __apollo_decorate_prompt() {
     return;
   fi
 
-  zstyle -a 'apollo:core:modules:left' modules left_modules
-  zstyle -a 'apollo:core:modules:right' modules right_modules
-
   if [[ "$profiler" == "yes" ]]; then
     start="$EPOCHREALTIME"
   fi
 
-  for ((module=1; module<=${#left_modules[@]};module++)); do
+  for ((line=1; line <= ${#__APOLLO_PROMPT_LINES[@]}; line++)); do
 
-    current_module="${left_modules[module]}"
+    line_modules=(${(s:,:)__APOLLO_LEFT_LINE_MAP[line]})
 
-    if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
+    for num in "${line_modules[@]}"; do
 
-      if ((first_skipped > 0)); then
+      module="${__APOLLO_LEFT_MODULE_MAP[num]}"
 
-        if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
-          first_skipped=0
+      if (( __APOLLO_MODULE_HAS_LENGTH[$module] > 0 )); then
+
+        if ((first_skipped > 0)); then
+
+          if [[ "$module" == "newline" || "$module" == "ruler" ]]; then
+            first_skipped=0
+          fi
+
+          mode="${__APOLLO_MODULE_MODE[$module]}"
+
+          zstyle -s "apollo:${module}:${mode}:left:separator" text left_sep
+          __apollo_format_separator "apollo:${module}:${mode}:left:separator" "$left_sep" "left"
+          __APOLLO_LEFT_SEPARATORS[num]="${__APOLLO_RETURN_MESSAGE}"
+
+        else
+          __APOLLO_LEFT_SEPARATORS[num]=""
+          if [[ "$module" != "newline" && "$module" != "ruler" ]]; then
+            first_skipped=1
+          fi
         fi
 
-        mode="${__APOLLO_MODULE_MODE[$current_module]}"
-
-        zstyle -s "apollo:${current_module}:${mode}:left:separator" text left_sep
-        __apollo_format_separator "apollo:${current_module}:${mode}:left:separator" "$left_sep" "left"
-        __APOLLO_LEFT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}"
-
-      else
-        __APOLLO_LEFT_SEPARATORS[module]=""
-        if [[ "$current_module" != "newline" && "$current_module" != "ruler" ]]; then
-          first_skipped=1
-        fi
       fi
 
-    fi
+    done
 
-  done
+    line_modules=(${(s:,:)__APOLLO_RIGHT_LINE_MAP[line]})
 
-  for ((module=1; module<=${#right_modules[@]};module++)); do
+    for num in "${line_modules[@]}"; do
 
-    current_module="${right_modules[module]}"
+      module="${__APOLLO_RIGHT_MODULE_MAP[num]}"
 
-    if [[ "$current_module" == "newline" || "$current_module" == "ruler" ]]; then
-      continue;
-    fi
+      if [[ "$module" == "newline" || "$module" == "ruler" ]]; then
+        continue;
+      fi
 
-    if (( __APOLLO_MODULE_HAS_LENGTH[$current_module] > 0 )); then
+      if (( __APOLLO_MODULE_HAS_LENGTH[$module] > 0 )); then
 
-      mode="${__APOLLO_MODULE_MODE[$current_module]}"
+        mode="${__APOLLO_MODULE_MODE[$module]}"
 
-      zstyle -s "apollo:${current_module}:${mode}:right:separator" text right_sep
-      __apollo_format_separator "apollo:${current_module}:${mode}:right:separator" "$right_sep" "right"
-      __APOLLO_RIGHT_SEPARATORS[module]="${__APOLLO_RETURN_MESSAGE}"
-    else
-      __APOLLO_RIGHT_SEPARATORS[module]=""
-    fi
+        zstyle -s "apollo:${module}:${mode}:right:separator" text right_sep
+        __apollo_format_separator "apollo:${module}:${mode}:right:separator" "$right_sep" "right"
+        __APOLLO_RIGHT_SEPARATORS[num]="${__APOLLO_RETURN_MESSAGE}"
+      else
+        __APOLLO_RIGHT_SEPARATORS[num]=""
+      fi
+
+    done
 
   done
 

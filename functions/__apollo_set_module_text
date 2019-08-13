@@ -2,7 +2,7 @@
 
 __apollo_set_module_text() {
 
-  local module side cache_key module_text bg_color
+  local module side line cache_key module_text bg_color
   local always_show module_colors
   local left_label right_label
   local left_surround right_surround
@@ -11,7 +11,8 @@ __apollo_set_module_text() {
 
   module="$1"
   side="$2"
-  cache_key="$3"
+  line="$3"
+  cache_key="$4"
 
   __APOLLO_MODULE_MODE[$module]="default"
 
