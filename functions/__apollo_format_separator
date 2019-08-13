@@ -2,13 +2,12 @@
 
 __apollo_format_separator() {
 
-  local context text cache blend revblend side
-  local fg_color="keep"
-  local bg_color="keep"
+  local context text cache
+  local blend revblend
+  local fg_color bg_color
 
   context="$1"
   text="$2"
-  side="$3"
 
   cache="${__APOLLO_CONTEXT_CACHE[$context]}"
 
@@ -19,29 +18,15 @@ __apollo_format_separator() {
 
     if [[ "$blend" == "yes" ]]; then
 
-      case "$side" in
-        "left")
-          zstyle -s "${context}:bg" color bg_color
-          ;;
-        "right")
-          zstyle -s "${context}:bg" color fg_color
-          ;;
-      esac
+      zstyle -s "${context}:bg" color bg_color
 
-      __apollo_format_string "${text}" "${context}" "${fg_color}" "${bg_color}"
+      __apollo_format_string "${text}" "${context}" "keep" "${bg_color}"
 
     elif [[ "$revblend" == "yes" ]]; then
 
-      case "$side" in
-        "right")
-          zstyle -s "${context}:bg" color bg_color
-          ;;
-        "left")
-          zstyle -s "${context}:bg" color fg_color
-          ;;
-      esac
+      zstyle -s "${context}:bg" color fg_color
 
-      __apollo_format_string "${text}" "${context}" "${fg_color}" "${bg_color}"
+      __apollo_format_string "${text}" "${context}" "${fg_color}" "keep"
 
     else
 
