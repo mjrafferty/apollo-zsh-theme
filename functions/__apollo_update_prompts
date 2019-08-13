@@ -11,7 +11,7 @@ __apollo_update_prompts() {
 
   __apollo_decorate_prompt
 
-  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
+  if [[ "$profiler" == "yes" ]]; then
     start="$EPOCHREALTIME"
   fi
 
@@ -27,7 +27,7 @@ __apollo_update_prompts() {
 
   done
 
-  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
+  if [[ "$profiler" == "yes" ]]; then
     printf "%25s: %f\n" "update length" "$((EPOCHREALTIME - start))"
   fi
 

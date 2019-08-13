@@ -5,7 +5,7 @@ __apollo_precmd() {
   __APOLLO_EXIT_CODE=$?
   __APOLLO_PIPE_EXIT_CODES=( "${pipestatus[@]}" )
 
-  local start startmod
+  local start startmod profiler
 	local line module
   local -a left_modules right_modules
 
@@ -15,7 +15,9 @@ __apollo_precmd() {
     __APOLLO_BREAK_CACHE_COUNTER=0;
   fi
 
-  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
+  zstyle -b 'apollo:core:profiler' enabled profiler
+
+  if [[ "$profiler" == "yes" ]] ; then
     start="$EPOCHREALTIME"
     startmod=${EPOCHREALTIME}
   fi
@@ -27,24 +29,32 @@ __apollo_precmd() {
   RPROMPT="$__APOLLO_RPROMPT_COPY"
 
   for module in "${right_modules[@]}"; do
-    if ((${+functions[__apollo_${module}_run]} > 0)); then
-      __apollo_get_module_text "$module" "right"
-    fi
+    case "$module" in
+      "newline");;
+      "ruler");;
+      *)
+        __apollo_get_module_text "$module" "right"
+        ;;
+    esac
   done
 
   for module in "${left_modules[@]}"; do
-    if ((${+functions[__apollo_${module}_run]} > 0)); then
-      __apollo_get_module_text "$module" "left"
-    fi
+    case "$module" in
+      "newline");;
+      "ruler");;
+      *)
+        __apollo_get_module_text "$module" "left"
+        ;;
+    esac
   done
 
-  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
+  if [[ "$profiler" == "yes" ]] ; then
     printf "%25s: %f\n" "modules_total" "$((EPOCHREALTIME - startmod))"
   fi
 
   __apollo_update_prompts
 
-  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
+  if [[ "$profiler" == "yes" ]] ; then
     printf "%25s: %f\n" "total" "$((EPOCHREALTIME-start))"
   fi
 

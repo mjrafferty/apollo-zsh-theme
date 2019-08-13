@@ -6,12 +6,19 @@ __apollo_decorate_prompt() {
   local -i first_skipped=0
   local -i module
   local -a left_modules right_modules
+  local do_decorate
   local mode="default"
+
+  zstyle -b "apollo:core:decorations" enabled do_decorate
+
+  if [[ "$do_decorate" == "no" ]]; then
+    return;
+  fi
 
   zstyle -a 'apollo:core:modules:left' modules left_modules
   zstyle -a 'apollo:core:modules:right' modules right_modules
 
-  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
+  if [[ "$profiler" == "yes" ]]; then
     start="$EPOCHREALTIME"
   fi
 
@@ -65,7 +72,7 @@ __apollo_decorate_prompt() {
 
   done
 
-  if zstyle -t 'apollo:core:profiler' enabled "true" "yes" "1" "on" ; then
+  if [[ "$profiler" == "yes" ]]; then
     printf "%25s: %f\n" "separators" "$((EPOCHREALTIME-start))"
   fi
 
