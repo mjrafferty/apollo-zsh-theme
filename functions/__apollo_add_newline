@@ -7,9 +7,6 @@ __apollo_add_newline() {
   current_module="$1"
   line_index="$2"
 
-  __apollo_make_rprompt "$line_index"
-  faux_rprompt="${__APOLLO_RETURN_MESSAGE}"
-
   if [[ "${current_module}" == "newline" ]]; then
     __APOLLO_PROMPT_LINES[line_index]+="%k\${(el.\$((\$COLUMNS - \${__APOLLO_PROMPT_LINE_LENGTH[$line_index]})).. .)}"
   else
@@ -25,6 +22,9 @@ __apollo_add_newline() {
     __APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + 1"
 
   fi
+
+  __apollo_make_rprompt "$line_index"
+  faux_rprompt="${__APOLLO_RETURN_MESSAGE}"
 
   __APOLLO_PROMPT_LINES[line_index]+="${faux_rprompt}%f%k"
 

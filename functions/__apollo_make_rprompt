@@ -16,9 +16,6 @@ __apollo_make_rprompt(){
 
     current_module="${right_modules[__APOLLO_CURRENT_RPROMPT]}"
 
-    __APOLLO_RIGHT_MODULE_MAP[__APOLLO_CURRENT_RPROMPT]="$current_module"
-    __APOLLO_RIGHT_LINE_MAP[line_index]+="${__APOLLO_CURRENT_RPROMPT},"
-
     case "${current_module}" in
       "newline")
         __APOLLO_RETURN_MESSAGE+="\${__APOLLO_RIGHT_END[$line_index]}"
@@ -26,13 +23,21 @@ __apollo_make_rprompt(){
         break;
         ;;
       *)
-        __APOLLO_RETURN_MESSAGE+="\${__APOLLO_RIGHT_SEPARATORS[$__APOLLO_CURRENT_RPROMPT]}\${__APOLLO_MODULE_TEXT[$current_module]}"
-        __APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + \$__APOLLO_MODULE_HAS_LENGTH[$current_module]"
+        __APOLLO_MODULE_MAP[__APOLLO_MODULE_INDEX]="$current_module"
+        __APOLLO_RIGHT_LINE_MAP[line_index]+="${__APOLLO_MODULE_INDEX},"
+
+        __APOLLO_RETURN_MESSAGE+="\${__APOLLO_RIGHT_SEPARATORS[$__APOLLO_MODULE_INDEX]}\${__APOLLO_MODULE_TEXT[$__APOLLO_MODULE_INDEX]}"
+        __APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + \$__APOLLO_MODULE_HAS_LENGTH[$__APOLLO_MODULE_INDEX]"
+        ((__APOLLO_MODULE_INDEX++));
         ((__APOLLO_CURRENT_RPROMPT++));
         ;;
     esac
 
   done
+
+  if ((__APOLLO_CURRENT_RPROMPT >= ${#right_modules[@]} )); then
+    __APOLLO_RETURN_MESSAGE+="\${__APOLLO_RIGHT_END[$line_index]}"
+  fi
 
 }
 

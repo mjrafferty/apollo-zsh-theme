@@ -10,10 +10,10 @@ typeset -gi __APOLLO_BUFFER_FD
 typeset -g  __APOLLO_PROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
 typeset -g  __APOLLO_RPROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
 
-typeset -ga __APOLLO_LEFT_MODULE_MAP
-typeset -ga __APOLLO_RIGHT_MODULE_MAP
+typeset -ga __APOLLO_MODULE_MAP
 typeset -ga __APOLLO_LEFT_LINE_MAP
 typeset -ga __APOLLO_RIGHT_LINE_MAP
+typeset -gi __APOLLO_MODULE_INDEX=1
 
 typeset -gA __APOLLO_MODULE_MODE
 
@@ -73,7 +73,7 @@ prompt_apollo_setup() {
 	autoload -Uz +X __apollo_add_links __apollo_decorate_prompt __apollo_get_module_text \
 		__apollo_precmd __apollo_set_module_text __apollo_add_newline __apollo_make_rprompt \
 		__apollo_preexec __apollo_set_left_prompt __apollo_set_colors __apollo_update_prompts \
-		__apollo_async_update __apollo_format_string __apollo_format_module __apollo_format_separator
+		__apollo_async_update __apollo_format_string __apollo_format_module __apollo_get_decoration
 
 	autoload -Uz add-zsh-hook
 	add-zsh-hook precmd __apollo_precmd
@@ -103,17 +103,13 @@ prompt_apollo_setup() {
 
 	__apollo_make_rprompt "${#__APOLLO_PROMPT_LINES}"
 
-	if zstyle -t 'apollo:core:links' enabled "true" "yes" "1" "on" ; then
-		RPROMPT="${__APOLLO_RETURN_MESSAGE}\${__APOLLO_RIGHT_LINK[${#__APOLLO_PROMPT_LINES}]}"
-	else
-		RPROMPT="${__APOLLO_RETURN_MESSAGE}"
-	fi
+  RPROMPT="${__APOLLO_RETURN_MESSAGE}\${__APOLLO_RIGHT_LINK[${#__APOLLO_PROMPT_LINES}]}"
 
 	__APOLLO_PROMPT_COPY="${PROMPT}"
 	__APOLLO_RPROMPT_COPY="$RPROMPT"
 
 	unfunction __apollo_add_newline __apollo_make_rprompt __apollo_set_left_prompt
-	unset __APOLLO_CURRENT_RPROMPT __APOLLO_INSTALL_DIR
+	unset __APOLLO_CURRENT_RPROMPT __APOLLO_INSTALL_DIR __APOLLO_MODULE_INDEX
 
 }
 

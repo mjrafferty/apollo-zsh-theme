@@ -32,15 +32,9 @@ __apollo_precmd() {
 
     for num in "${line_modules[@]}"; do
 
-      module="${__APOLLO_RIGHT_MODULE_MAP[num]}"
+      module="${__APOLLO_MODULE_MAP[num]}"
 
-      case "$module" in
-        "newline");;
-        "ruler");;
-        *)
-          __apollo_get_module_text "$module" "right" "$line"
-          ;;
-      esac
+      __apollo_get_module_text "$module" "right" "$line" "$num"
 
     done
 
@@ -48,15 +42,9 @@ __apollo_precmd() {
 
     for num in "${line_modules[@]}"; do
 
-      module="${__APOLLO_LEFT_MODULE_MAP[num]}"
+      module="${__APOLLO_MODULE_MAP[num]}"
 
-      case "$module" in
-        "newline");;
-        "ruler");;
-        *)
-          __apollo_get_module_text "$module" "left" "$line"
-          ;;
-      esac
+      __apollo_get_module_text  "$module" "left" "$line" "$num"
 
     done
 

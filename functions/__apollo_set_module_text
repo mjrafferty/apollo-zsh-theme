@@ -2,7 +2,8 @@
 
 __apollo_set_module_text() {
 
-  local module side line cache_key module_text bg_color
+  local module side cache_key module_text bg_color
+  local -i line num
   local always_show module_colors
   local left_label right_label
   local left_surround right_surround
@@ -12,7 +13,8 @@ __apollo_set_module_text() {
   module="$1"
   side="$2"
   line="$3"
-  cache_key="$4"
+  num="$4"
+  cache_key="$5"
 
   __APOLLO_MODULE_MODE[$module]="default"
 
@@ -26,25 +28,25 @@ __apollo_set_module_text() {
 
   mode="${__APOLLO_MODULE_MODE[$module]}"
 
-  zstyle -b "apollo:${module}:${mode}:${side}" always_show always_show
+  zstyle -b "apollo:${module}:${mode}:${line}:${side}" always_show always_show
 
   if [[ "$always_show" == "no" && ${#__APOLLO_RETURN_MESSAGE} == 0 ]]; then
-    __APOLLO_MODULE_HAS_LENGTH[$module]="0"
-    __APOLLO_MODULE_TEXT[$module]=""
+    __APOLLO_MODULE_HAS_LENGTH[$num]="0"
+    __APOLLO_MODULE_TEXT[$num]=""
     if [[ -n "$cache_key" ]]; then
-      __APOLLO_CACHE["${module}-${cache_key}"]="0,${module_text}"
+      __APOLLO_CACHE["${cache_key}"]="0,${module_text}"
     fi
     return;
   fi
 
-  __apollo_format_module "apollo:${module}:${mode}:${side}" "$__APOLLO_RETURN_MESSAGE"
+  __apollo_format_module "apollo:${module}:${mode}:${line}:${side}" "$__APOLLO_RETURN_MESSAGE"
 
-  __APOLLO_MODULE_TEXT[$module]="${__APOLLO_RETURN_MESSAGE}"
+  __APOLLO_MODULE_TEXT[$num]="${__APOLLO_RETURN_MESSAGE}"
 
-  __APOLLO_MODULE_HAS_LENGTH[$module]="1"
+  __APOLLO_MODULE_HAS_LENGTH[$num]="1"
 
   if [[ -n "$cache_key" ]]; then
-    __APOLLO_CACHE["${module}-${cache_key}"]="${__APOLLO_MODULE_HAS_LENGTH[$module]},${__APOLLO_MODULE_TEXT[$module]},${mode}"
+    __APOLLO_CACHE["${cache_key}"]="${__APOLLO_MODULE_HAS_LENGTH[$num]},${__APOLLO_MODULE_TEXT[$num]},${mode}"
   fi
 
 }

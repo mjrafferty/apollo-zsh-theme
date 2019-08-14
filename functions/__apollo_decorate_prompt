@@ -2,11 +2,10 @@
 
 __apollo_decorate_prompt() {
 
-  local start module left_sep right_sep
-  local -i first_skipped=0
+  local start module
+  local first_module last_module context last_context
   local -a line_modules
   local do_decorate
-  local mode="default"
 
   zstyle -b "apollo:core:decorations" enabled do_decorate
 
@@ -20,64 +19,100 @@ __apollo_decorate_prompt() {
 
   for ((line=1; line <= ${#__APOLLO_PROMPT_LINES[@]}; line++)); do
 
+    __APOLLO_LEFT_BEGIN[line]=""
+    __APOLLO_LEFT_END[line]=""
+
     line_modules=(${(s:,:)__APOLLO_LEFT_LINE_MAP[line]})
+
+    first_module=""
+    last_module=""
 
     for num in "${line_modules[@]}"; do
 
-      module="${__APOLLO_LEFT_MODULE_MAP[num]}"
+      module="${__APOLLO_MODULE_MAP[num]}"
 
-      if (( __APOLLO_MODULE_HAS_LENGTH[$module] > 0 )); then
+      if (( __APOLLO_MODULE_HAS_LENGTH[$num] > 0 )); then
 
-        if ((first_skipped > 0)); then
+        context="apollo:${module}:${__APOLLO_MODULE_MODE[$module]:-default}:${line}:left"
 
-          if [[ "$module" == "newline" || "$module" == "ruler" ]]; then
-            first_skipped=0
-          fi
+        if [[ -n "$first_module" ]]; then
 
-          mode="${__APOLLO_MODULE_MODE[$module]}"
-
-          zstyle -s "apollo:${module}:${mode}:left:separator" text left_sep
-          __apollo_format_separator "apollo:${module}:${mode}:left:separator" "$left_sep" "left"
+          __apollo_get_decoration "${context}:separator" "separator"
           __APOLLO_LEFT_SEPARATORS[num]="${__APOLLO_RETURN_MESSAGE}"
+
+          last_module="$module"
+          last_context="$context"
 
         else
           __APOLLO_LEFT_SEPARATORS[num]=""
-          if [[ "$module" != "newline" && "$module" != "ruler" ]]; then
-            first_skipped=1
-          fi
+          first_module="$module"
+          last_module="$module"
+          last_context="$context"
+
+          __apollo_get_decoration "${context}:begin" "begin"
+          __APOLLO_LEFT_BEGIN[line]="${__APOLLO_RETURN_MESSAGE}"
+
         fi
 
       fi
 
     done
 
+    if [[ -n "$last_module" ]]; then
+      __apollo_get_decoration "${last_context}:end" "end"
+      __APOLLO_LEFT_END[line]="${__APOLLO_RETURN_MESSAGE}"
+    fi
+
     line_modules=(${(s:,:)__APOLLO_RIGHT_LINE_MAP[line]})
+
+    first_module=""
+    last_module=""
+    last_context=""
 
     for num in "${line_modules[@]}"; do
 
-      module="${__APOLLO_RIGHT_MODULE_MAP[num]}"
+      module="${__APOLLO_MODULE_MAP[num]}"
 
-      if [[ "$module" == "newline" || "$module" == "ruler" ]]; then
-        continue;
-      fi
+      if (( __APOLLO_MODULE_HAS_LENGTH[$num] > 0 )); then
 
-      if (( __APOLLO_MODULE_HAS_LENGTH[$module] > 0 )); then
+        context="apollo:${module}:${__APOLLO_MODULE_MODE[$module]:-default}:${line}:right"
 
-        mode="${__APOLLO_MODULE_MODE[$module]}"
+        if [[ -n "$first_module" ]]; then
 
-        zstyle -s "apollo:${module}:${mode}:right:separator" text right_sep
-        __apollo_format_separator "apollo:${module}:${mode}:right:separator" "$right_sep" "right"
-        __APOLLO_RIGHT_SEPARATORS[num]="${__APOLLO_RETURN_MESSAGE}"
-      else
-        __APOLLO_RIGHT_SEPARATORS[num]=""
+          __apollo_get_decoration "${context}:separator" "separator"
+          __APOLLO_RIGHT_SEPARATORS[num]="${__APOLLO_RETURN_MESSAGE}"
+
+          last_module="$module"
+          last_context="$context"
+
+        else
+          __APOLLO_RIGHT_SEPARATORS[num]=""
+          first_module="$module"
+          last_module="$module"
+          last_context="$context"
+
+          __apollo_get_decoration "${context}:begin" "begin"
+          __APOLLO_RIGHT_BEGIN[line]="${__APOLLO_RETURN_MESSAGE}"
+
+        fi
+
       fi
 
     done
 
+    if [[ -n "$last_module" ]]; then
+      __apollo_get_decoration "${last_context}:end" "end"
+      __APOLLO_RIGHT_END[line]="${__APOLLO_RETURN_MESSAGE}"
+    fi
+
+    first_module=""
+    last_module=""
+    last_context=""
+
   done
 
   if [[ "$profiler" == "yes" ]]; then
-    printf "%25s: %f\n" "separators" "$((EPOCHREALTIME-start))"
+    printf "%25s: %f\n" "decorations" "$((EPOCHREALTIME-start))"
   fi
 
 }

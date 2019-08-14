@@ -2,7 +2,8 @@
 
 __apollo_get_module_text() {
 
-  local module side line
+  local module side
+  local -i line num
   local start
   local cache_key cache_status
   local -a cache
@@ -10,6 +11,7 @@ __apollo_get_module_text() {
   module="$1"
   side="$2"
   line="$3"
+  num="$4"
 
   if [[ "$profiler" == "yes" ]]; then
     start=${EPOCHREALTIME}
@@ -17,17 +19,17 @@ __apollo_get_module_text() {
 
   if ((${+functions[__apollo_${module}_cache_key]})); then
     "__apollo_${module}_cache_key";
-    cache_key="${__APOLLO_RETURN_MESSAGE}"
-    cache=("${(s:,:)__APOLLO_CACHE["${module}-${cache_key}"]}")
+    cache_key="${side}-${line}-${num}-${__APOLLO_RETURN_MESSAGE}"
+    cache=("${(s:,:)__APOLLO_CACHE["${cache_key}"]}")
   fi
 
   if [[ -n "$cache" ]]; then
-    __APOLLO_MODULE_TEXT[$module]="${cache[2]}"
-    __APOLLO_MODULE_HAS_LENGTH[$module]="${cache[1]}"
+    __APOLLO_MODULE_TEXT[$num]="${cache[2]}"
+    __APOLLO_MODULE_HAS_LENGTH[$num]="${cache[1]}"
     __APOLLO_MODULE_MODE[$module]="${cache[3]}"
     cache_status="HIT"
   else
-    __apollo_set_module_text "$module" "$side" "$line" "$cache_key"
+    __apollo_set_module_text "$module" "$side" "$line" "$num" "$cache_key"
     cache_status="MISS"
   fi
 

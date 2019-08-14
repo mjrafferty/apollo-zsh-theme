@@ -1,0 +1,61 @@
+# vim:ft=zsh
+
+__apollo_get_decoration() {
+
+  local context text type cache
+  local blend revblend
+  local fg_color bg_color
+
+  context="$1"
+  type="$2"
+
+  cache="${__APOLLO_CONTEXT_CACHE[$context]}"
+
+  if [[ -z "$cache" ]]; then
+
+    zstyle -s "${context}" text text
+    zstyle -b "${context}" blend blend
+    zstyle -b "${context}" revblend revblend
+
+    case "$type" in
+      "begin")
+        if [[ "$blend" == "yes" ]]; then
+          zstyle -s "${context}:bg" color bg_color
+          __apollo_format_string "${text}" "${context}" "${bg_color}" "clear"
+        else
+          __apollo_format_string "${text}" "${context}"
+        fi
+        ;;
+      "end")
+        if [[ "$blend" == "yes" ]]; then
+          __apollo_format_string "${text}" "${context}" "keep" "clear"
+        else
+          __apollo_format_string "${text}" "${context}"
+        fi
+        ;;
+      "separator")
+        if [[ "$blend" == "yes" ]]; then
+          zstyle -s "${context}:bg" color bg_color
+          __apollo_format_string "${text}" "${context}" "keep" "${bg_color}"
+        elif [[ "$revblend" == "yes" ]]; then
+          zstyle -s "${context}:bg" color fg_color
+          __apollo_format_string "${text}" "${context}" "${fg_color}" "keep"
+        else
+          __apollo_format_string "${text}" "${context}"
+        fi
+        ;;
+      *);;
+    esac
+
+    text="${__APOLLO_RETURN_MESSAGE}"
+
+    __APOLLO_CONTEXT_CACHE[$context]="${text}"
+    __APOLLO_RETURN_MESSAGE="${text}"
+
+  else
+    __APOLLO_RETURN_MESSAGE="${cache}"
+  fi
+
+}
+
+__apollo_get_decoration "$@"
