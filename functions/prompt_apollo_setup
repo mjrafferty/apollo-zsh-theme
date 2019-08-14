@@ -11,6 +11,7 @@ typeset -g  __APOLLO_PROMPT_COPY # To prevent outside scripts messing with PS1/P
 typeset -g  __APOLLO_RPROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
 
 typeset -ga __APOLLO_MODULE_MAP
+typeset -gA __APOLLO_REVERSE_MODULE_MAP
 typeset -ga __APOLLO_LEFT_LINE_MAP
 typeset -ga __APOLLO_RIGHT_LINE_MAP
 typeset -gi __APOLLO_MODULE_INDEX=1

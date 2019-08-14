@@ -29,7 +29,7 @@ __apollo_get_module_text() {
     __APOLLO_MODULE_MODE[$module]="${cache[3]}"
     cache_status="HIT"
   else
-    __apollo_set_module_text "$module" "$side" "$line" "$num" "$cache_key"
+    __apollo_set_module_text "$module" "$line" "$side" "$num" "$cache_key"
     cache_status="MISS"
   fi
 

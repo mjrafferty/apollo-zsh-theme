@@ -2,8 +2,17 @@
 
 __apollo_async_update() {
 
-  ## TODO module side line num
-  __apollo_set_module_text "$1"
+  local module="$1"
+  local x
+  local -a module_info
+
+  for x in "${(s.,.)__APOLLO_REVERSE_MODULE_MAP[$module]}"; do
+
+    module_info=("${(s.:.)x}")
+
+    __apollo_set_module_text "${module}" "${module_info[1]}" "${module_info[2]}" "${module_info[3]}"
+
+  done
 
   __apollo_update_prompts
 

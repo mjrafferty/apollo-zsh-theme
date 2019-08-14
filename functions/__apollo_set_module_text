@@ -11,8 +11,8 @@ __apollo_set_module_text() {
   local -i width min_width
 
   module="$1"
-  side="$2"
-  line="$3"
+  line="$2"
+  side="$3"
   num="$4"
   cache_key="$5"
 
