@@ -54,6 +54,8 @@ __apollo_decorate_prompt() {
 
         fi
 
+      else
+        __APOLLO_LEFT_SEPARATORS[num]=""
       fi
 
     done
@@ -96,6 +98,8 @@ __apollo_decorate_prompt() {
 
         fi
 
+      else
+        __APOLLO_RIGHT_SEPARATORS[num]=""
       fi
 
     done
