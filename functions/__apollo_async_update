@@ -31,12 +31,12 @@ __apollo_async_update() {
     esac
 
     module_before="${__APOLLO_MODULE_HAS_LENGTH[$num]}"
-    mode_before"${__APOLLO_MODULE_MODE[$module]}"
+    mode_before="${__APOLLO_MODULE_MODE[$module]}"
 
     __apollo_run_module "${module}" "${line}" "${side}" "${num}"
 
     module_after="${__APOLLO_MODULE_HAS_LENGTH[$num]}"
-    mode_after"${__APOLLO_MODULE_MODE[$module]}"
+    mode_after="${__APOLLO_MODULE_MODE[$module]}"
 
     if [[ "$module_after" != "$module_before" || "$mode_after" != "$mode_before" ]]; then
 
