@@ -3,18 +3,71 @@
 __apollo_async_update() {
 
   local module="$1"
-  local x
+  local x side
   local -a module_info
+  local -i line num
+  local line_before line_after
+  local module_before module_after
 
   for x in "${(s.,.)__APOLLO_REVERSE_MODULE_MAP[$module]}"; do
 
     module_info=("${(s.:.)x}")
 
-    __apollo_run_module "${module}" "${module_info[1]}" "${module_info[2]}" "${module_info[3]}"
+    line="${module_info[1]}"
+    side="${module_info[2]}"
+    num="${module_info[3]}"
+
+    if ((line == 0)); then
+      break;
+    fi
+
+    case "$side" in
+      "left")
+        line_before="$(( ${(e)__APOLLO_LEFT_HAS_LENGTH[$line]} > 0 ))"
+        ;;
+      "right")
+        line_before="$(( ${(e)__APOLLO_RIGHT_HAS_LENGTH[$line]} > 0 ))"
+        ;;
+    esac
+
+    module_before="${__APOLLO_MODULE_HAS_LENGTH[$num]}"
+    mode_before"${__APOLLO_MODULE_MODE[$module]}"
+
+    __apollo_run_module "${module}" "${line}" "${side}" "${num}"
+
+    module_after="${__APOLLO_MODULE_HAS_LENGTH[$num]}"
+    mode_after"${__APOLLO_MODULE_MODE[$module]}"
+
+    if [[ "$module_after" != "$module_before" || "$mode_after" != "$mode_before" ]]; then
+
+      __apollo_decorate_prompt
+
+      case "$side" in
+        "left")
+          line_after="$(( ${(e)__APOLLO_LEFT_HAS_LENGTH[$line]} > 0 ))"
+          ;;
+        "right")
+          line_after="$(( ${(e)__APOLLO_RIGHT_HAS_LENGTH[$line]} > 0 ))"
+          ;;
+      esac
+
+      if ((line_after != line_before )); then
+
+        if zstyle -t 'apollo:core:links' enabled "true" "yes" "1" "on" ; then
+          __apollo_add_links "${#__APOLLO_PROMPT_LINES}"
+        fi
+
+      fi
+
+    fi
+
+    __APOLLO_PROMPT_LINE_LENGTH[line]="$COLUMNS"
+    __apollo_get_display_width "${(e)__APOLLO_PROMPT_LINES[line]}"
+
+    ## The 1 here is to avoid line overflow on older zsh versions.
+    ((__APOLLO_PROMPT_LINE_LENGTH[line]=__APOLLO_RETURN_MESSAGE + 1));
 
   done
-
-  __apollo_update_prompts
 
   zle && zle .reset-prompt
 
