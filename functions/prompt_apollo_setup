@@ -1,8 +1,8 @@
 # vim:ft=zsh
 
 ## Necessary global variables
-typeset -gA __APOLLO_CACHE
-typeset -gA __APOLLO_CONTEXT_CACHE
+typeset -gA __APOLLO_MODULE_CACHE
+typeset -gA __APOLLO_STYLE_CACHE
 
 typeset -g	__APOLLO_BUFFER_NAME
 typeset -gi __APOLLO_BUFFER_FD
@@ -72,9 +72,9 @@ prompt_apollo_setup() {
 	source "${__APOLLO_INSTALL_DIR}/lib/utilities.zsh"
 
 	autoload -Uz +X __apollo_add_links __apollo_decorate_prompt __apollo_get_module_text \
-		__apollo_precmd __apollo_set_module_text __apollo_add_newline __apollo_make_rprompt \
-		__apollo_preexec __apollo_set_left_prompt __apollo_set_colors __apollo_update_prompts \
-		__apollo_async_update __apollo_format_string __apollo_format_module __apollo_get_decoration
+		__apollo_precmd __apollo_run_module __apollo_add_newline __apollo_build_right_prompt \
+		__apollo_preexec __apollo_build_left_prompt __apollo_set_colors __apollo_update_prompts \
+		__apollo_async_update __apollo_format_string __apollo_style_module __apollo_set_style
 
 	autoload -Uz add-zsh-hook
 	add-zsh-hook precmd __apollo_precmd
@@ -100,16 +100,16 @@ prompt_apollo_setup() {
 	PROMPT=""
 	RPROMPT=""
 
-	__apollo_set_left_prompt
+	__apollo_build_left_prompt
 
-	__apollo_make_rprompt "${#__APOLLO_PROMPT_LINES}"
+	__apollo_build_right_prompt "${#__APOLLO_PROMPT_LINES}"
 
   RPROMPT="${__APOLLO_RETURN_MESSAGE}\${__APOLLO_RIGHT_LINK[${#__APOLLO_PROMPT_LINES}]}"
 
 	__APOLLO_PROMPT_COPY="${PROMPT}"
 	__APOLLO_RPROMPT_COPY="$RPROMPT"
 
-	unfunction __apollo_add_newline __apollo_make_rprompt __apollo_set_left_prompt
+	unfunction __apollo_add_newline __apollo_build_right_prompt __apollo_build_left_prompt
 	unset __APOLLO_CURRENT_RPROMPT __APOLLO_INSTALL_DIR __APOLLO_MODULE_INDEX
 
 }

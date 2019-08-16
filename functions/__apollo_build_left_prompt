@@ -1,6 +1,6 @@
 # vim:ft=zsh
 
-__apollo_set_left_prompt() {
+__apollo_build_left_prompt() {
 
   local module current_module prompt_end
   local -i line_index line
@@ -50,10 +50,10 @@ __apollo_set_left_prompt() {
 
   done
 
-  zstyle -s 'apollo:core:prompt:end' text prompt_end
+  __apollo_set_style 'apollo:core:prompt:end'
 
-  PROMPT+="$prompt_end"
+  PROMPT+="$__APOLLO_RETURN_MESSAGE%{%f%k%}"
 
 }
 
-__apollo_set_left_prompt "$@"
+__apollo_build_left_prompt "$@"

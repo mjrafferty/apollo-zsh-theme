@@ -2,31 +2,29 @@
 
 __apollo_add_newline() {
 
-  local current_module faux_rprompt line_index ruler_color ruler_char
+  local module faux_rprompt line ruler_char
 
-  current_module="$1"
-  line_index="$2"
+  module="$1"
+  line="$2"
 
-  if [[ "${current_module}" == "newline" ]]; then
-    __APOLLO_PROMPT_LINES[line_index]+="%k\${(el.\$((\$COLUMNS - \${__APOLLO_PROMPT_LINE_LENGTH[$line_index]})).. .)}"
+  if [[ "${module}" == "newline" ]]; then
+    __APOLLO_PROMPT_LINES[line]+="%k\${(el.\$((\$COLUMNS - \${__APOLLO_PROMPT_LINE_LENGTH[$line]})).. .)}"
   else
 
-    zstyle -s 'apollo:core:ruler' color ruler_color
-    zstyle -s 'apollo:core:ruler' char ruler_char
+    zstyle -s "apollo:core:${line}:ruler" text ruler_text
 
-    __apollo_set_colors "$ruler_color" "clear"
+    __apollo_format_string "\${(el.\$((\$COLUMNS - \${(e)__APOLLO_PROMPT_LINE_LENGTH[$line]}))..${ruler_text}.)}" "apollo:core:${line}:ruler"
+    __APOLLO_PROMPT_LINES[line]+="${__APOLLO_RETURN_MESSAGE}"
 
-    __APOLLO_PROMPT_LINES[line_index]+="${__APOLLO_RETURN_MESSAGE}\${(el.\$((\$COLUMNS - \${(e)__APOLLO_PROMPT_LINE_LENGTH[$line_index]}))..${ruler_char}.)}"
-
-    __APOLLO_LEFT_HAS_LENGTH[line_index]+=" + 1"
-    __APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + 1"
+    __APOLLO_LEFT_HAS_LENGTH[line]+=" + 1"
+    __APOLLO_RIGHT_HAS_LENGTH[line]+=" + 1"
 
   fi
 
-  __apollo_make_rprompt "$line_index"
+  __apollo_build_right_prompt "$line"
   faux_rprompt="${__APOLLO_RETURN_MESSAGE}"
 
-  __APOLLO_PROMPT_LINES[line_index]+="${faux_rprompt}%f%k"
+  __APOLLO_PROMPT_LINES[line]+="${faux_rprompt}%f%k"
 
 }
 

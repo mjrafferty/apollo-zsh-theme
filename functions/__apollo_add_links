@@ -6,38 +6,37 @@ typeset -ga __APOLLO_RIGHT_LINK
 # Logic for adding link lines. Don't look it's ugly
 __apollo_add_links() {
 
-  local start link_color
+  local start
   local -i line line_index below above
   local tl ml sl bl tr mr sr br nl
-  local -a lines_meta
+  local -a lines_meta link_style
 
   if [[ "$profiler" == "yes" ]]; then
     start="$EPOCHREALTIME"
   fi
 
-  zstyle -s 'apollo:core:links' color link_color
-  zstyle -s 'apollo:core:links:left:top' link tl
-  zstyle -s 'apollo:core:links:left:mid' link ml
-  zstyle -s 'apollo:core:links:left:str' link sl
-  zstyle -s 'apollo:core:links:left:bot' link bl
-  zstyle -s 'apollo:core:links:right:top' link tr
-  zstyle -s 'apollo:core:links:right:mid' link mr
-  zstyle -s 'apollo:core:links:right:str' link sr
-  zstyle -s 'apollo:core:links:right:bot' link br
-  zstyle -s 'apollo:core:links:*:none' link nl
+  zstyle -s 'apollo:core:links:left:top' text tl
+  zstyle -s 'apollo:core:links:left:mid' text ml
+  zstyle -s 'apollo:core:links:left:str' text sl
+  zstyle -s 'apollo:core:links:left:bot' text bl
+  zstyle -s 'apollo:core:links:right:top' text tr
+  zstyle -s 'apollo:core:links:right:mid' text mr
+  zstyle -s 'apollo:core:links:right:str' text sr
+  zstyle -s 'apollo:core:links:right:bot' text br
+  zstyle -s 'apollo:core:links:*:none' text nl
 
-  __apollo_set_colors "$link_color" "clear"
-  link_color="$__APOLLO_RETURN_MESSAGE"
+  __apollo_set_style 'apollo:core:links:*:*' 'dynamic'
+  link_style=(${(s:,:)__APOLLO_RETURN_MESSAGE})
 
-  tl="${link_color}${tl}%f"
-  ml="${link_color}${ml}%f"
-  sl="${link_color}${sl}%f"
-  bl="${link_color}${bl}%f"
-  tr="${link_color}${tr}%f"
-  mr="${link_color}${mr}%f"
-  sr="${link_color}${sr}%f"
-  br="${link_color}${br}%f"
-  nl="${nl}"
+  tl="${link_style[1]}${tl}${link_style[2]}"
+  ml="${link_style[1]}${ml}${link_style[2]}"
+  sl="${link_style[1]}${sl}${link_style[2]}"
+  bl="${link_style[1]}${bl}${link_style[2]}"
+  tr="${link_style[1]}${tr}${link_style[2]}"
+  mr="${link_style[1]}${mr}${link_style[2]}"
+  sr="${link_style[1]}${sr}${link_style[2]}"
+  br="${link_style[1]}${br}${link_style[2]}"
+  nl="${link_style[1]}${nl}${link_style[2]}"
 
   line_index="$1";
 

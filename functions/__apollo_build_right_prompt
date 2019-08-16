@@ -1,6 +1,6 @@
 # vim:ft=zsh
 
-__apollo_make_rprompt(){
+__apollo_build_right_prompt(){
 
   local current_module line_index
   local -a left_modules right_modules
@@ -42,4 +42,4 @@ __apollo_make_rprompt(){
 
 }
 
-__apollo_make_rprompt "$@"
+__apollo_build_right_prompt "$@"

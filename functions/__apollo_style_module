@@ -1,6 +1,6 @@
 # vim:ft=zsh
 
-__apollo_format_module() {
+__apollo_style_module() {
 
   local context module_text
   local -i width min_width
@@ -13,7 +13,7 @@ __apollo_format_module() {
   context="$1"
   module_text="$2"
 
-  cache=("${(s:,:)__APOLLO_CONTEXT_CACHE[$context]}")
+  cache=("${(s:,:)__APOLLO_STYLE_CACHE[$context]}")
 
   if [[ -z "$cache[1]" ]]; then
 
@@ -44,7 +44,7 @@ __apollo_format_module() {
     format_string="${left_surround},${format_string},${right_surround}${__APOLLO_RETURN_MESSAGE}"
 
     cache=("${(s:,:)format_string}")
-    __APOLLO_CONTEXT_CACHE[$context]="$format_string"
+    __APOLLO_STYLE_CACHE[$context]="$format_string"
 
   fi
 
@@ -70,4 +70,4 @@ __apollo_format_module() {
 
 }
 
-__apollo_format_module "$@"
+__apollo_style_module "$@"

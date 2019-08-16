@@ -20,7 +20,7 @@ __apollo_get_module_text() {
   if ((${+functions[__apollo_${module}_cache_key]})); then
     "__apollo_${module}_cache_key";
     cache_key="${side}-${line}-${num}-${__APOLLO_RETURN_MESSAGE}"
-    cache=("${(s:,:)__APOLLO_CACHE["${cache_key}"]}")
+    cache=("${(s:,:)__APOLLO_MODULE_CACHE["${cache_key}"]}")
   fi
 
   if [[ -n "$cache" ]]; then
@@ -29,7 +29,7 @@ __apollo_get_module_text() {
     __APOLLO_MODULE_MODE[$module]="${cache[3]}"
     cache_status="HIT"
   else
-    __apollo_set_module_text "$module" "$line" "$side" "$num" "$cache_key"
+    __apollo_run_module "$module" "$line" "$side" "$num" "$cache_key"
     cache_status="MISS"
   fi
 

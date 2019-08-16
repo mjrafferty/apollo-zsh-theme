@@ -10,7 +10,7 @@ __apollo_async_update() {
 
     module_info=("${(s.:.)x}")
 
-    __apollo_set_module_text "${module}" "${module_info[1]}" "${module_info[2]}" "${module_info[3]}"
+    __apollo_run_module "${module}" "${module_info[1]}" "${module_info[2]}" "${module_info[3]}"
 
   done
 

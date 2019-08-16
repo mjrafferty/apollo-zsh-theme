@@ -12,7 +12,7 @@ __apollo_precmd() {
 
   # Forcefully refresh cache by pressing enter a few times
   if ((__APOLLO_BREAK_CACHE_COUNTER++ >= 2)); then
-    __APOLLO_CACHE=();
+    __APOLLO_MODULE_CACHE=();
     __APOLLO_BREAK_CACHE_COUNTER=0;
   fi
 

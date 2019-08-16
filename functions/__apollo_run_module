@@ -1,6 +1,6 @@
 # vim:ft=zsh
 
-__apollo_set_module_text() {
+__apollo_run_module() {
 
   local module side cache_key module_text bg_color
   local -i line num
@@ -34,21 +34,21 @@ __apollo_set_module_text() {
     __APOLLO_MODULE_HAS_LENGTH[$num]="0"
     __APOLLO_MODULE_TEXT[$num]=""
     if [[ -n "$cache_key" ]]; then
-      __APOLLO_CACHE["${cache_key}"]="0,${module_text}"
+      __APOLLO_MODULE_CACHE["${cache_key}"]="0,${module_text}"
     fi
     return;
   fi
 
-  __apollo_format_module "apollo:${module}:${mode}:${line}:${side}" "$__APOLLO_RETURN_MESSAGE"
+  __apollo_style_module "apollo:${module}:${mode}:${line}:${side}" "$__APOLLO_RETURN_MESSAGE"
 
   __APOLLO_MODULE_TEXT[$num]="${__APOLLO_RETURN_MESSAGE}"
 
   __APOLLO_MODULE_HAS_LENGTH[$num]="1"
 
   if [[ -n "$cache_key" ]]; then
-    __APOLLO_CACHE["${cache_key}"]="${__APOLLO_MODULE_HAS_LENGTH[$num]},${__APOLLO_MODULE_TEXT[$num]},${mode}"
+    __APOLLO_MODULE_CACHE["${cache_key}"]="${__APOLLO_MODULE_HAS_LENGTH[$num]},${__APOLLO_MODULE_TEXT[$num]},${mode}"
   fi
 
 }
 
-__apollo_set_module_text "$@"
+__apollo_run_module "$@"
