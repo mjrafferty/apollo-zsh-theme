@@ -110,3 +110,7 @@ __apollo_read_file() {
   [[ -n $__APOLLO_RETURN_MESSAGE ]]
 
 }
+
+__apollo_load_utilities() {};
+
+__apollo_load_utilities "$@"

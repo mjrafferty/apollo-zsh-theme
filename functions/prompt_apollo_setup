@@ -68,13 +68,13 @@ prompt_apollo_setup() {
 		fpath+=("${__APOLLO_INSTALL_DIR}/modules.zwc" "${__APOLLO_INSTALL_DIR}/modules")
 	fi
 
-	# TODO move necessary utilities into functions
-	source "${__APOLLO_INSTALL_DIR}/lib/utilities.zsh"
-
 	autoload -Uz +X __apollo_add_links __apollo_decorate_prompt __apollo_get_module_text \
 		__apollo_precmd __apollo_run_module __apollo_add_newline __apollo_build_right_prompt \
 		__apollo_preexec __apollo_build_left_prompt __apollo_set_colors __apollo_update_prompts \
-		__apollo_async_update __apollo_format_string __apollo_style_module __apollo_set_style
+		__apollo_async_update __apollo_format_string __apollo_style_module __apollo_set_style \
+    __apollo_load_utilities
+
+  __apollo_load_utilities;
 
 	autoload -Uz add-zsh-hook
 	add-zsh-hook precmd __apollo_precmd
@@ -82,9 +82,9 @@ prompt_apollo_setup() {
 	add-zsh-hook zshexit __apollo_cleanup
 
 	# Open a buffer for modules to use
-		__APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
-		mkfifo "${__APOLLO_BUFFER_NAME}"
-		exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
+  __APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
+  mkfifo "${__APOLLO_BUFFER_NAME}"
+  exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
 
 	# Load enabled modules
 	for module in "${left_modules[@]}" "${right_modules[@]}"; do
@@ -109,7 +109,7 @@ prompt_apollo_setup() {
 	__APOLLO_PROMPT_COPY="${PROMPT}"
 	__APOLLO_RPROMPT_COPY="$RPROMPT"
 
-	unfunction __apollo_add_newline __apollo_build_right_prompt __apollo_build_left_prompt
+	unfunction __apollo_add_newline __apollo_build_right_prompt __apollo_build_left_prompt __apollo_load_utilities
 	unset __APOLLO_CURRENT_RPROMPT __APOLLO_INSTALL_DIR __APOLLO_MODULE_INDEX
 
 }
