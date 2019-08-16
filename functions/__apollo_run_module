@@ -21,7 +21,7 @@ __apollo_run_module() {
   # Clear out old message before passing to module
   __APOLLO_RETURN_MESSAGE=""
 
-  "__apollo_${module}_run" >&"${__APOLLO_BUFFER_FD}"
+  "__apollo_${module}_run" "${line}" "${side}" >&"${__APOLLO_BUFFER_FD}"
 
   # Flush any remaining data in buffer
   while read -rt dump <&"${__APOLLO_BUFFER_FD}"; do true; done
