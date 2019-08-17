@@ -6,7 +6,7 @@ __apollo_update_prompts() {
   local start
 
   if zstyle -t 'apollo:core:links' enabled "true" "yes" "1" "on" ; then
-    __apollo_add_links "${#__APOLLO_PROMPT_LINES}"
+    __apollo_add_links
   fi
 
   __apollo_decorate_prompt
@@ -17,7 +17,7 @@ __apollo_update_prompts() {
 
   lines="${#__APOLLO_PROMPT_LINES[@]}"
 
-  for ((line=1;line<=lines;line++)); do
+  for ((line=1;line<=lines-1;line++)); do
 
     __APOLLO_PROMPT_LINE_LENGTH[line]="$COLUMNS"
     __apollo_get_display_width "${(e)__APOLLO_PROMPT_LINES[line]}"

@@ -11,6 +11,12 @@ __apollo_add_links() {
   local tl ml sl bl tr mr sr br nl
   local -a lines_meta link_style
 
+  line_index="${#__APOLLO_PROMPT_LINES}";
+
+  if ((line_index == 1)); then
+    return;
+  fi
+
   if [[ "$profiler" == "yes" ]]; then
     start="$EPOCHREALTIME"
   fi
@@ -38,7 +44,6 @@ __apollo_add_links() {
   br="${link_style[1]}${br}${link_style[2]}"
   nl="${link_style[1]}${nl}${link_style[2]}"
 
-  line_index="$1";
 
   # Set metadata based on left and right lengths
   for ((line=1;line<=line_index;line++)); do

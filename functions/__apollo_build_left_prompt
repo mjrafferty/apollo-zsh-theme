@@ -40,7 +40,11 @@ __apollo_build_left_prompt() {
 
   for ((line=1;line<=line_index;line++)); do
 
-    __APOLLO_PROMPT_LINES[$line]="\${__APOLLO_LEFT_LINK[$line]}${__APOLLO_PROMPT_LINES[$line]}\${__APOLLO_RIGHT_LINK[$line]}"
+    if ((line == line_index)); then
+      __APOLLO_PROMPT_LINES[$line]="\${__APOLLO_LEFT_LINK[$line]}${__APOLLO_PROMPT_LINES[$line]}"
+    else
+      __APOLLO_PROMPT_LINES[$line]="\${__APOLLO_LEFT_LINK[$line]}${__APOLLO_PROMPT_LINES[$line]}\${__APOLLO_RIGHT_LINK[$line]}"
+    fi
 
     PROMPT+="\${(e)__APOLLO_PROMPT_LINES[$line]}"
 
@@ -49,6 +53,8 @@ __apollo_build_left_prompt() {
     fi
 
   done
+
+  __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_END[$line_index]}"
 
   __apollo_set_style 'apollo:core:prompt:end'
 
