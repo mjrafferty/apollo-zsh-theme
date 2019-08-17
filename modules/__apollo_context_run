@@ -14,47 +14,69 @@ __apollo_context_cache_key() {
 
 __apollo_context_run() {
 
-  local content user
-  local current_state="DEFAULT"
+  local -i line
+  local side user
+  local -a ignored_users
+  local ignore_user ignore_host
+  local -a colors
+  local show_host
 
-  if [[ $APOLLO_CONTEXT_ALWAYS_SHOW == true || -z $DEFAULT_USER || -n $SSH_CLIENT || -n $SSH_TTY ]]; then
+  local host_text="%m"
+  local user_text="%n"
 
-    content=$APOLLO_CONTEXT_TEMPLATE
+  line="$1"
+  side="$2"
+
+  zstyle -a "apollo:context:*:${line}:${side}:user:ignore" users ignored_users
+
+  for user in "${ignored_users[@]}"; do
+    if [[ "$USER" == "$user" ]]; then
+      ignore_user=1;
+    fi
+  done
+
+  if [[ -z "$SSH_TTY" ]]; then
+
+    zstyle -b "apollo:context:*:${line}:${side}:host" always_show show_host
+
+    if [[ "$show_host" == "no" ]]; then
+      ignore_host=1;
+    fi
+
+  fi
+
+  if ((ignore_host==1 && ignore_user==1)); then
+
+    __APOLLO_RETURN_MESSAGE=""
+
+  elif ((ignore_user==1)); then
+
+    __apollo_set_style "apollo:context:*:${line}:${side}:host" "dynamic"
+    colors=("${(s:,:)__APOLLO_RETURN_MESSAGE[@]}")
+
+    __APOLLO_RETURN_MESSAGE="${colors[1]}${host_text}${colors[2]}"
+
+  elif ((ignore_host==1)); then
+
+    __apollo_set_style "apollo:context:*:${line}:${side}:user" "dynamic"
+    colors=("${(s:,:)__APOLLO_RETURN_MESSAGE[@]}")
+
+    __APOLLO_RETURN_MESSAGE="${colors[1]}${user_text}${colors[2]}"
 
   else
 
-    user="$USER"
+    __apollo_set_style "apollo:context:*:${line}:${side}:host" "dynamic"
+    colors=("${(s:,:)__APOLLO_RETURN_MESSAGE[@]}")
+    host_text="${colors[1]}${host_text}${colors[2]}"
 
-    if [[ $user != $DEFAULT_USER ]]; then
-      content="${APOLLO_CONTEXT_TEMPLATE}"
-    elif [[ $APOLLO_CONTEXT_ALWAYS_SHOW_USER == true ]]; then
-      content="${user//\%/%%}"
-    else
-      __APOLLO_RETURN_MESSAGE=""
-      return
-    fi
+    __apollo_set_style "apollo:context:*:${line}:${side}:user" "dynamic"
+    colors=("${(s:,:)__APOLLO_RETURN_MESSAGE[@]}")
+    user_text="${colors[1]}${user_text}${colors[2]}"
 
-  fi
-
-  if [[ "${(%):-%#}" == '#' ]]; then
-
-    current_state="ROOT"
-
-  elif [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
-
-    if [[ -n "$SUDO_COMMAND" ]]; then
-      current_state="REMOTE_SUDO"
-    else
-      current_state="REMOTE"
-    fi
-
-  elif [[ -n "$SUDO_COMMAND" ]]; then
-
-    current_state="SUDO"
+    __APOLLO_RETURN_MESSAGE="${user_text}@${host_text}"
 
   fi
 
-  __APOLLO_RETURN_MESSAGE="$content"
 
 }
 
