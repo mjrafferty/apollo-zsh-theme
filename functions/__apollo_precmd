@@ -28,7 +28,7 @@ __apollo_precmd() {
 
   for ((line=1; line <= ${#__APOLLO_PROMPT_LINES[@]}; line++)); do
 
-    line_modules=(${(s:,:)__APOLLO_RIGHT_LINE_MAP[line]})
+    line_modules=(${(s:;:)__APOLLO_RIGHT_LINE_MAP[line]})
 
     for num in "${line_modules[@]}"; do
 
@@ -38,7 +38,7 @@ __apollo_precmd() {
 
     done
 
-    line_modules=(${(s:,:)__APOLLO_LEFT_LINE_MAP[line]})
+    line_modules=(${(s:;:)__APOLLO_LEFT_LINE_MAP[line]})
 
     for num in "${line_modules[@]}"; do
 

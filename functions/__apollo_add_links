@@ -32,7 +32,7 @@ __apollo_add_links() {
   zstyle -s 'apollo:core:links:*:none' text nl
 
   __apollo_set_style 'apollo:core:links:*:*' 'dynamic'
-  link_style=(${(s:,:)__APOLLO_RETURN_MESSAGE})
+  link_style=(${(s:;:)__APOLLO_RETURN_MESSAGE})
 
   tl="${link_style[1]}${tl}${link_style[2]}"
   ml="${link_style[1]}${ml}${link_style[2]}"

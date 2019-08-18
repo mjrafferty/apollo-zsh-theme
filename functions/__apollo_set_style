@@ -53,7 +53,7 @@ __apollo_set_style() {
         fi
         ;;
       "dynamic")
-        __apollo_format_string ",," "${context}"
+        __apollo_format_string ";;" "${context}"
         ;;
       *)
         __apollo_format_string "${text}" "${context}"

@@ -9,7 +9,7 @@ __apollo_async_update() {
   local line_before line_after
   local module_before module_after
 
-  for x in "${(s.,.)__APOLLO_REVERSE_MODULE_MAP[$module]}"; do
+  for x in "${(s.;.)__APOLLO_REVERSE_MODULE_MAP[$module]}"; do
 
     module_info=("${(s.:.)x}")
 

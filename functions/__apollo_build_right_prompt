@@ -24,8 +24,8 @@ __apollo_build_right_prompt(){
         ;;
       *)
         __APOLLO_MODULE_MAP[__APOLLO_MODULE_INDEX]="$current_module"
-        __APOLLO_REVERSE_MODULE_MAP[$current_module]+="${line_index}:right:${__APOLLO_MODULE_INDEX},"
-        __APOLLO_RIGHT_LINE_MAP[line_index]+="${__APOLLO_MODULE_INDEX},"
+        __APOLLO_REVERSE_MODULE_MAP[$current_module]+="${line_index}:right:${__APOLLO_MODULE_INDEX};"
+        __APOLLO_RIGHT_LINE_MAP[line_index]+="${__APOLLO_MODULE_INDEX};"
 
         __APOLLO_RETURN_MESSAGE+="\${__APOLLO_RIGHT_SEPARATORS[$__APOLLO_MODULE_INDEX]}\${__APOLLO_MODULE_TEXT[$__APOLLO_MODULE_INDEX]}"
         __APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + \$__APOLLO_MODULE_HAS_LENGTH[$__APOLLO_MODULE_INDEX]"
