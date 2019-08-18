@@ -1,8 +1,4 @@
 # vim:ft=zsh
-################################################################
-# System date
-
-typeset -g APOLLO_DATE_FORMAT="%D{%m-%d-%y}"
 
 __apollo_date_cache_key() {
   __APOLLO_RETURN_MESSAGE="${(%):-%D}"
@@ -10,13 +6,63 @@ __apollo_date_cache_key() {
 
 __apollo_date_run() {
 
-  local d=$APOLLO_DATE_FORMAT
+  local -i line
+  local side mode
 
-  if [[ $APOLLO_EXPERIMENTAL_TIME_REALTIME != true ]]; then
-    d=${(%)d}
-  fi
+  line="$1"
+  side="$2"
+  mode="default"
 
-  __APOLLO_RETURN_MESSAGE="${d//\%/%%}"
+	local -a elements
+  local format verbose
+
+  zstyle -a "apollo:date:${mode}:${line}:${side}" elements elements
+
+  for element in "${elements[@]}"; do
+    case "$element" in
+      "dow")
+        zstyle -b "apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
+        if [[ "${verbose}" == "yes" ]]; then
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" " ${(%):-%D{%A}"
+        else
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "${(%):-%D{%u}"
+        fi
+        format+="${__APOLLO_RETURN_MESSAGE}"
+        ;;
+      "day")
+        zstyle -b "apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
+        if [[ "${verbose}" == "yes" ]]; then
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" " ${(%):-%D{%B}"
+        else
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "${(%):-%D{%m}"
+        fi
+        format+="${__APOLLO_RETURN_MESSAGE}"
+        ;;
+      "month")
+        zstyle -b "apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
+        if [[ "${verbose}" == "yes" ]]; then
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" " ${(%):-%D{%e}"
+        else
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "${(%):-%D{%d}"
+        fi
+        format+="${__APOLLO_RETURN_MESSAGE}"
+        ;;
+      "year")
+        zstyle -b "apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
+        if [[ "${verbose}" == "yes" ]]; then
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" " ${(%):-%D{%Y}"
+        else
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "${(%):-%D{%y}"
+        fi
+        format+="${__APOLLO_RETURN_MESSAGE}"
+        ;;
+      *)
+        format+="${element}"
+        ;;
+    esac
+  done
+
+  __APOLLO_RETURN_MESSAGE="${format}"
 
 }
 

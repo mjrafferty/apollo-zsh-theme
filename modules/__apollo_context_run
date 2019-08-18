@@ -7,11 +7,6 @@
 #       Modes: default sudo ssh
 #    Elements: user separator host
 
-
-typeset -g APOLLO_CONTEXT_TEMPLATE="%n@%m"
-typeset -g APOLLO_CONTEXT_ALWAYS_SHOW_USER="false"
-typeset -g APOLLO_CONTEXT_ALWAYS_SHOW="false"
-
 __apollo_context_cache_key() {
   __APOLLO_RETURN_MESSAGE="1"
 }
@@ -25,13 +20,12 @@ __apollo_context_run() {
   side="$2"
   mode="default"
 
-  local -a ignored_users
-  local user ignore_user ignore_host
-  local -a colors
-  local show_host
+  local -a ignored_users ignored_hosts
+  local user host ignore_user ignore_host
+  local user_text sep_text host_text
 
-  local host_text="%m"
-  local user_text="%n"
+  host_text="%m"
+  user_text="%n"
 
   if [[ -n "$SUDO_USER" ]]; then
     mode="sudo"
@@ -44,20 +38,18 @@ __apollo_context_run() {
   zstyle -a "apollo:context:${mode}:${line}:${side}:user:ignore" users ignored_users
 
   for user in "${ignored_users[@]}"; do
-    if [[ "$USER" == "$user" ]]; then
+    if [[ "$USER" =~ $user ]]; then
       ignore_user=1;
     fi
   done
 
-  if [[ -z "$SSH_TTY" ]]; then
+  zstyle -a "apollo:context:${mode}:${line}:${side}:host:ignore" hosts ignored_hosts
 
-    zstyle -b "apollo:context:${mode}:${line}:${side}:host" always_show show_host
-
-    if [[ "$show_host" == "no" ]]; then
+  for host in "${ignored_hosts[@]}"; do
+    if [[ "$HOST" =~ $host ]]; then
       ignore_host=1;
     fi
-
-  fi
+  done
 
   if ((ignore_host==1 && ignore_user==1)); then
 
@@ -85,7 +77,10 @@ __apollo_context_run() {
     __apollo_set_style "apollo:context:${mode}:${line}:${side}:user" "default" "${user_text}"
     user_text="${__APOLLO_RETURN_MESSAGE}"
 
-    __APOLLO_RETURN_MESSAGE="${user_text}@${host_text}"
+    __apollo_set_style "apollo:context:${mode}:${line}:${side}:sep" "default"
+    sep="${__APOLLO_RETURN_MESSAGE}"
+
+    __APOLLO_RETURN_MESSAGE="${user_text}${sep}${host_text}"
 
   fi
 
