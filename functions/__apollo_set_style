@@ -8,12 +8,15 @@ __apollo_set_style() {
 
   context="$1"
   type="$2"
+  text="$3"
 
   cache="${__APOLLO_STYLE_CACHE[$context]}"
 
   if [[ -z "$cache" ]]; then
 
-    zstyle -s "${context}" text text
+    if [[ -z "$text" ]]; then
+      zstyle -s "${context}" text text
+    fi
 
     case "$type" in
       "begin")

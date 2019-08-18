@@ -1,8 +1,12 @@
 # vim:ft=zsh
 
-################################################################
-# Context: user@hostname (who am I and where am I)
-# Note that if $DEFAULT_USER is not set, this prompt module will always print
+# Description:
+#
+#    Username and hostname
+#
+#       Modes: default sudo ssh
+#    Elements: user separator host
+
 
 typeset -g APOLLO_CONTEXT_TEMPLATE="%n@%m"
 typeset -g APOLLO_CONTEXT_ALWAYS_SHOW_USER="false"
@@ -15,19 +19,29 @@ __apollo_context_cache_key() {
 __apollo_context_run() {
 
   local -i line
-  local side user
+  local side mode
+
+  line="$1"
+  side="$2"
+  mode="default"
+
   local -a ignored_users
-  local ignore_user ignore_host
+  local user ignore_user ignore_host
   local -a colors
   local show_host
 
   local host_text="%m"
   local user_text="%n"
 
-  line="$1"
-  side="$2"
+  if [[ -n "$SUDO_USER" ]]; then
+    mode="sudo"
+    __apollo_set_mode "context" "sudo"
+  elif [[ -n "$SSH_TTY" ]]; then
+    mode="ssh"
+    __apollo_set_mode "context" "ssh"
+  fi
 
-  zstyle -a "apollo:context:*:${line}:${side}:user:ignore" users ignored_users
+  zstyle -a "apollo:context:${mode}:${line}:${side}:user:ignore" users ignored_users
 
   for user in "${ignored_users[@]}"; do
     if [[ "$USER" == "$user" ]]; then
@@ -37,7 +51,7 @@ __apollo_context_run() {
 
   if [[ -z "$SSH_TTY" ]]; then
 
-    zstyle -b "apollo:context:*:${line}:${side}:host" always_show show_host
+    zstyle -b "apollo:context:${mode}:${line}:${side}:host" always_show show_host
 
     if [[ "$show_host" == "no" ]]; then
       ignore_host=1;
@@ -51,27 +65,25 @@ __apollo_context_run() {
 
   elif ((ignore_user==1)); then
 
-    __apollo_set_style "apollo:context:*:${line}:${side}:host" "dynamic"
-    colors=("${(s:,:)__APOLLO_RETURN_MESSAGE[@]}")
+    __apollo_set_style "apollo:context:${mode}:${line}:${side}:host" "default" "${host_text}"
+    host_text="${__APOLLO_RETURN_MESSAGE}"
 
-    __APOLLO_RETURN_MESSAGE="${colors[1]}${host_text}${colors[2]}"
+    __APOLLO_RETURN_MESSAGE="${host_text}"
 
   elif ((ignore_host==1)); then
 
-    __apollo_set_style "apollo:context:*:${line}:${side}:user" "dynamic"
-    colors=("${(s:,:)__APOLLO_RETURN_MESSAGE[@]}")
+    __apollo_set_style "apollo:context:${mode}:${line}:${side}:user" "default" "${user_text}"
+    user_text="${__APOLLO_RETURN_MESSAGE}"
 
-    __APOLLO_RETURN_MESSAGE="${colors[1]}${user_text}${colors[2]}"
+    __APOLLO_RETURN_MESSAGE="${user_text}"
 
   else
 
-    __apollo_set_style "apollo:context:*:${line}:${side}:host" "dynamic"
-    colors=("${(s:,:)__APOLLO_RETURN_MESSAGE[@]}")
-    host_text="${colors[1]}${host_text}${colors[2]}"
+    __apollo_set_style "apollo:context:${mode}:${line}:${side}:host" "default" "${host_text}"
+    host_text="${__APOLLO_RETURN_MESSAGE}"
 
-    __apollo_set_style "apollo:context:*:${line}:${side}:user" "dynamic"
-    colors=("${(s:,:)__APOLLO_RETURN_MESSAGE[@]}")
-    user_text="${colors[1]}${user_text}${colors[2]}"
+    __apollo_set_style "apollo:context:${mode}:${line}:${side}:user" "default" "${user_text}"
+    user_text="${__APOLLO_RETURN_MESSAGE}"
 
     __APOLLO_RETURN_MESSAGE="${user_text}@${host_text}"
 

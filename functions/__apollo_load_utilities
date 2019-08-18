@@ -26,6 +26,12 @@ __apollo_human_readable_bytes() {
 
 }
 
+__apollo_set_mode() {
+
+  __APOLLO_MODULE_MODE[$1]="$2"
+
+}
+
 __apollo_parse_ip() {
 
   local desiredInterface rawInterfaces pattern relevantInterfaces newline interfaceName interface ipFound
