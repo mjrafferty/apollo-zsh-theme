@@ -1,10 +1,5 @@
 # vim:ft=zsh
 #
-################################################################
-# Segment to indicate background jobs with an icon.
-
-typeset -g APOLLO_BACKGROUND_JOBS_VERBOSE="true"
-typeset -g APOLLO_BACKGROUND_JOBS_VERBOSE_ALWAYS="false"
 
 __apollo_background_jobs_cache_key() {
   __APOLLO_RETURN_MESSAGE="${(%):-%j}"
@@ -12,12 +7,19 @@ __apollo_background_jobs_cache_key() {
 
 __apollo_background_jobs_run() {
 
-  if [[ $APOLLO_BACKGROUND_JOBS_VERBOSE == true ]]; then
-    if [[ $APOLLO_BACKGROUND_JOBS_VERBOSE_ALWAYS == true ]]; then
-      __APOLLO_RETURN_MESSAGE="${(%):-%j}"
-    else
-      __APOLLO_RETURN_MESSAGE="${(%):-%(1j.%j.)}"
-    fi
+  local -i line
+  local side mode always_show
+
+  line="$1"
+  side="$2"
+  mode="default"
+
+  zstyle -b "apollo:background_jobs:${mode}:${line}:${side}" always_show always_show
+
+  if [[ "${always_show}" == "yes" ]]; then
+    __APOLLO_RETURN_MESSAGE="${(%):-%j}"
+  else
+    __APOLLO_RETURN_MESSAGE="${(%):-%(1j.%j.)}"
   fi
 
 }

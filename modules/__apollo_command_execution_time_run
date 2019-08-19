@@ -2,52 +2,68 @@
 ################################################################
 # Display the duration the command needed to run.
 
-typeset -gi APOLLO_COMMAND_EXECUTION_TIME_PRECISION=2
-
-typeset -gF __APOLLO_COMMAND_DURATION
-typeset -gF __APOLLO_TIMER_START
+typeset -gF __APOLLO_COMMAND_EXECUTION_TIME_START="-1"
 
 __apollo_command_execution_time_run() {
 
-  __APOLLO_COMMAND_DURATION=$((EPOCHREALTIME - __APOLLO_TIMER_START))
-  __APOLLO_TIMER_START=1e10
+  local -i line
+  local side mode
+  local duration min_duration precision
 
-  local humanReadableDuration
+  line="$1"
+  side="$2"
+  mode="default"
 
-  if (( __APOLLO_COMMAND_DURATION < APOLLO_COMMAND_EXECUTION_TIME_THRESHOLD )); then
+  if ((__APOLLO_COMMAND_EXECUTION_TIME_START < 0)); then
     __APOLLO_RETURN_MESSAGE=""
     return
   fi
 
-  if (( __APOLLO_COMMAND_DURATION < 60 )); then
+  ((duration = EPOCHREALTIME - __APOLLO_COMMAND_EXECUTION_TIME_START))
+  __APOLLO_COMMAND_EXECUTION_TIME_START="-1"
 
-    if ((APOLLO_COMMAND_EXECUTION_TIME_PRECISION == 0)); then
-      typeset -i humanReadableDuration
-    else
-      typeset -F ${APOLLO_COMMAND_EXECUTION_TIME_PRECISION} humanReadableDuration
-    fi
-
-    humanReadableDuration=$__APOLLO_COMMAND_DURATION
-
-  elif (( __APOLLO_COMMAND_DURATION < 3600 )); then
-
-    humanReadableDuration=$(TZ=GMT; strftime '%M:%S' $(( int(rint(__APOLLO_COMMAND_DURATION)) )))
-
-  else
-
-    humanReadableDuration=$(TZ=GMT; strftime '%H:%M:%S' $(( int(rint(__APOLLO_COMMAND_DURATION)) )))
-
+  if (( duration >= 60 )); then
+    mode="minute"
+    __apollo_set_mode command_execution_time "minute"
+  elif (( duration >= 3600 )); then
+    mode="hour"
+    __apollo_set_mode command_execution_time "hour"
   fi
 
-  __APOLLO_RETURN_MESSAGE="${humanReadableDuration}"
+  zstyle -s "apollo:command_execution_time:${mode}:${line}:${side}" min_duration min_duration
+
+  if [[ -n "$duration" && "$duration" -lt "$min_duration"  ]]; then
+    __APOLLO_RETURN_MESSAGE=""
+    return
+  fi
+
+  case "$mode" in
+    "default")
+      zstyle -s "apollo:command_execution_time:${mode}:${line}:${side}" precision precision
+      if ((precision == 0)); then
+        typeset -i duration
+      else
+        typeset -F ${precision} duration
+      fi
+      __APOLLO_RETURN_MESSAGE="${duration}"
+      ;;
+    "minute")
+      duration=$(( int(rint(duration)) ))
+      TZ=GMT strftime '%M:%S' "${duration}"
+      read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
+      ;;
+    "hour")
+      duration=$(( int(rint(duration)) ))
+      TZ=GMT strftime '%H:%M:%S' "${duration}"
+      read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
+      ;;
+  esac
 
 }
 
 __apollo_command_execution_time_preexec(){
-  __APOLLO_TIMER_START=$EPOCHREALTIME
+  __APOLLO_COMMAND_EXECUTION_TIME_START=$EPOCHREALTIME
 }
-
-__APOLLO_TIMER_START=1e10
 
 zmodload zsh/mathfunc
 
