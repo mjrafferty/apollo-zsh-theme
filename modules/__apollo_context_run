@@ -27,12 +27,12 @@ __apollo_context_run() {
   host_text="%m"
   user_text="%n"
 
-  if [[ -n "$SUDO_USER" ]]; then
-    mode="sudo"
-    __apollo_set_mode "context" "sudo"
-  elif [[ -n "$SSH_TTY" ]]; then
+  if [[ -n "$SSH_TTY" ]]; then
     mode="ssh"
     __apollo_set_mode "context" "ssh"
+  elif [[ -n "$SUDO_USER" ]]; then
+    mode="sudo"
+    __apollo_set_mode "context" "sudo"
   fi
 
   zstyle -a "apollo:context:${mode}:${line}:${side}:user:ignore" users ignored_users
