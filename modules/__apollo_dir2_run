@@ -1,0 +1,68 @@
+# vim:ft=zsh
+
+# Description:
+#
+
+__apollo_dir2_cache_key() {
+  __APOLLO_RETURN_MESSAGE="$PWD"
+}
+
+__apollo_dir2_run() {
+
+  local -i line last_count
+  local side mode method absolute dir sep output
+  local -a split_dir last_style
+
+  line="$1"
+  side="$2"
+  mode="default"
+
+  if [[ ! -w "$PWD" ]]; then
+    mode="readonly";
+    __apollo_set_mode dir2 "readonly"
+  fi
+
+  zstyle -s "apollo:dir2:${mode}:${line}:${side}" method method
+  zstyle -b "apollo:dir2:${mode}:${line}:${side}" absolute absolute
+  #zstyle -s "apollo:dir2:${mode}:${line}:${side}:shortened" text short_text
+
+  case "$method" in
+    "truncate")
+      ;;
+    "unique")
+      ;;
+    "last")
+      #zstyle -s "apollo:dir2:${mode}:${line}:${side}:last" count last_count
+      if [[ "$absolute" == "yes" ]]; then
+        dir="${(%):-%${last_count}d}"
+      else
+        dir="${(%):-%${last_count}~}"
+      fi
+      ;;
+    *)
+      if [[ "$absolute" == "yes" ]]; then
+        dir="${(%):-%d}"
+      else
+        dir="${(%):-%~}"
+      fi
+      ;;
+  esac
+
+  __apollo_set_style "apollo:dir2:${mode}:${line}:${side}:sep" "default"
+  sep="${__APOLLO_RETURN_MESSAGE}"
+
+  split_dir=("${(s:/:)dir[@]}")
+
+  for ((element=1; element < ${#split_dir[@]}; element++)); do
+    output+="${split_dir[element]}${sep}"
+  done
+
+  __apollo_set_style "apollo:dir2:${mode}:${line}:${side}:lastdir" "dynamic"
+  last_style=("${(s:;:)__APOLLO_RETURN_MESSAGE[@]}")
+
+  output+="${last_style[1]}${split_dir[element]}${last_style[2]}"
+  __APOLLO_RETURN_MESSAGE="$output"
+
+}
+
+__apollo_dir2_run "$@"
