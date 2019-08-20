@@ -11,7 +11,7 @@ __apollo_dir2_run() {
 
   local -i line last_count
   local side mode method absolute dir sep output
-  local -a split_dir last_style
+  local -a split_dir last_style element_style
 
   line="$1"
   side="$2"
@@ -51,14 +51,17 @@ __apollo_dir2_run() {
   __apollo_set_style "apollo:dir2:${mode}:${line}:${side}:sep" "default"
   sep="${__APOLLO_RETURN_MESSAGE}"
 
-  split_dir=("${(s:/:)dir[@]}")
+  __apollo_set_style "apollo:dir2:${mode}:${line}:${side}:element" "dynamic"
+  element_style=("${(s:;:)__APOLLO_RETURN_MESSAGE}")
+
+  split_dir=("${(s:/:)dir}")
 
   for ((element=1; element < ${#split_dir[@]}; element++)); do
-    output+="${split_dir[element]}${sep}"
+    output+="${element_style[1]}${split_dir[element]}${element_style[2]}${sep}"
   done
 
   __apollo_set_style "apollo:dir2:${mode}:${line}:${side}:lastdir" "dynamic"
-  last_style=("${(s:;:)__APOLLO_RETURN_MESSAGE[@]}")
+  last_style=("${(s:;:)__APOLLO_RETURN_MESSAGE}")
 
   output+="${last_style[1]}${split_dir[element]}${last_style[2]}"
   __APOLLO_RETURN_MESSAGE="$output"
