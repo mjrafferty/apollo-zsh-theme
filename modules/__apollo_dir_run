@@ -11,7 +11,7 @@ __apollo_dir_run() {
 
   local -i line last_count shorten_length
   local side mode method absolute dir sep output element shorten_length
-  local -a split_dir last_style element_style
+  local -a split_dir last_style element_style short_style
 
   line="$1"
   side="$2"
@@ -39,13 +39,22 @@ __apollo_dir_run() {
   __apollo_set_style "apollo:dir:${mode}:${line}:${side}:element" "dynamic"
   element_style=("${(s:;:)__APOLLO_RETURN_MESSAGE}")
 
+  __apollo_set_style "apollo:dir:${mode}:${line}:${side}:shortened" "dynamic"
+  short_style=("${(s:;:)__APOLLO_RETURN_MESSAGE}")
+
   split_dir=("${(s:/:)dir}")
 
   for ((element=1; element < ${#split_dir[@]}; element++)); do
 
+    before_length="${#split_dir[element]}"
+
     split_dir[element]="${(%):-%${shorten_length}>${shorten_string}>${split_dir[element]}}"
 
-    output+="${element_style[1]}${split_dir[element]}${element_style[2]}${sep}"
+    if (( ${#split_dir[element]} < before_length)); then
+      output+="${short_style[1]}${split_dir[element]}${short_style[2]}${sep}"
+    else
+      output+="${element_style[1]}${split_dir[element]}${element_style[2]}${sep}"
+    fi
 
   done
 
