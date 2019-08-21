@@ -7,24 +7,10 @@ __apollo_dir_cache_key() {
   __APOLLO_RETURN_MESSAGE="$PWD"
 }
 
-__apollo_dir_last() {
-
-  local last_count
-
-  zstyle -s "apollo:dir:${mode}:${line}:${side}" last_count last_count
-
-  if [[ "$absolute" == "yes" ]]; then
-    __APOLLO_RETURN_MESSAGE="${(%):-%${last_count}d}"
-  else
-    __APOLLO_RETURN_MESSAGE="${(%):-%${last_count}~}"
-  fi
-
-}
-
 __apollo_dir_run() {
 
-  local -i line
-  local side mode method absolute dir sep output
+  local -i line last_count shorten_length
+  local side mode method absolute dir sep output element shorten_length
   local -a split_dir last_style element_style
 
   line="$1"
@@ -36,31 +22,16 @@ __apollo_dir_run() {
     __apollo_set_mode dir "readonly"
   fi
 
-  zstyle -s "apollo:dir:${mode}:${line}:${side}" method method
   zstyle -b "apollo:dir:${mode}:${line}:${side}" absolute absolute
+  zstyle -s "apollo:dir:${mode}:${line}:${side}" last_count last_count
+  zstyle -s "apollo:dir:${mode}:${line}:${side}" shorten_length shorten_length
+  zstyle -s "apollo:dir:${mode}:${line}:${side}" shorten_string shorten_string
 
   if [[ "$absolute" == "yes" ]]; then
-    dir="${(%):-%d}"
+    dir="${(%):-%${last_count}d}"
   else
-    dir="${(%):-%~}"
+    dir="${(%):-%${last_count}~}"
   fi
-
-  case "$method" in
-    "truncate")
-      __apollo_dir_truncate
-      dir="${__APOLLO_RETURN_MESSAGE}"
-      ;;
-    "unique")
-      __apollo_dir_unique
-      dir="${__APOLLO_RETURN_MESSAGE}"
-      ;;
-    "last")
-      __apollo_dir_last
-      dir="${__APOLLO_RETURN_MESSAGE}"
-      ;;
-    *)
-      ;;
-  esac
 
   __apollo_set_style "apollo:dir:${mode}:${line}:${side}:sep" "default"
   sep="${__APOLLO_RETURN_MESSAGE}"
@@ -71,7 +42,11 @@ __apollo_dir_run() {
   split_dir=("${(s:/:)dir}")
 
   for ((element=1; element < ${#split_dir[@]}; element++)); do
+
+    split_dir[element]="${(%):-%${shorten_length}>${shorten_string}>${split_dir[element]}}"
+
     output+="${element_style[1]}${split_dir[element]}${element_style[2]}${sep}"
+
   done
 
   __apollo_set_style "apollo:dir:${mode}:${line}:${side}:last" "dynamic"
