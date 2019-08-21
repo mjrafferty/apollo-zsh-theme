@@ -1,310 +1,96 @@
 # vim:ft=zsh
 
-################################################################
-# Dir: current working directory
-
-typeset -g APOLLO_DIR_MAX_LENGTH=10
-typeset -g APOLLO_DIR_PACKAGE_FILES
-typeset -g APOLLO_DIR_PATH_ABSOLUTE=false
-typeset -g APOLLO_DIR_PATH_HIGHLIGHT_BOLD=true
-typeset -g APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND="red"
-typeset -g APOLLO_DIR_PATH_SEPARATOR="/"
-typeset -g APOLLO_DIR_PATH_SEPARATOR_FOREGROUND="yellow"
-typeset -g APOLLO_HOME_FOLDER_ABBREVIATION="~"
-typeset -g APOLLO_SHORTEN_DIR_LENGTH=3
-typeset -g APOLLO_SHORTEN_DELIMITER=".."
-typeset -g APOLLO_SHORTEN_DELIMITER_LENGTH
-typeset -g APOLLO_SHORTEN_FOLDER_MARKER
-typeset -g APOLLO_SHORTEN_STRATEGY=""
+# Description:
+#
 
 __apollo_dir_cache_key() {
   __APOLLO_RETURN_MESSAGE="$PWD"
 }
 
-__apollo_dir_truncate_to_unique() {
+__apollo_dir_last() {
 
-  local shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
-  local delim=${APOLLO_SHORTEN_DELIMITER-$'\u2026'}
-  local -i i n d j max_len len real_delim_len
-  local parent dir
-  local -a matching
-  i=2
-  n=1
+  local last_count
 
-  if [[ $p == /* ]]; then
-    (( ++i ))
-  fi
+  zstyle -s "apollo:dir:${mode}:${line}:${side}" last_count last_count
 
-  delim=${APOLLO_SHORTEN_DELIMITER-'*'}
-
-  __apollo_get_display_width "$delim"
-  real_delim_len="$__APOLLO_RETURN_MESSAGE"
-
-  d=${APOLLO_SHORTEN_DELIMITER_LENGTH:--1}
-
-  if (( d < 0 )); then
-    d=real_delim_len
-  fi
-
-  shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:-1}
-
-  if (( shortenlen >= 0 )); then
-    n=shortenlen
-  fi
-
-  if [[ $APOLLO_DIR_MAX_LENGTH == *% ]]; then
-    max_len=$(( COLUMNS * $APOLLO_DIR_MAX_LENGTH[1,-2] / 100 ))
+  if [[ "$absolute" == "yes" ]]; then
+    __APOLLO_RETURN_MESSAGE="${(%):-%${last_count}d}"
   else
-    max_len=APOLLO_DIR_MAX_LENGTH
+    __APOLLO_RETURN_MESSAGE="${(%):-%${last_count}~}"
   fi
 
-  len=$#p
-  parent="${PWD%/${(pj./.)parts[i,-1]}}"
-
-  for (( ; len > max_len && i <= $#parts - n; ++i )); do
-
-    dir=$parts[i]
-
-    if [[ -n $APOLLO_SHORTEN_FOLDER_MARKER &&
-      -n $parent/$dir/${~APOLLO_SHORTEN_FOLDER_MARKER}(#qN) ]]; then
-          parent+=/$dir
-          continue
-    fi
-
-    j=1
-
-    for (( ; j + d < $#dir; ++j )); do
-      matching=($parent/$dir[1,j]*/(N))
-      (( $#matching == 1 )) && break
-    done
-
-    if (( j + d < $#dir )); then
-      (( len -= ($#dir - j - real_delim_len) ))
-      parts[i]=$dir[1,j]$'\0'
-    fi
-
-    parent+=/$dir
-
-  done
-
-}
-
-# Dir text will be the last $APOLLO_SHORTEN_DIR_LENGTH characters of path
-__apollo_dir_truncate_absolute() {
-
-  local shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
-  local delim=${APOLLO_SHORTEN_DELIMITER-$'\u2026'}
-  local -i n i len
-  local dir
-
-  if (( shortenlen > 0 && $#p > shortenlen )); then
-
-    __apollo_shorten_delim_len $delim
-
-    if (( $#p > shortenlen + $__APOLLO_RETURN_MESSAGE )); then
-
-      n=shortenlen
-      i=$#parts
-
-      while true; do
-
-        dir=$parts[i]
-        len=$(( $#dir + (i > 1) ))
-
-        if (( len <= n )); then
-          (( n -= len ))
-          (( --i ))
-        else
-          parts[i]=$'\0'$dir[-n,-1]
-          parts[1,i-1]=()
-          break
-        fi
-
-      done
-    fi
-  fi
-
-}
-
-__apollo_dir_truncate_with_folder_marker(){
-
-  local dir
-  local -a m
-  local -i i
-
-  if [[ -n $APOLLO_SHORTEN_FOLDER_MARKER ]]; then
-
-    dir=$PWD
-    i=$(($#parts - 1))
-
-    for (( ; i > 1; --i )); do
-      dir=${dir:h}
-      if [[ -n $dir/${~APOLLO_SHORTEN_FOLDER_MARKER}(#qN) ]]; then
-        m+=$i
-      fi
-    done
-
-    m+=1
-
-    for (( i=1; i < $#m; ++i )); do
-      (( m[i] - m[i+1] > 2 )) && parts[m[i+1]+1,m[i]-1]=($'\0')
-    done
-
-  fi
-
-}
-
-__apollo_dir_truncate_to_first_and_last(){
-
-  local shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
-
-  if (( shortenlen > 0 )); then
-    local -i i=$(( shortenlen + 1 ))
-    [[ $p == /* ]] && (( ++i ))
-    for (( ; i <= $#parts - shortenlen; ++i )); do
-      parts[i]=$'\0'
-    done
-  fi
-
-}
-
-__apollo_dir_truncate_middle(){
-  #TODO
 }
 
 __apollo_dir_run() {
 
-  emulate -L zsh && setopt extended_glob
+  local -i line
+  local side mode method absolute dir sep output
+  local -a split_dir last_style element_style
 
-  local p func state icon last_fg delim sep
-  local -a parts
-  local -i fake_first shortenlen len
-  local cache_key="" # Not used here, but having the value set from calling function messes with expansion of ${(%):-%~}
+  line="$1"
+  side="$2"
+  mode="default"
 
-  delim=${APOLLO_SHORTEN_DELIMITER-$'\u2026'}
-  sep=$APOLLO_DIR_PATH_SEPARATOR
-  fake_first=0
-
-  if [[ $APOLLO_DIR_PATH_ABSOLUTE == true ]]; then
-    p=$PWD
-  else
-    p=${(%):-%~}
+  if [[ ! -w "$PWD" ]]; then
+    mode="readonly";
+    __apollo_set_mode dir "readonly"
   fi
 
-  if [[ $p == '~['* ]]; then
-    # If "${(%):-%~}" expands to "~[a]/]/b", is the first component "~[a]" or "~[a]/]"?
-    # One would expect "${(%):-%-1~}" to give the right answer but alas it always simply
-    # gives the module before the first slash, which would be "~[a]" in this case. Worse,
-    # for "~[a/b]" it'll give the nonsensical "~a[". To solve this problem we have to
-    # repeat what "${(%):-%~}" does and hope that it produces the same result.
-    for func in zsh_directory_name $zsh_directory_name_functions; do
-      if (( $+functions[$func] )) && $func d $PWD && [[ $p == '~['$reply[1]']'* ]]; then
-        parts+='~['$reply[1]']'
-        break
-      fi
-    done
+  zstyle -s "apollo:dir:${mode}:${line}:${side}" method method
+  zstyle -b "apollo:dir:${mode}:${line}:${side}" absolute absolute
 
-    if (( $#parts )); then
-      parts+=(${(s:/:)${p#$parts[1]}})
-    else
-      p=$PWD
-      parts=("${(s:/:)p}")
-    fi
+  if [[ "$absolute" == "yes" ]]; then
+    dir="${(%):-%d}"
   else
-    parts=("${(s:/:)p}")
+    dir="${(%):-%~}"
   fi
 
-  case $APOLLO_SHORTEN_STRATEGY in
-    truncate_absolute)
-      __apollo_dir_truncate_absolute
+  case "$method" in
+    "truncate")
+      __apollo_dir_truncate
+      dir="${__APOLLO_RETURN_MESSAGE}"
       ;;
-    truncate_middle)
-      __apollo_dir_truncate_middle
+    "unique")
+      __apollo_dir_unique
+      dir="${__APOLLO_RETURN_MESSAGE}"
       ;;
-    truncate_to_first_and_last)
-      __apollo_dir_truncate_to_first_and_last
-      ;;
-    truncate_to_unique)
-      __apollo_truncate_to_unique
-      ;;
-    truncate_with_folder_marker)
-      __apollo_dir_truncate_with_folder_marker
-      ;;
-    truncate_to_last)
-      fake_first=$(($#parts > 1))
-      parts[1,-2]=()
+    "last")
+      __apollo_dir_last
+      dir="${__APOLLO_RETURN_MESSAGE}"
       ;;
     *)
-      shortenlen=${APOLLO_SHORTEN_DIR_LENGTH:--1}
-      if (( shortenlen > 0 )); then
-        len=$#parts
-        if [[ -z $parts[1] ]]; then
-          (( --len ))
-        fi
-        if (( len > shortenlen )); then
-          parts[1,-shortenlen-1]=($'\0')
-        fi
-      fi
       ;;
   esac
 
-  parts=("${(@)parts//\%/%%}")
+  __apollo_set_style "apollo:dir:${mode}:${line}:${side}:sep" "default"
+  sep="${__APOLLO_RETURN_MESSAGE}"
 
-  if [[ $fake_first == 0 && $parts[1] == '~' ]]; then
-    parts[1]=$APOLLO_HOME_FOLDER_ABBREVIATION
-  fi
+  __apollo_set_style "apollo:dir:${mode}:${line}:${side}:element" "dynamic"
+  element_style=("${(s:;:)__APOLLO_RETURN_MESSAGE}")
 
-  if [[ $APOLLO_DIR_OMIT_FIRST_CHARACTER == true && $#parts > 1 && -n $parts[2] ]]; then
-    parts[1]=()
-  fi
+  split_dir=("${(s:/:)dir}")
 
-  ## Set last dir bold
-  if [[ $APOLLO_DIR_PATH_HIGHLIGHT_BOLD == true ]]; then
-    last_fg+=%B
-  fi
-
-  # Highlight last dir
-  if [[ -n $APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND ]]; then
-    __apollo_set_colors $APOLLO_DIR_PATH_HIGHLIGHT_FOREGROUND "keep"
-    last_fg+=$__APOLLO_RETURN_MESSAGE
-  fi
-
-  parts[-1]=$last_fg${parts[-1]//$'\0'/$'\0'}%b
-
-  ## If path was truncated, insert delimiter
-  parts=("${(@)parts//$'\0'/$delim}")
-
-
-  ## Set separator color
-  if [[ -n $APOLLO_DIR_PATH_SEPARATOR_FOREGROUND ]]; then
-    __apollo_set_colors $APOLLO_DIR_PATH_SEPARATOR_FOREGROUND "keep"
-    sep="$__APOLLO_RETURN_MESSAGE$sep%f"
-  fi
-
-  ## Not compatible with older ZSH versions
-  #__APOLLO_RETURN_MESSAGE="${(pj.$sep.)parts}"
-  __APOLLO_RETURN_MESSAGE=""
-  for ((part=1;part<=${#parts[*]};part++)); do
-    if ((part > 1)); then
-      __APOLLO_RETURN_MESSAGE+="${sep}"
-    fi
-    __APOLLO_RETURN_MESSAGE+="${parts[part]}"
+  for ((element=1; element < ${#split_dir[@]}; element++)); do
+    output+="${element_style[1]}${split_dir[element]}${element_style[2]}${sep}"
   done
 
+  __apollo_set_style "apollo:dir:${mode}:${line}:${side}:last" "dynamic"
+  last_style=("${(s:;:)__APOLLO_RETURN_MESSAGE}")
 
-  if [[ $APOLLO_DIR_SHOW_WRITABLE == true && ! -w $PWD ]]; then
-    state=NOT_WRITABLE
-    icon=LOCK_ICON
-  else
-    case $PWD in
-      /etc|/etc/*) state=ETC;            icon=ETC_ICON;;
-      ~)           state=HOME;           icon=HOME_ICON;;
-      ~/*)         state=HOME_SUBFOLDER; icon=HOME_SUB_ICON;;
-      *)           state=DEFAULT;        icon=FOLDER_ICON;;
-    esac
-  fi
-
+  output+="${last_style[1]}${split_dir[element]}${last_style[2]}"
+  __APOLLO_RETURN_MESSAGE="$output"
 
 }
+
+local bookmark
+local -a bookmarks
+
+zstyle -a "apollo:dir:${mode}:${line}:${side}" bookmarks bookmarks
+
+for bookmark in "${bookmarks[@]}"; do
+  hash -d "${bookmark}"
+done
+
+unset bookmark bookmarks
 
 __apollo_dir_run "$@"
