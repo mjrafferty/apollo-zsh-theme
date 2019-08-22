@@ -68,7 +68,7 @@ __apollo_dir_run() {
 
 local bookmark pattern bookmark_name
 local -a bookmarks bookmark_patterns
-local -A split_pattern
+local -a split_pattern
 
 zstyle -a "apollo:dir:${mode}:${line}:${side}" bookmarks bookmarks
 
