@@ -66,6 +66,7 @@ __apollo_dir_run() {
 
 }
 
+
 local bookmark pattern bookmark_name
 local -a bookmarks bookmark_patterns
 local -a split_pattern
@@ -82,7 +83,7 @@ for pattern in "${bookmark_patterns[@]}"; do
 
   split_pattern=("${(s:;:)pattern}")
 
-  #bookmarks=(${~split_pattern[1]})
+  bookmarks=(${~=split_pattern[1]}(N))
 
   if [[ -z "${split_pattern[2]}" ]]; then
     for bookmark in "${bookmarks[@]}"; do
@@ -98,5 +99,6 @@ for pattern in "${bookmark_patterns[@]}"; do
 done
 
 unset bookmark bookmarks pattern bookmark_patterns split_pattern
+
 
 __apollo_dir_run "$@"
