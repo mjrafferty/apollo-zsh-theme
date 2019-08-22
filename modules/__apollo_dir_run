@@ -46,6 +46,11 @@ __apollo_dir_run() {
 
   for ((element=1; element < ${#split_dir[@]}; element++)); do
 
+    if (( element = 1 )); then
+      output+="${element_style[1]}${split_dir[element]}${element_style[2]}${sep}"
+      continue;
+    fi
+
     before_length="${#split_dir[element]}"
 
     split_dir[element]="${(%):-%${shorten_length}>${shorten_string}>${split_dir[element]}}"
