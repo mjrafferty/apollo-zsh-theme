@@ -74,7 +74,7 @@ local -a split_pattern
 zstyle -a "apollo:dir:${mode}:${line}:${side}" bookmarks bookmarks
 
 for bookmark in "${bookmarks[@]}"; do
-  hash -d "${bookmark}"
+  hash -d "${bookmark}" 2> /dev/null
 done
 
 zstyle -a "apollo:dir:${mode}:${line}:${side}" bookmark_patterns bookmark_patterns
@@ -87,12 +87,12 @@ for pattern in "${bookmark_patterns[@]}"; do
 
   if [[ -z "${split_pattern[2]}" ]]; then
     for bookmark in "${bookmarks[@]}"; do
-      hash -d "${bookmark##*/}=${bookmark}";
+      hash -d "${bookmark##*/}=${bookmark}" 2> /dev/null
     done
   else
     for bookmark in "${bookmarks[@]}"; do
-      bookmark_name="${bookmark%${split_pattern[2]}}";
-      hash -d "${bookmark_name##*/}=${bookmark}";
+      bookmark_name="${bookmark%${split_pattern[2]}}"
+      hash -d "${bookmark_name##*/}=${bookmark}" 2> /dev/null
     done
   fi
 
