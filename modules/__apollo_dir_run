@@ -82,13 +82,13 @@ for pattern in "${bookmark_patterns[@]}"; do
 
   split_pattern=("${(s:;:)pattern}")
 
-  if [[ -n "${split_pattern[2]}" ]]; then
-    for bookmark in ${pattern}; do
+  if [[ -z "${split_pattern[2]}" ]]; then
+    for bookmark in ${split_pattern[1]}; do
       hash -d "${bookmark##*/}=${bookmark}";
     done
   else
-    for bookmark in ${pattern}; do
-      bookmark_name="${bookmark%/html}";
+    for bookmark in ${split_pattern[1]}; do
+      bookmark_name="${bookmark%${split_pattern[2]}}";
       hash -d "${bookmark_name##*/}=${bookmark}";
     done
   fi
