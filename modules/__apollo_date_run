@@ -25,7 +25,7 @@ __apollo_date_run() {
         if [[ "${verbose}" == "yes" ]]; then
           __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" " %D{%A}"
         else
-          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%u}"
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%a}"
         fi
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
