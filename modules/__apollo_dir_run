@@ -9,7 +9,7 @@ __apollo_dir_cache_key() {
 
 __apollo_dir_run() {
 
-  local -i line last_count shorten_length
+  local -i line last_count
   local side mode method absolute dir sep output element shorten_length
   local -a split_dir last_style element_style short_style
 
@@ -27,12 +27,36 @@ __apollo_dir_run() {
   zstyle -s "apollo:dir:${mode}:${line}:${side}" shorten_length shorten_length
   zstyle -s "apollo:dir:${mode}:${line}:${side}" shorten_string shorten_string
 
+  __apollo_set_style "apollo:dir:${mode}:${line}:${side}:sep" "default"
+  sep="${__APOLLO_RETURN_MESSAGE}"
+
   if [[ "$absolute" == "yes" ]]; then
     dir="${(%):-%${last_count}d}"
+    if (( ${#dir} < ${#${(%):-%d}} )); then
+      dir="../${dir}"
+    fi
   else
     dir="${(%):-%${last_count}~}"
+    if (( ${#dir} < ${#${(%):-%~}} )); then
+      dir="../${dir}"
+    fi
   fi
 
+  if [[ "$shorten_length" == "auto" ]]; then
+
+    dir_length="${#dir}"
+
+    if (( dir_length < 30 )); then
+      shorten_length=0;
+    elif (( dir_length < 60 )); then
+      shorten_length=5;
+    elif (( dir_length < 80 )); then
+      shorten_length=3;
+    else
+      shorten_length=1;
+    fi
+
+  fi
   __apollo_set_style "apollo:dir:${mode}:${line}:${side}:sep" "default"
   sep="${__APOLLO_RETURN_MESSAGE}"
 
@@ -73,8 +97,7 @@ __apollo_dir_run() {
 
 
 local bookmark pattern bookmark_name
-local -a bookmarks bookmark_patterns
-local -a split_pattern
+local -a bookmarks bookmark_patterns split_pattern
 
 zstyle -a "apollo:dir:${mode}:${line}:${side}" bookmarks bookmarks
 

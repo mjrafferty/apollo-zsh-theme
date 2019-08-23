@@ -30,7 +30,7 @@ __apollo_build_left_prompt() {
         __APOLLO_REVERSE_MODULE_MAP[$current_module]+="${line_index}:left:${__APOLLO_MODULE_INDEX};"
         __APOLLO_LEFT_LINE_MAP[line_index]+="${__APOLLO_MODULE_INDEX};"
 
-        __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_SEPARATORS[${__APOLLO_MODULE_INDEX}]}\${__APOLLO_MODULE_TEXT[${__APOLLO_MODULE_INDEX}]}"
+        __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_SEPARATORS[${__APOLLO_MODULE_INDEX}]}\${(e)__APOLLO_MODULE_TEXT[${__APOLLO_MODULE_INDEX}]}"
         __APOLLO_LEFT_HAS_LENGTH[line_index]+=" + \$__APOLLO_MODULE_HAS_LENGTH[${__APOLLO_MODULE_INDEX}]"
         ((__APOLLO_MODULE_INDEX++))
         ;;

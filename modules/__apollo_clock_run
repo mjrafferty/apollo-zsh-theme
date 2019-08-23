@@ -1,0 +1,19 @@
+# vim:ft=zsh
+
+__apollo_clock_cache_key() {
+  __APOLLO_RETURN_MESSAGE="1"
+}
+
+__apollo_clock_run() {
+
+  __APOLLO_RETURN_MESSAGE="%*"
+
+}
+
+TRAPALRM() {
+  zle reset-prompt
+}
+
+TMOUT=1
+
+__apollo_clock_run "$@"
