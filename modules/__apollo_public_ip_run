@@ -2,71 +2,52 @@
 ################################################################
 # Public IP module
 
-typeset -ga APOLLO_PUBLIC_IP_METHODS
-APOLLO_PUBLIC_IP_METHODS=(curl)
-typeset -g APOLLO_PUBLIC_IP_HOST="ipv4.nexcess.net"
-typeset -g APOLLO_PUBLIC_IP_VPN_INTERFACE
-
-typeset -gF __APOLLO_PUBLIC_IP_TIMESTAMP
-typeset -g  __APOLLO_PUBLIC_IP
-
 __apollo_public_ip_cache_key() {
   __APOLLO_RETURN_MESSAGE="1"
 }
 
 __apollo_public_ip_run() {
 
-  local method ip icon
-  icon='PUBLIC_IP_ICON'
+  local -i line
+  local side mode method host
+  local -a methods
 
-  if (( ! $#__APOLLO_PUBLIC_IP || EPOCHREALTIME >= __APOLLO_PUBLIC_IP_TIMESTAMP + APOLLO_PUBLIC_IP_TIMEOUT )); then
+  line="$1"
+  side="$2"
+  mode="default"
 
-    __APOLLO_PUBLIC_IP=''
+  zstyle -a "apollo:public_ip:${mode}:${line}:${side}" methods methods
+  zstyle -s "apollo:public_ip:${mode}:${line}:${side}" host host
 
-    for method in $APOLLO_PUBLIC_IP_METHODS; do
+  for method in "${methods[@]}"; do
 
-      case $method in
-        'dig')
-          if (( $+commands[dig] )); then
-            command dig +time=1 +tries=1 +short myip.opendns.com @resolver1.opendns.com 2> /dev/null
-            read -r -t __APOLLO_PUBLIC_IP <&${__APOLLO_BUFFER_FD}
-            [[ $__APOLLO_PUBLIC_IP == ';'* ]] && __APOLLO_PUBLIC_IP=''
-          fi
+    case $method in
+      'dig')
+        if (( $+commands[dig] )); then
+          command dig +time=1 +tries=1 +short myip.opendns.com @resolver1.opendns.com 2> /dev/null
+          read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
+          [[ $__APOLLO_RETURN_MESSAGE == ';'* ]] && __APOLLO_RETURN_MESSAGE=''
+        fi
         ;;
-        'curl')
-          if (( $+commands[curl] )); then
-            command curl --max-time 10 -w '\n' "$APOLLO_PUBLIC_IP_HOST" 2> /dev/null
-            read -r -t __APOLLO_PUBLIC_IP <&${__APOLLO_BUFFER_FD}
-          fi
+      'curl')
+        if (( $+commands[curl] )); then
+          command curl --max-time 10 -w '\n' "$host" 2> /dev/null
+          read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
+        fi
         ;;
-        'wget')
-          if (( $+commands[wget] )); then
-            command wget -T 10 -qO- "$APOLLO_PUBLIC_IP_HOST" 2> /dev/null
-            read -r -t __APOLLO_PUBLIC_IP <&${__APOLLO_BUFFER_FD}
-          fi
+      'wget')
+        if (( $+commands[wget] )); then
+          command wget -T 10 -qO- "$host" 2> /dev/null
+          read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
+        fi
         ;;
-      esac
+    esac
 
-      if [[ -n $__APOLLO_PUBLIC_IP ]]; then
-        __APOLLO_PUBLIC_IP_TIMESTAMP=$EPOCHREALTIME
-        break
-      fi
+    if [[ -n "$__APOLLO_RETURN_MESSAGE" ]]; then
+      break;
+    fi
 
-    done
-
-  fi
-
-  ip=${__APOLLO_PUBLIC_IP:-$APOLLO_PUBLIC_IP_NONE}
-
-  if [[ -n $APOLLO_PUBLIC_IP_VPN_INTERFACE ]]; then
-    __apollo_parse_ip $APOLLO_PUBLIC_IP_VPN_INTERFACE && icon='VPN_ICON'
-  fi
-
-	if [[ -n $ip ]]; then
-		__APOLLO_RETURN_MESSAGE="${__APOLLO_PUBLIC_IP}"
-	else
-		__APOLLO_RETURN_MESSAGE=""
-	fi
+  done
 
 }
 

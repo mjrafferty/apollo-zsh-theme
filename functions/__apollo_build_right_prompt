@@ -36,7 +36,7 @@ __apollo_build_right_prompt(){
 
   done
 
-  if ((__APOLLO_CURRENT_RPROMPT >= ${#right_modules[@]} )); then
+  if ((__APOLLO_CURRENT_RPROMPT > ${#right_modules[@]} )); then
     __APOLLO_RETURN_MESSAGE+="\${__APOLLO_RIGHT_END[$line_index]}"
   fi
 
