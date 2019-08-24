@@ -1,86 +1,122 @@
 # vim:ft=zsh
-################################################################
-# Status: When an error occur, return the error code, or a cross icon if option is set
-# Display an ok icon when no error occur, or hide the module if option is set to false
-#
-# old options, retro compatibility
-
-typeset -g APOLLO_STATUS_HIDE_SIGNAME="false"
-typeset -g APOLLO_STATUS_SHOW_PIPESTATUS="true"
-typeset -g APOLLO_STATUS_CROSS="false"
-typeset -g APOLLO_STATUS_VERBOSE="true"
-typeset -g APOLLO_STATUS_OK="true"
-typeset -g APOLLO_STATUS_OK_IN_NON_VERBOSE="true"
-
-exit_code_or_status() {
-
-  local ec=$1
-
-  if [[ "$APOLLO_STATUS_HIDE_SIGNAME" = true ]] || (( ec <= 128 )); then
-    __APOLLO_RETURN_MESSAGE=$ec
-  else
-    __APOLLO_RETURN_MESSAGE="SIG${signals[$((sig + 1))]}($((ec - 128)))"
-  fi
-
-}
 
 __apollo_status_cache_key(){
   __APOLLO_RETURN_MESSAGE="${__APOLLO_PIPE_EXIT_CODES}${__APOLLO_EXIT_CODE}"
 }
 
+__apollo_status_get_signal() {
+
+  local code="$1"
+
+  case "$code" in
+    (126)
+      __APOLLO_RETURN_MESSAGE="NOT_EXEC";
+      ;;
+    (127)
+      __APOLLO_RETURN_MESSAGE="NOT_FOUND";
+      ;;
+    (130)
+      __APOLLO_RETURN_MESSAGE="CTRL_C";
+      ;;
+    (*)
+      if ((__APOLLO_EXIT_CODE > 128)); then
+        if [[ -n "${signals[code-128]}" ]]; then
+          __APOLLO_RETURN_MESSAGE="SIG${signals[code-128]}"
+        else
+          __APOLLO_RETURN_MESSAGE=""
+        fi
+      else
+        __APOLLO_RETURN_MESSAGE=""
+      fi
+      ;;
+  esac
+
+}
+
 __apollo_status_run() {
 
-    local ec_text
-    local ec_sum
-    local ec
+  local -i line error pipe
+  local side mode pipe_status verbose always_show
+  local -a error_text
 
-    if [[ $APOLLO_STATUS_SHOW_PIPESTATUS == true ]]; then
+  line="$1"
+  side="$2"
+  mode="default"
 
-      if (( $#__APOLLO_PIPE_EXIT_CODES > 1 )); then
-        ec_sum=${__APOLLO_PIPE_EXIT_CODES[1]}
-        exit_code_or_status "${__APOLLO_PIPE_EXIT_CODES[1]}"
+  if (( $#__APOLLO_PIPE_EXIT_CODES > 1 )); then
 
-      else
-        ec_sum=${__APOLLO_EXIT_CODE}
-        exit_code_or_status "${__APOLLO_EXIT_CODE}"
+    pipe=1;
+
+    for ((code=1;code<=${#__APOLLO_PIPE_EXIT_CODES[@]};code++)); do
+      if (( __APOLLO_PIPE_EXIT_CODES[code] > 0 )); then
+        error=1;
+        __apollo_status_get_signal "${__APOLLO_PIPE_EXIT_CODES[code]}"
+        error_text[code]="$__APOLLO_RETURN_MESSAGE"
       fi
+    done
 
-      ec_text=$__APOLLO_RETURN_MESSAGE
+  else
 
-      for ec in "${(@)__APOLLO_PIPE_EXIT_CODES[2,-1]}"; do
-        (( ec_sum += ec ))
-        exit_code_or_status "$ec"
-        ec_text+="|$__APOLLO_RETURN_MESSAGE"
-      done
-
-    else
-
-      ec_sum=${__APOLLO_EXIT_CODE}
-      exit_code_or_status "${__APOLLO_EXIT_CODE}"
-      ec_text=$__APOLLO_RETURN_MESSAGE
-
+    if (( __APOLLO_EXIT_CODE > 0 )); then
+      error=1;
+      __apollo_status_get_signal "$__APOLLO_EXIT_CODE"
+      error_text[1]="$__APOLLO_RETURN_MESSAGE"
     fi
 
+  fi
 
-    if (( ec_sum > 0 )); then
+  if (( error == 1 )); then
 
-      __APOLLO_MODULE_MODE[status]="bad"
+    __apollo_set_mode "status" "bad"
+    mode="bad"
 
-      if [[ "$APOLLO_STATUS_VERBOSE" == true ]]; then
-        __APOLLO_RETURN_MESSAGE="$ec_text"
-      else
-        __APOLLO_RETURN_MESSAGE="BAD"
-      fi
+    zstyle -b "apollo:status:${mode}:${line}:${side}" verbose verbose
+    zstyle -b "apollo:status:${mode}:${line}:${side}" pipe_status pipe_status
 
-    elif [[ "$APOLLO_STATUS_OK" == true ]] && [[ "$APOLLO_STATUS_VERBOSE" == true || "$APOLLO_STATUS_OK_IN_NON_VERBOSE" == true ]]; then
-
-      __APOLLO_RETURN_MESSAGE="OK"
-
-    else
+    if [[ "${pipe}" == 1 && "$pipe_status" == "yes" ]]; then
 
       __APOLLO_RETURN_MESSAGE=""
 
+      for ((code=1;code<=${#__APOLLO_PIPE_EXIT_CODES[@]};code++)); do
+
+        if ((code > 1)); then
+          __APOLLO_RETURN_MESSAGE+="|"
+        fi
+
+        if [[ "$verbose" == "yes" && -n "${error_text[code]}" ]]; then
+          __APOLLO_RETURN_MESSAGE+="${error_text[code]}(${__APOLLO_PIPE_EXIT_CODES[code]})"
+        else
+          __APOLLO_RETURN_MESSAGE+="${__APOLLO_PIPE_EXIT_CODES[code]}"
+        fi
+
+      done
+
+    else
+      if [[ "$verbose" == "yes" && -n "${error_text[1]}" ]]; then
+        __APOLLO_RETURN_MESSAGE="${error_text[1]}($__APOLLO_EXIT_CODE)"
+      else
+        __APOLLO_RETURN_MESSAGE="$__APOLLO_EXIT_CODE"
+      fi
     fi
+
+  else
+
+    zstyle -b "apollo:status:${mode}:${line}:${side}" always_show always_show
+    zstyle -b "apollo:status:${mode}:${line}:${side}" verbose verbose
+
+    if [[ "$always_show" == "yes" ]]; then
+
+      if [[ "$verbose" == "yes" ]]; then
+        __APOLLO_RETURN_MESSAGE="OK"
+      else
+        __APOLLO_RETURN_MESSAGE="0"
+      fi
+
+    else
+      __APOLLO_RETURN_MESSAGE=""
+    fi
+
+  fi
 
 }
 
