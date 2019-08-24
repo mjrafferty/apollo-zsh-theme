@@ -8,19 +8,13 @@ __apollo_php_version_cache_key() {
 
 __apollo_php_version_run() {
 
-  local -a match
-  local version
-  local dump
-
-  setopt extendedglob
-
   php --no-php-ini --version 2> /dev/null
 
   read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
 
-  if [[ $__APOLLO_RETURN_MESSAGE == (#b)(*$'\n')#(PHP [[:digit:].]##)* ]]; then
-    version=$match[2]
-    __APOLLO_RETURN_MESSAGE="${version//\%/%%}"
+  if [[ -n $__APOLLO_RETURN_MESSAGE ]]; then
+    __APOLLO_RETURN_MESSAGE=${__APOLLO_RETURN_MESSAGE#PHP }
+    __APOLLO_RETURN_MESSAGE=${__APOLLO_RETURN_MESSAGE%%[^0-9,.]*}
   else
     return;
   fi
