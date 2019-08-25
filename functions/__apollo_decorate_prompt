@@ -4,6 +4,7 @@ __apollo_decorate_prompt() {
 
   local start module
   local first_module last_module context last_context
+  local -i line
   local -a line_modules
   local do_decorate
 

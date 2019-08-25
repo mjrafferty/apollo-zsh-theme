@@ -6,12 +6,19 @@ __apollo_clock_cache_key() {
 
 __apollo_clock_run() {
 
+  local -i line
+  local side mode
+
+  line="$1"
+  side="$2"
+  mode="default"
+
   __APOLLO_RETURN_MESSAGE="%*"
 
 }
 
 TRAPALRM() {
-  zle reset-prompt
+  zle && zle .reset-prompt
 }
 
 TMOUT=1
