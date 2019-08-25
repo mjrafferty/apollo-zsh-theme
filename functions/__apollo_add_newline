@@ -2,7 +2,7 @@
 
 __apollo_add_newline() {
 
-  local module faux_rprompt line ruler_char
+  local module faux_rprompt line ruler_text
 
   module="$1"
   line="$2"
