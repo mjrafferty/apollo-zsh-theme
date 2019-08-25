@@ -6,12 +6,16 @@ __apollo_precmd() {
   __APOLLO_PIPE_EXIT_CODES=( "${pipestatus[@]}" )
 
   local start startmod profiler
-	local module
+	local module cache_disabled clearing_disabled
   local -a line_modules
-  local -i line num
+  local -i line num clear_count
 
-  # Forcefully refresh cache by pressing enter a few times
-  if ((__APOLLO_BREAK_CACHE_COUNTER++ >= 2)); then
+  zstyle -b 'apollo:core:cache' disable cache_disabled
+  zstyle -s 'apollo:core:cache:clear' count clear_count
+  zstyle -b 'apollo:core:cache:clear' disable clearing_disabled
+
+  if [[ "$cache_disabled" == "yes" ]] \
+    || [[ "$clearing_disabled" != "yes" && "$((++__APOLLO_BREAK_CACHE_COUNTER))" -ge "$clear_count" ]]; then
     __APOLLO_MODULE_CACHE=();
     __APOLLO_BREAK_CACHE_COUNTER=0;
   fi

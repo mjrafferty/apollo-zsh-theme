@@ -35,13 +35,13 @@ typeset -g  __APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values t
 
 typeset -gi __APOLLO_CURRENT_RPROMPT=1
 
-	__apollo_cleanup() {
+__apollo_cleanup() {
 
-		exec {__APOLLO_BUFFER_FD}>&-
+  exec {__APOLLO_BUFFER_FD}>&-
 
-		rm "$__APOLLO_BUFFER_NAME"
+  rm "$__APOLLO_BUFFER_NAME"
 
-	}
+}
 
 prompt_apollo_setup() {
 
@@ -49,11 +49,12 @@ prompt_apollo_setup() {
 	local -a left_modules right_modules
 
 	setopt prompt_subst prompt_percent
+  prompt_opts=(subst percent)
 
 	zmodload zsh/datetime
 
 	# Load config files
-	for conf in "${__APOLLO_INSTALL_DIR}/conf/"*.conf; do
+  for conf in "${__APOLLO_INSTALL_DIR}/conf/"*.conf(N); do
 		source "${conf}";
 	done
 

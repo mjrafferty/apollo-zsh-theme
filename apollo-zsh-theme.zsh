@@ -1,5 +1,11 @@
 # vim:ft=zsh
 
+# Manual install:
+# fpath+=( $HOME/apollo-zsh-theme/functions $HOME/apollo-zsh-theme/modules )
+# autoload -Uz promptinit && promptinit
+# source apollo-zsh-theme/conf/theme.conf
+# prompt apollo
+
 typeset -g __APOLLO_INSTALL_DIR="${(%):-%N}"
 __APOLLO_INSTALL_DIR="${__APOLLO_INSTALL_DIR%/*}"
 
