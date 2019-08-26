@@ -86,5 +86,3 @@ __apollo_context_run() {
 
 
 }
-
-__apollo_context_run "$@"

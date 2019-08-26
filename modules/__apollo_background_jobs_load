@@ -23,5 +23,3 @@ __apollo_background_jobs_run() {
   fi
 
 }
-
-__apollo_background_jobs_run "$@"

@@ -9,5 +9,3 @@ __apollo_root_indicator_cache_key() {
 __apollo_root_indicator_run() {
   __APOLLO_RETURN_MESSAGE="${${(%):-%#}:#%}"
 }
-
-__apollo_root_indicator_run "$@"

@@ -15,5 +15,3 @@ __apollo_virtualenv_run() {
   fi
 
 }
-
-__apollo_virtualenv_run "$@"

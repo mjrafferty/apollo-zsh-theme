@@ -110,5 +110,3 @@ if is-at-least 5.3; then
   zle -N __apollo_vi_mode_cmd_mode
   bindkey -M visual '\e' __apollo_vi_mode_cmd_mode
 fi
-
-__apollo_vi_mode_run "$@"

@@ -45,5 +45,3 @@ __apollo_quota_run() {
     __APOLLO_RETURN_MESSAGE=""
   fi
 }
-
-__apollo_quota_run "$@"

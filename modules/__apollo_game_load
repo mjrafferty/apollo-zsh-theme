@@ -43,5 +43,3 @@ __apollo_game_run (){
   __APOLLO_RETURN_MESSAGE="%B${slots}${winst}${__APOLLO_GAME_SYMBOLS[8]}:${__APOLLO_GAME_CASH}%b"
 
 }
-
-__apollo_game_run "$@"

@@ -22,5 +22,3 @@ TRAPALRM() {
 }
 
 TMOUT=1
-
-__apollo_clock_run "$@"

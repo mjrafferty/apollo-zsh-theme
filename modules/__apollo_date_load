@@ -65,5 +65,3 @@ __apollo_date_run() {
   __APOLLO_RETURN_MESSAGE="${format}"
 
 }
-
-__apollo_date_run "$@"

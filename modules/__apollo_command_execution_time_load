@@ -66,5 +66,3 @@ __apollo_command_execution_time_preexec(){
 }
 
 zmodload zsh/mathfunc
-
-__apollo_command_execution_time_run "$@"

@@ -127,6 +127,3 @@ for pattern in "${bookmark_patterns[@]}"; do
 done
 
 unset bookmark bookmarks pattern bookmark_patterns split_pattern
-
-
-__apollo_dir_run "$@"

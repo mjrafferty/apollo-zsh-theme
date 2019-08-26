@@ -50,5 +50,3 @@ __apollo_public_ip_run() {
   done
 
 }
-
-__apollo_public_ip_run "$@"

@@ -20,5 +20,3 @@ __apollo_php_version_run() {
   fi
 
 }
-
-__apollo_php_version_run "$@"

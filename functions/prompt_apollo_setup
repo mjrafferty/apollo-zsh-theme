@@ -94,7 +94,8 @@ prompt_apollo_setup() {
 			continue;
 		fi
 
-		autoload -Uz +X "__apollo_${module}_run"
+    autoload -Uz +X "__apollo_${module}_load" \
+      && "__apollo_${module}_load"
 
 	done
 

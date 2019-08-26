@@ -119,5 +119,3 @@ __apollo_status_run() {
   fi
 
 }
-
-__apollo_status_run "$@"
