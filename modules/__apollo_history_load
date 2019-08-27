@@ -1,0 +1,5 @@
+# vim:ft=zsh
+
+__apollo_history_run() {
+  __APOLLO_RETURN_MESSAGE="%h"
+}
