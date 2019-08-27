@@ -1,8 +1,0 @@
-# vim:ft=zsh
-################################################################
-# Segment to display if VPN is active
-# prompt if vpn active
-prompt_vpn_ip() {
-  __apollo_parse_ip $APOLLO_VPN_IP_INTERFACE || return
-  "$1_prompt_module" "$0" "$2" "cyan" "$DEFAULT_COLOR" 'VPN_ICON' 0 '' "${__APOLLO_RETVAL//\%/%%}"
-}

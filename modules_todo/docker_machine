@@ -1,8 +1,0 @@
-# vim:ft=zsh
-################################################################
-# Docker machine
-prompt_docker_machine() {
-  if [[ -n "$DOCKER_MACHINE_NAME" ]]; then
-    "$1_prompt_module" "$0" "$2" "magenta" "$DEFAULT_COLOR" 'SERVER_ICON' 0 '' "${DOCKER_MACHINE_NAME//\%/%%}"
-  fi
-}
