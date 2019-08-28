@@ -271,39 +271,35 @@ __apollo_set_colors() {
   fg="$1"
   bg="$2"
 
-  if [[ -n "$fg" ]]; then
-    case "$fg" in
-      "keep")
-        fg=""
-        ;;
-      "clear")
-        fg="%f"
-        ;;
-      [a-z]*)
-        fg="%F{$__APOLLO_COLORS[$1]}"
-        ;;
-      *)
-        fg="%F{$1}"
-        ;;
-    esac
-  fi
+  case "$fg" in
+    "keep")
+      fg=""
+      ;;
+    "clear")
+      fg="%f"
+      ;;
+    [a-z]*)
+      fg="%F{$__APOLLO_COLORS[$1]}"
+      ;;
+    *)
+      fg="%F{$1}"
+      ;;
+  esac
 
-  if [[ -n "$bg" ]]; then
-    case "$bg" in
-      "keep")
-        bg=""
-        ;;
-      "clear")
-        bg="%k"
-        ;;
-      [a-z]*)
-        bg="%K{$__APOLLO_COLORS[$2]}"
-        ;;
-      *)
-        bg="%K{$2}"
-        ;;
-    esac
-  fi
+  case "$bg" in
+    "keep")
+      bg=""
+      ;;
+    "clear")
+      bg="%k"
+      ;;
+    [a-z]*)
+      bg="%K{$__APOLLO_COLORS[$2]}"
+      ;;
+    *)
+      bg="%K{$2}"
+      ;;
+  esac
 
   __APOLLO_RETURN_MESSAGE="%{${fg}${bg}%}"
 
