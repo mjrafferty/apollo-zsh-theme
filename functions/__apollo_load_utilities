@@ -74,7 +74,7 @@ __apollo_parse_ip() {
       if [[ "${interface//${newline}/}" =~ "<([^>]*)>(.*)inet[ ]+([^ ]*)" ]]; then
 
         ipFound="${match[3]}"
-        interfaceStates=(${(s:;:)match[1]})
+        interfaceStates=(${(s.\0.)match[1]})
 
         if (( ${interfaceStates[(I)UP]} )); then
           __APOLLO_RETURN_MESSAGE=$ipFound

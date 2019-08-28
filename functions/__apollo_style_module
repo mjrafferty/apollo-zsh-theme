@@ -7,13 +7,13 @@ __apollo_style_module() {
   local left_padding right_padding
   local left_label right_label
   local left_surround right_surround
-  local format_string=";;"
+  local format_string="\0\0"
   local -a cache
 
   context="$1"
   module_text="$2"
 
-  cache=("${(s:;:)__APOLLO_STYLE_CACHE[$context]}")
+  cache=("${(s.\0.)__APOLLO_STYLE_CACHE[$context]}")
 
   if [[ -z "$cache[1]" ]]; then
 
@@ -41,9 +41,9 @@ __apollo_style_module() {
     zstyle -s "$context:bg" color bg_color
     __apollo_set_colors "$bg_color" "keep"
 
-    format_string="${left_surround};${format_string};${right_surround}${__APOLLO_RETURN_MESSAGE}"
+    format_string="${left_surround}\0${format_string}\0${right_surround}${__APOLLO_RETURN_MESSAGE}"
 
-    cache=("${(s:;:)format_string}")
+    cache=("${(s.\0.)format_string}")
     __APOLLO_STYLE_CACHE[$context]="$format_string"
 
   fi

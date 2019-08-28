@@ -23,7 +23,7 @@ __apollo_decorate_prompt() {
     __APOLLO_LEFT_BEGIN[line]=""
     __APOLLO_LEFT_END[line]=""
 
-    line_modules=(${(s:;:)__APOLLO_LEFT_LINE_MAP[line]})
+    line_modules=(${(s.\0.)__APOLLO_LEFT_LINE_MAP[line]})
 
     first_module=""
     last_module=""
@@ -66,7 +66,7 @@ __apollo_decorate_prompt() {
       __APOLLO_LEFT_END[line]="${__APOLLO_RETURN_MESSAGE}"
     fi
 
-    line_modules=(${(s:;:)__APOLLO_RIGHT_LINE_MAP[line]})
+    line_modules=(${(s.\0.)__APOLLO_RIGHT_LINE_MAP[line]})
 
     first_module=""
     last_module=""

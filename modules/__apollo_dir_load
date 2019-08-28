@@ -61,10 +61,10 @@ __apollo_dir_run() {
   sep="${__APOLLO_RETURN_MESSAGE}"
 
   __apollo_set_style "apollo:dir:${mode}:${line}:${side}:element" "dynamic"
-  element_style=("${(s:;:)__APOLLO_RETURN_MESSAGE}")
+  element_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
   __apollo_set_style "apollo:dir:${mode}:${line}:${side}:shortened" "dynamic"
-  short_style=("${(s:;:)__APOLLO_RETURN_MESSAGE}")
+  short_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
   split_dir=("${(s:/:)dir}")
 
@@ -88,7 +88,7 @@ __apollo_dir_run() {
   done
 
   __apollo_set_style "apollo:dir:${mode}:${line}:${side}:last" "dynamic"
-  last_style=("${(s:;:)__APOLLO_RETURN_MESSAGE}")
+  last_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
   output+="${last_style[1]}${split_dir[element]}${last_style[2]}"
   __APOLLO_RETURN_MESSAGE="$output"
@@ -109,7 +109,7 @@ zstyle -a "apollo:dir:${mode}:${line}:${side}" bookmark_patterns bookmark_patter
 
 for pattern in "${bookmark_patterns[@]}"; do
 
-  split_pattern=("${(s:;:)pattern}")
+  split_pattern=("${(s.;.)pattern}")
 
   bookmarks=(${~=split_pattern[1]}(N))
 

@@ -53,21 +53,20 @@ prompt_apollo_setup() {
 
 	zmodload zsh/datetime
 
-	# Load config files
-  for conf in "${__APOLLO_INSTALL_DIR}/conf/"*.conf(N); do
-		source "${conf}";
-	done
+  if [[ -n "${__APOLLO_INSTALL_DIR}" ]]; then
 
-	zstyle -a 'apollo:core:modules:left' modules left_modules
-	zstyle -a 'apollo:core:modules:right' modules right_modules
+    if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/functions"]} -gt ${#fpath} ]]; then
+      fpath+=("${__APOLLO_INSTALL_DIR}/functions.zwc" "${__APOLLO_INSTALL_DIR}/functions")
+    fi
+    if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/modules"]} -gt ${#fpath} ]]; then
+      fpath+=("${__APOLLO_INSTALL_DIR}/modules.zwc" "${__APOLLO_INSTALL_DIR}/modules")
+    fi
 
-	if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/functions"]} -gt ${#fpath} ]]; then
-		fpath+=("${__APOLLO_INSTALL_DIR}/functions.zwc" "${__APOLLO_INSTALL_DIR}/functions")
-	fi
+    for conf in "${__APOLLO_INSTALL_DIR}/conf/"*.conf(N); do
+      source "${conf}";
+    done
 
-	if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/modules"]} -gt ${#fpath} ]]; then
-		fpath+=("${__APOLLO_INSTALL_DIR}/modules.zwc" "${__APOLLO_INSTALL_DIR}/modules")
-	fi
+  fi
 
 	autoload -Uz +X __apollo_add_links __apollo_decorate_prompt __apollo_get_module_text \
 		__apollo_precmd __apollo_run_module __apollo_add_newline __apollo_build_right_prompt \
@@ -87,6 +86,9 @@ prompt_apollo_setup() {
   mkfifo "${__APOLLO_BUFFER_NAME}"
   exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
 
+	zstyle -a 'apollo:core:modules:left' modules left_modules
+	zstyle -a 'apollo:core:modules:right' modules right_modules
+
 	# Load enabled modules
 	for module in "${left_modules[@]}" "${right_modules[@]}"; do
 
@@ -103,7 +105,6 @@ prompt_apollo_setup() {
 	RPROMPT=""
 
 	__apollo_build_left_prompt
-
 	__apollo_build_right_prompt "${#__APOLLO_PROMPT_LINES}"
 
   RPROMPT="${__APOLLO_RETURN_MESSAGE}\${__APOLLO_RIGHT_LINK[${#__APOLLO_PROMPT_LINES}]}"
