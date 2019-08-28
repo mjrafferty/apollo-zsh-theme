@@ -72,11 +72,16 @@ __apollo_clock_run() {
 
   __APOLLO_RETURN_MESSAGE="${format}"
 
-
 }
 
-TRAPALRM() {
-  zle && zle .reset-prompt
-}
+zstyle -b 'apollo:clock:*:*:*' live live
 
-TMOUT=1
+if [[ "$live" == "yes" ]]; then
+
+  TMOUT=1
+
+  TRAPALRM() {
+    zle && zle .reset-prompt
+  }
+
+fi
