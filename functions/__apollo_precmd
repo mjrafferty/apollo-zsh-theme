@@ -10,6 +10,12 @@ __apollo_precmd() {
   local -a line_modules
   local -i line num clear_count
 
+  if (( __APOLLO_ASYNC == 1 )); then
+    if [[ -n "$__APOLLO_ASYNC_MANAGER_PID" ]]; then
+      kill -USR2 "$__APOLLO_ASYNC_MANAGER_PID"
+    fi
+  fi
+
   zstyle -b 'apollo:core:cache' disable cache_disabled
   zstyle -s 'apollo:core:cache:clear' count clear_count
   zstyle -b 'apollo:core:cache:clear' disable clearing_disabled
@@ -59,6 +65,11 @@ __apollo_precmd() {
   fi
 
   __apollo_update_prompts
+
+  if (( __APOLLO_ASYNC == 1 )); then
+    trap "__apollo_async_results" USR1
+    __apollo_async_results
+  fi
 
   if [[ "$profiler" == "yes" ]] ; then
     printf "%25s: %f\n" "total" "$((EPOCHREALTIME-start))"

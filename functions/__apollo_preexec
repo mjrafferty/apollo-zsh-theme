@@ -5,6 +5,16 @@ __apollo_preexec() {
   local module
   local -a left_modules right_modules
 
+  if (( __APOLLO_ASYNC == 1 )); then
+    trap - USR1
+
+    if [[ -z "$__APOLLO_ASYNC_MANAGER_PID" ]] \
+      || ! kill -0 "$__APOLLO_ASYNC_MANAGER_PID" &> /dev/null; then
+      __apollo_async_manager $$ &!
+      __APOLLO_ASYNC_MANAGER_PID="$!"
+    fi
+  fi
+
   zstyle -a 'apollo:core:modules:left' modules left_modules
   zstyle -a 'apollo:core:modules:right' modules right_modules
 

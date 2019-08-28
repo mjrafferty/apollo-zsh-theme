@@ -1,0 +1,38 @@
+# vim:ft=zsh
+
+__apollo_async_worker(){
+
+  local module="$1"
+
+  TRAPUSR1() {
+    echo;
+  }
+
+  "__apollo_${module}_async"
+
+  echo "${module};${__APOLLO_RETURN_MESSAGE}" >&"${__APOLLO_ASYNC_BUFFER_FD}"
+
+  kill -USR1 "${__APOLLO_PROMPT_PID}"
+
+}
+
+__apollo_async_catch_signal() {
+
+  local module
+
+  for module in "${__APOLLO_ASYNC_MODULES[@]}"; do
+    __apollo_async_worker "$module" &
+  done
+
+}
+
+trap "__apollo_async_catch_signal" USR2
+
+typeset -gi __APOLLO_PROMPT_PID
+
+__APOLLO_PROMPT_PID="$1"
+
+# Run until killed by prompt
+while true; do
+  sleep 1;
+done
