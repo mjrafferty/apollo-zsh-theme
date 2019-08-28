@@ -5,9 +5,9 @@ __APOLLO_BYTE_SUFFIX=('B' 'K' 'M' 'G' 'T' 'P' 'E' 'Z' 'Y')
 
 __apollo_get_display_width(){
 
-  local format_regex='%([BUbfksu]|([FK]|){*})'
+  local format_regex='%{*%}'
 
-  __APOLLO_RETURN_MESSAGE="${(m)#${(S%%)1//$~format_regex/}}"
+  __APOLLO_RETURN_MESSAGE="${(m)#${(S%)1//$~format_regex/}}"
 
 }
 

@@ -23,7 +23,7 @@ __apollo_date_run() {
       "dow")
         zstyle -b "apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" " %D{%A}"
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%A}"
         else
           __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%a}"
         fi
@@ -32,7 +32,7 @@ __apollo_date_run() {
       "day")
         zstyle -b "apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" " %D{%B}"
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%e}"
         else
           __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%m}"
         fi
@@ -41,7 +41,7 @@ __apollo_date_run() {
       "month")
         zstyle -b "apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" " %D{%e}"
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%B}"
         else
           __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%d}"
         fi
@@ -50,7 +50,7 @@ __apollo_date_run() {
       "year")
         zstyle -b "apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" " %D{%Y}"
+          __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%Y}"
         else
           __apollo_set_style "apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%y}"
         fi

@@ -8,7 +8,7 @@ __apollo_add_newline() {
   line="$2"
 
   if [[ "${module}" == "newline" ]]; then
-    __APOLLO_PROMPT_LINES[line]+="%k\${(el.\$((\$COLUMNS - \${__APOLLO_PROMPT_LINE_LENGTH[$line]})).. .)}"
+    __APOLLO_PROMPT_LINES[line]+="%{%k%}\${(el.\$((\$COLUMNS - \${__APOLLO_PROMPT_LINE_LENGTH[$line]})).. .)}"
   else
 
     zstyle -s "apollo:core:${line}:ruler" text ruler_text
@@ -24,7 +24,7 @@ __apollo_add_newline() {
   __apollo_build_right_prompt "$line"
   faux_rprompt="${__APOLLO_RETURN_MESSAGE}"
 
-  __APOLLO_PROMPT_LINES[line]+="${faux_rprompt}%f%k"
+  __APOLLO_PROMPT_LINES[line]+="${faux_rprompt}%{%f%k%}"
 
 }
 
