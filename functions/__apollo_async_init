@@ -7,38 +7,60 @@ typeset -ga __APOLLO_ASYNC_MODULES
 typeset -g  __APOLLO_ASYNC_MANAGER_PID
 typeset -gA __APOLLO_ASYNC_RESULTS
 
+typeset -g  __APOLLO_ASYNC_START_SIGNAL="USR1"
+typeset -g  __APOLLO_ASYNC_STOP_SIGNAL="USR2"
+
 __apollo_async_worker(){
 
-  local module="$1"
+  typeset -g __APOLLO_ASYNC_WORKER_MODULE="$1"
 
-  "__apollo_${module}_async"
+  trap "__apollo_async_worker_start_job" "${__APOLLO_ASYNC_START_SIGNAL}"
+  trap "__apollo_async_worker_stop_job" "${__APOLLO_ASYNC_STOP_SIGNAL}"
 
-  echo "${module};${__APOLLO_RETURN_MESSAGE}" >&"${__APOLLO_ASYNC_BUFFER_FD}"
+  while true; do
+    sleep 0.1;
+  done
+}
 
-  kill -USR1 "${__APOLLO_PROMPT_PID}"
+__apollo_async_worker_start_job() {
+
+  "__apollo_${__APOLLO_ASYNC_WORKER_MODULE}_async"
+
+  echo "${__APOLLO_ASYNC_WORKER_MODULE};${__APOLLO_RETURN_MESSAGE}" >&"${__APOLLO_ASYNC_BUFFER_FD}"
+
+  kill -"${__APOLLO_ASYNC_START_SIGNAL}" "${__APOLLO_PROMPT_PID}"
 
 }
+
+__apollo_async_worker_stop_job() {}
 
 __apollo_async_start_workers() {
 
   local module
 
   for module in "${__APOLLO_ASYNC_MODULES[@]}"; do
-    __apollo_async_worker "$module" &
+    if [[ -z "${__APOLLO_ASYNC_WORKER_PIDS[$module]}" ]] || ! kill -0 "${__APOLLO_ASYNC_WORKER_PIDS[$module]}" &> /dev/null; then
+      __apollo_async_worker "$module" &!
+      __APOLLO_ASYNC_WORKER_PIDS[$module]="$!"
+      sleep 0.1
+    fi
+
+    kill -"${__APOLLO_ASYNC_START_SIGNAL}" "${__APOLLO_ASYNC_WORKER_PIDS[$module]}"
+
   done
 
 }
 
 __apollo_async_manager() {
 
-  trap "__apollo_async_start_workers" USR2
+  typeset -gi __APOLLO_PROMPT_PID="$1"
+  typeset -gA __APOLLO_ASYNC_WORKER_PIDS
 
-  typeset -gi __APOLLO_PROMPT_PID
-
-  __APOLLO_PROMPT_PID="$1"
+  trap "__apollo_async_start_workers" "${__APOLLO_ASYNC_START_SIGNAL}"
+  trap "__apollo_async_stop_workers" "${__APOLLO_ASYNC_STOP_SIGNAL}"
 
   while true; do
-    sleep 1;
+    sleep 0.1;
   done
 
 }
@@ -67,12 +89,12 @@ __apollo_async_results() {
 
 __apollo_async_run() {
   if [[ -n "$__APOLLO_ASYNC_MANAGER_PID" ]]; then
-    kill -USR2 "$__APOLLO_ASYNC_MANAGER_PID"
+    kill -"${__APOLLO_ASYNC_START_SIGNAL}" "$__APOLLO_ASYNC_MANAGER_PID"
   fi
 }
 
 __apollo_async_pause() {
-  trap - USR1
+  trap - "${__APOLLO_ASYNC_START_SIGNAL}"
   __apollo_async_manager_start;
 }
 
