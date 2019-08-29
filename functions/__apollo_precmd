@@ -11,9 +11,7 @@ __apollo_precmd() {
   local -i line num clear_count
 
   if (( __APOLLO_ASYNC == 1 )); then
-    if [[ -n "$__APOLLO_ASYNC_MANAGER_PID" ]]; then
-      kill -USR2 "$__APOLLO_ASYNC_MANAGER_PID"
-    fi
+    __apollo_async_run
   fi
 
   zstyle -b 'apollo:core:cache' disable cache_disabled
@@ -67,8 +65,7 @@ __apollo_precmd() {
   __apollo_update_prompts
 
   if (( __APOLLO_ASYNC == 1 )); then
-    trap "__apollo_async_results" USR1
-    __apollo_async_results
+    __apollo_async_resume
   fi
 
   if [[ "$profiler" == "yes" ]] ; then

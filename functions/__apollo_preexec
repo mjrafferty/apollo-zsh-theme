@@ -6,8 +6,7 @@ __apollo_preexec() {
   local -a left_modules right_modules
 
   if (( __APOLLO_ASYNC == 1 )); then
-    trap - USR1
-    __apollo_async_manager_start;
+    __apollo_async_pause
   fi
 
   zstyle -a 'apollo:core:modules:left' modules left_modules

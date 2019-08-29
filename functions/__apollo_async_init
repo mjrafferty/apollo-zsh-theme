@@ -19,7 +19,7 @@ __apollo_async_worker(){
 
 }
 
-__apollo_async_catch_signal() {
+__apollo_async_start_workers() {
 
   local module
 
@@ -31,13 +31,12 @@ __apollo_async_catch_signal() {
 
 __apollo_async_manager() {
 
-  trap "__apollo_async_catch_signal" USR2
+  trap "__apollo_async_start_workers" USR2
 
   typeset -gi __APOLLO_PROMPT_PID
 
   __APOLLO_PROMPT_PID="$1"
 
-# Run until killed by prompt
   while true; do
     sleep 1;
   done
@@ -66,18 +65,26 @@ __apollo_async_results() {
 
 }
 
-__apollo_async_start() {}
-__apollo_async_stop() {}
-__apollo_async_pause() {}
-__apollo_async_resume() {}
+__apollo_async_run() {
+  if [[ -n "$__APOLLO_ASYNC_MANAGER_PID" ]]; then
+    kill -USR2 "$__APOLLO_ASYNC_MANAGER_PID"
+  fi
+}
+
+__apollo_async_pause() {
+  trap - USR1
+  __apollo_async_manager_start;
+}
+
+__apollo_async_resume() {
+  __apollo_async_results
+  trap "__apollo_async_results" USR1
+}
 
 __apollo_async_cleanup () {
-
   kill "$__APOLLO_ASYNC_MANAGER_PID" &> /dev/null
-
   exec {__APOLLO_ASYNC_BUFFER_FD}>&-
   rm "$__APOLLO_ASYNC_BUFFER_NAME"
-
 }
 
 __apollo_async_init() {
