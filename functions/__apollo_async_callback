@@ -1,0 +1,22 @@
+# vim:ft=zsh
+
+__apollo_async_callback() {
+
+  local job_name="$1"
+  local return_code="$2"
+  local stdout="$3"
+  local exec_time="$4"
+  local stderr="$5"
+  local has_next="$6"
+
+  local module
+
+  module="${job_name[10,-7]}"
+
+  __APOLLO_ASYNC_RESULTS[$module]="$stdout"
+
+  __apollo_async_update "$module"
+
+}
+
+__apollo_async_callback "$@"

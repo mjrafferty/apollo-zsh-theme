@@ -7,6 +7,9 @@ typeset -gA __APOLLO_STYLE_CACHE
 typeset -g	__APOLLO_BUFFER_NAME
 typeset -gi __APOLLO_BUFFER_FD
 
+typeset -gi __APOLLO_ASYNC
+typeset -gA __APOLLO_ASYNC_RESULTS
+
 typeset -g  __APOLLO_PROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
 typeset -g  __APOLLO_RPROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
 
@@ -71,7 +74,7 @@ prompt_apollo_setup() {
 		__apollo_precmd __apollo_run_module __apollo_add_newline __apollo_build_right_prompt \
 		__apollo_preexec __apollo_build_left_prompt __apollo_set_colors __apollo_update_prompts \
 		__apollo_async_update __apollo_format_string __apollo_style_module __apollo_set_style \
-    __apollo_load_utilities __apollo_async_init
+    __apollo_load_utilities __apollo_lib_async_load __apollo_async_callback
 
   __apollo_load_utilities;
 
@@ -117,7 +120,8 @@ prompt_apollo_setup() {
 	__APOLLO_RPROMPT_COPY="$RPROMPT"
 
   if ((__APOLLO_ASYNC == 1)); then
-    __apollo_async_init
+    __apollo_lib_async_load
+    async_start_worker apollo_async_helper -u -n
   fi
 
 

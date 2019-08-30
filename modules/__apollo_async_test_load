@@ -12,6 +12,6 @@ __apollo_async_test_run() {
 
 __apollo_async_test_async() {
 
-  __APOLLO_RETURN_MESSAGE="${(%):-%*}"
+  echo "${(%):-%*}"
 
 }

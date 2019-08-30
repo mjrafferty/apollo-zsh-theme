@@ -8,15 +8,16 @@ __apollo_php_version_cache_key() {
 
 __apollo_php_version_run() {
 
-  php --no-php-ini --version 2> /dev/null
-
-  read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
-
-  if [[ -n $__APOLLO_RETURN_MESSAGE ]]; then
-    __APOLLO_RETURN_MESSAGE=${__APOLLO_RETURN_MESSAGE#PHP }
-    __APOLLO_RETURN_MESSAGE=${__APOLLO_RETURN_MESSAGE%%[^0-9,.]*}
+  if [[ -n "${__APOLLO_ASYNC_RESULTS[php_version]}" ]]; then
+    __APOLLO_RETURN_MESSAGE="${__APOLLO_ASYNC_RESULTS[php_version]}"
   else
-    return;
+    __APOLLO_RETURN_MESSAGE="No async"
   fi
+
+}
+
+__apollo_php_version_async() {
+
+  command php --no-php-ini --version | grep -Po -m1 '^PHP \K[0-9,.]*'
 
 }

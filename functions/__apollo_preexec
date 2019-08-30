@@ -5,12 +5,12 @@ __apollo_preexec() {
   local module
   local -a left_modules right_modules
 
-  if (( __APOLLO_ASYNC == 1 )); then
-    __apollo_async_pause
-  fi
-
   zstyle -a 'apollo:core:modules:left' modules left_modules
   zstyle -a 'apollo:core:modules:right' modules right_modules
+
+  if (( __APOLLO_ASYNC == 1 )); then
+    async_unregister_callback apollo_async_helper
+  fi
 
   # Run preexec hooks for modules
   for module in "${left_modules[@]}" "${right_modules[@]}"; do
