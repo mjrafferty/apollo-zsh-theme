@@ -29,8 +29,14 @@ __apollo_get_module_text() {
     __APOLLO_MODULE_MODE[$module]="${cache[3]}"
     cache_status="HIT"
   else
+
+    if (( __APOLLO_ASYNC == 1 && ${+functions[__apollo_${module}_async]} )); then
+      async_job apollo_async_helper "__apollo_${module}_async" "$line" "$side"
+    fi
+
     __apollo_run_module "$module" "$line" "$side" "$num" "$cache_key"
     cache_status="MISS"
+
   fi
 
   if [[ "$profiler" == "yes" ]]; then

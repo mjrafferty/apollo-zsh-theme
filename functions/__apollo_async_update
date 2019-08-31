@@ -3,7 +3,7 @@
 __apollo_async_update() {
 
   local module="$1"
-  local x side
+  local x side cache_key
   local -a module_info
   local -i line num
   local line_before line_after
@@ -21,6 +21,11 @@ __apollo_async_update() {
       break;
     fi
 
+    if ((${+functions[__apollo_${module}_cache_key]})); then
+      "__apollo_${module}_cache_key";
+      cache_key="${side}-${line}-${num}-${__APOLLO_RETURN_MESSAGE}"
+    fi
+
     case "$side" in
       "left")
         line_before="$(( ${(e)__APOLLO_LEFT_HAS_LENGTH[$line]} > 0 ))"
@@ -33,7 +38,7 @@ __apollo_async_update() {
     module_before="${__APOLLO_MODULE_HAS_LENGTH[$num]}"
     mode_before="${__APOLLO_MODULE_MODE[$module]}"
 
-    __apollo_run_module "${module}" "${line}" "${side}" "${num}"
+    __apollo_run_module "${module}" "${line}" "${side}" "${num}" "${cache_key}"
 
     module_after="${__APOLLO_MODULE_HAS_LENGTH[$num]}"
     mode_after="${__APOLLO_MODULE_MODE[$module]}"

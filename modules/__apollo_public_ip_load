@@ -7,6 +7,14 @@ __apollo_public_ip_cache_key() {
 }
 
 __apollo_public_ip_run() {
+  if [[ -n "${__APOLLO_ASYNC_RESULTS[public_ip]}" ]]; then
+    __APOLLO_RETURN_MESSAGE="${__APOLLO_ASYNC_RESULTS[public_ip]}"
+  else
+    __APOLLO_RETURN_MESSAGE=""
+  fi
+}
+
+__apollo_public_ip_async() {
 
   local -i line
   local side mode method host
@@ -25,27 +33,19 @@ __apollo_public_ip_run() {
       'dig')
         if (( $+commands[dig] )); then
           command dig +time=1 +tries=1 +short myip.opendns.com @resolver1.opendns.com 2> /dev/null
-          read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
-          [[ $__APOLLO_RETURN_MESSAGE == ';'* ]] && __APOLLO_RETURN_MESSAGE=''
         fi
         ;;
       'curl')
         if (( $+commands[curl] )); then
           command curl --max-time 10 -w '\n' "$host" 2> /dev/null
-          read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
         fi
         ;;
       'wget')
         if (( $+commands[wget] )); then
           command wget -T 10 -qO- "$host" 2> /dev/null
-          read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
         fi
         ;;
     esac
-
-    if [[ -n "$__APOLLO_RETURN_MESSAGE" ]]; then
-      break;
-    fi
 
   done
 
