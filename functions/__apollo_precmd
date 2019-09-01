@@ -67,6 +67,13 @@ __apollo_precmd() {
   if (( __APOLLO_ASYNC == 1 )); then
     async_process_results apollo_async_helper __apollo_async_callback
     async_register_callback apollo_async_helper __apollo_async_callback
+
+    if [[ "$profiler" == "yes" ]] ; then
+      printf "\nAsync modules:\n"
+      for module runtime in "${(kv)__APOLLO_ASYNC_TIMES[@]}"; do
+        printf "%25s: %f\n" "$module" "$runtime"
+      done
+    fi
   fi
 
 }

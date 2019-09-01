@@ -17,6 +17,10 @@ __apollo_get_module_text() {
     start=${EPOCHREALTIME}
   fi
 
+  if (( __APOLLO_ASYNC == 1 && ${+functions[__apollo_${module}_always_async]} )); then
+    async_job apollo_async_helper "__apollo_${module}_always_async" "$line" "$side"
+  fi
+
   if ((${+functions[__apollo_${module}_cache_key]})); then
     "__apollo_${module}_cache_key";
     cache_key="${side}-${line}-${num}-${__APOLLO_RETURN_MESSAGE}"

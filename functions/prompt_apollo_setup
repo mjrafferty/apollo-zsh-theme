@@ -9,6 +9,7 @@ typeset -gi __APOLLO_BUFFER_FD
 
 typeset -gi __APOLLO_ASYNC
 typeset -gA __APOLLO_ASYNC_RESULTS
+typeset -gA __APOLLO_ASYNC_TIMES
 
 typeset -g  __APOLLO_PROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
 typeset -g  __APOLLO_RPROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
@@ -22,8 +23,12 @@ typeset -gi __APOLLO_MODULE_INDEX=1
 typeset -gA __APOLLO_MODULE_MODE
 
 typeset -ga __APOLLO_PROMPT_LINES
-typeset -gA __APOLLO_MODULE_TEXT
+typeset -ga __APOLLO_MODULE_TEXT
 typeset -ga __APOLLO_LEFT_SEPARATORS
+typeset -ga __APOLLO_LEFT_BEGIN
+typeset -ga __APOLLO_LEFT_END
+typeset -ga __APOLLO_RIGHT_BEGIN
+typeset -ga __APOLLO_RIGHT_END
 typeset -ga __APOLLO_RIGHT_SEPARATORS
 
 typeset -gA __APOLLO_MODULE_HAS_LENGTH
@@ -38,10 +43,15 @@ typeset -g  __APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values t
 
 typeset -gi __APOLLO_CURRENT_RPROMPT=1
 
+
 __apollo_cleanup() {
 
   exec {__APOLLO_BUFFER_FD}>&-
   rm "$__APOLLO_BUFFER_NAME"
+
+  if (( __APOLLO_ASYNC == 1 )); then
+    async_stop_worker apollo_async_helper
+  fi
 
 }
 

@@ -11,7 +11,7 @@ __apollo_php_version_run() {
   if [[ -n "${__APOLLO_ASYNC_RESULTS[php_version]}" ]]; then
     __APOLLO_RETURN_MESSAGE="${__APOLLO_ASYNC_RESULTS[php_version]}"
   else
-    __APOLLO_RETURN_MESSAGE="No async"
+    __APOLLO_RETURN_MESSAGE=""
   fi
 
 }

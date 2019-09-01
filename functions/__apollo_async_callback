@@ -11,11 +11,21 @@ __apollo_async_callback() {
 
   local module
 
-  module="${job_name[10,-7]}"
+  case "$job_name" in
+    *_always_async)
+      module="${job_name[10,-14]}"
+      ;;
+    *_async)
+      module="${job_name[10,-7]}"
+      ;;
+  esac
 
   __APOLLO_ASYNC_RESULTS[$module]="$stdout"
 
   __apollo_async_update "$module"
+
+  __APOLLO_ASYNC_RESULTS[$module]=""
+  __APOLLO_ASYNC_TIMES[$module]="$exec_time"
 
 }
 
