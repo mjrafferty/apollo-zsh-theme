@@ -7,11 +7,12 @@ __apollo_public_ip_cache_key() {
 }
 
 __apollo_public_ip_run() {
-  if [[ -n "${__APOLLO_ASYNC_RESULTS[public_ip]}" ]]; then
-    __APOLLO_RETURN_MESSAGE="${__APOLLO_ASYNC_RESULTS[public_ip]}"
-  else
-    __APOLLO_RETURN_MESSAGE=""
-  fi
+
+  local line="$1"
+  local side="$2"
+  local async_results="$3"
+
+    __APOLLO_RETURN_MESSAGE="${async_results}"
 }
 
 __apollo_public_ip_async() {

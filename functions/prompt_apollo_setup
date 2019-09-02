@@ -55,6 +55,12 @@ __apollo_cleanup() {
 
 }
 
+__apollo_chpwd() {
+  if ((__APOLLO_ASYNC == 1)); then
+    async_worker_eval apollo_async_helper "cd $PWD"
+  fi
+}
+
 prompt_apollo_setup() {
 
 	local module conf
@@ -91,6 +97,7 @@ prompt_apollo_setup() {
 	autoload -Uz add-zsh-hook
 	add-zsh-hook precmd __apollo_precmd
 	add-zsh-hook preexec __apollo_preexec
+	add-zsh-hook chpwd __apollo_chpwd
 	add-zsh-hook zshexit __apollo_cleanup
 
 	# Open a buffer for modules to use
