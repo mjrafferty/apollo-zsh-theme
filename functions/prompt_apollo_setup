@@ -94,17 +94,6 @@ prompt_apollo_setup() {
 
   __apollo_load_utilities;
 
-	autoload -Uz add-zsh-hook
-	add-zsh-hook precmd __apollo_precmd
-	add-zsh-hook preexec __apollo_preexec
-	add-zsh-hook chpwd __apollo_chpwd
-	add-zsh-hook zshexit __apollo_cleanup
-
-	# Open a buffer for modules to use
-  __APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
-  mkfifo "${__APOLLO_BUFFER_NAME}"
-  exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
-
 	zstyle -a 'apollo:core:modules:left' modules left_modules
 	zstyle -a 'apollo:core:modules:right' modules right_modules
 
@@ -128,6 +117,11 @@ prompt_apollo_setup() {
 	PROMPT=""
 	RPROMPT=""
 
+  if ((__APOLLO_ASYNC == 1)); then
+    __apollo_lib_async_load
+    async_start_worker apollo_async_helper -u -n
+  fi
+
 	__apollo_build_left_prompt
 	__apollo_build_right_prompt "${#__APOLLO_PROMPT_LINES}"
 
@@ -136,11 +130,16 @@ prompt_apollo_setup() {
 	__APOLLO_PROMPT_COPY="${PROMPT}"
 	__APOLLO_RPROMPT_COPY="$RPROMPT"
 
-  if ((__APOLLO_ASYNC == 1)); then
-    __apollo_lib_async_load
-    async_start_worker apollo_async_helper -u -n
-  fi
+	autoload -Uz add-zsh-hook
+	add-zsh-hook precmd __apollo_precmd
+	add-zsh-hook preexec __apollo_preexec
+	add-zsh-hook chpwd __apollo_chpwd
+	add-zsh-hook zshexit __apollo_cleanup
 
+	# Open a buffer for modules to use
+  __APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
+  mkfifo "${__APOLLO_BUFFER_NAME}"
+  exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
 
 	unfunction __apollo_add_newline __apollo_build_right_prompt __apollo_build_left_prompt __apollo_load_utilities
 	unset __APOLLO_CURRENT_RPROMPT __APOLLO_INSTALL_DIR __APOLLO_MODULE_INDEX
