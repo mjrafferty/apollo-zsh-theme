@@ -74,7 +74,7 @@ __apollo_async_update() {
 
   done
 
-  zle && zle .reset-prompt
+  __APOLLO_RESET_NEEDED=1
 
 }
 

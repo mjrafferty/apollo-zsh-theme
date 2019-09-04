@@ -23,18 +23,18 @@ __apollo_clock_run() {
       "12hour")
         zstyle -b "apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%I}"
-        else
           __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%l}"
+        else
+          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%I}"
         fi
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "24hour")
         zstyle -b "apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%H}"
-        else
           __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%k}"
+        else
+          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%H}"
         fi
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
@@ -77,11 +77,5 @@ __apollo_clock_run() {
 zstyle -b 'apollo:clock:*:*:*' live live
 
 if [[ "$live" == "yes" ]]; then
-
-  TMOUT=1
-
-  TRAPALRM() {
-    zle && [[ -z "$WIDGET" || "$WIDGET" == "self-insert" ]] && zle .reset-prompt
-  }
-
+  typeset -gi __APOLLO_CLOCK_LIVE=1
 fi

@@ -11,6 +11,19 @@ __apollo_get_display_width(){
 
 }
 
+
+typeset -gi __APOLLO_LAST_RESET
+typeset -gi __APOLLO_RESET_NEEDED
+__apollo_safe_prompt_reset() {
+
+  if (( (__APOLLO_RESET_NEEDED == 1 || __APOLLO_CLOCK_LIVE == 1) && __APOLLO_LAST_RESET <= (EPOCHSECONDS - 1) )); then
+    zle && zle .reset-prompt
+    __APOLLO_LAST_RESET="$EPOCHSECONDS"
+    __APOLLO_RESET_NEEDED=0
+  fi
+
+}
+
 __apollo_human_readable_bytes() {
 
   local suf
