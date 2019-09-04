@@ -75,6 +75,7 @@ __apollo_async_update() {
   done
 
   __APOLLO_RESET_NEEDED=1
+  __apollo_safe_prompt_reset;
 
 }
 
