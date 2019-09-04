@@ -81,7 +81,7 @@ if [[ "$live" == "yes" ]]; then
   TMOUT=1
 
   TRAPALRM() {
-    zle && zle .reset-prompt
+    zle && [[ -z "$WIDGET" || "$WIDGET" == "self-insert" ]] && zle .reset-prompt
   }
 
 fi
