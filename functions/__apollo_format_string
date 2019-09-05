@@ -33,11 +33,11 @@ __apollo_format_string() {
   done
 
   if [[ -z "$fg_color" ]]; then
-    zstyle -s "${context}:fg" color fg_color
+    zstyle -s "${context}" fg_color fg_color
   fi
 
   if [[ -z "$bg_color" ]]; then
-    zstyle -s "${context}:bg" color bg_color
+    zstyle -s "${context}" bg_color bg_color
   fi
 
   __apollo_set_colors "$fg_color" "$bg_color"

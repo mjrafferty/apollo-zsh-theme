@@ -16,51 +16,51 @@ __apollo_clock_run() {
 	local -a elements
   local format verbose
 
-  zstyle -a "apollo:clock:${mode}:${line}:${side}" elements elements
+  zstyle -a ":apollo:clock:${mode}:${line}:${side}" elements elements
 
   for element in "${elements[@]}"; do
     case "$element" in
       "12hour")
-        zstyle -b "apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
+        zstyle -b ":apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%l}"
+          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%l}"
         else
-          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%I}"
+          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%I}"
         fi
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "24hour")
-        zstyle -b "apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
+        zstyle -b ":apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%k}"
+          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%k}"
         else
-          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%H}"
+          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%H}"
         fi
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "min")
-        __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%M}"
+        __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%M}"
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "sec")
-        __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%S}"
+        __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%S}"
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "ampm")
-        zstyle -b "apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
+        zstyle -b ":apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%p}"
+          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%p}"
         else
-          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%P}"
+          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%P}"
         fi
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "timezone")
-        zstyle -b "apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
+        zstyle -b ":apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%Z}"
+          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%Z}"
         else
-          __apollo_set_style "apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%z}"
+          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "default" "%D{%z}"
         fi
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
@@ -74,7 +74,7 @@ __apollo_clock_run() {
 
 }
 
-zstyle -b 'apollo:clock:*:*:*' live live
+zstyle -b ':apollo:clock:*:*:*' live live
 
 if [[ "$live" == "yes" ]]; then
   typeset -gi __APOLLO_CLOCK_LIVE=1

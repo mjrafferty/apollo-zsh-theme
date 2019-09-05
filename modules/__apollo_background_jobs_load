@@ -14,7 +14,7 @@ __apollo_background_jobs_run() {
   side="$2"
   mode="default"
 
-  zstyle -b "apollo:background_jobs:${mode}:${line}:${side}" always_show always_show
+  zstyle -b ":apollo:background_jobs:${mode}:${line}:${side}" always_show always_show
 
   if [[ "${always_show}" == "yes" ]]; then
     __APOLLO_RETURN_MESSAGE="${(%):-%j}"

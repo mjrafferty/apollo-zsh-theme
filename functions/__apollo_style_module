@@ -38,7 +38,7 @@ __apollo_style_module() {
     __apollo_format_string "$right_surround" "${context}:right:surround"
     right_surround="$__APOLLO_RETURN_MESSAGE"
 
-    zstyle -s "$context:bg" color bg_color
+    zstyle -s "$context" bg_color bg_color
     __apollo_set_colors "$bg_color" "keep"
 
     format_string="${left_surround}\0${format_string}\0${right_surround}${__APOLLO_RETURN_MESSAGE}"

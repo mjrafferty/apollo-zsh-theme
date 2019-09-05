@@ -28,7 +28,7 @@ __apollo_run_module() {
 
   mode="${__APOLLO_MODULE_MODE[$module]}"
 
-  zstyle -b "apollo:${module}:${mode}:${line}:${side}" always_show always_show
+  zstyle -b ":apollo:${module}:${mode}:${line}:${side}" always_show always_show
 
   if [[ "$always_show" == "no" && ${#__APOLLO_RETURN_MESSAGE} == 0 ]]; then
     __APOLLO_MODULE_HAS_LENGTH[$num]="0"
@@ -39,7 +39,7 @@ __apollo_run_module() {
     return;
   fi
 
-  __apollo_style_module "apollo:${module}:${mode}:${line}:${side}" "$__APOLLO_RETURN_MESSAGE"
+  __apollo_style_module ":apollo:${module}:${mode}:${line}:${side}" "$__APOLLO_RETURN_MESSAGE"
 
   __APOLLO_MODULE_TEXT[$num]="${__APOLLO_RETURN_MESSAGE}"
 

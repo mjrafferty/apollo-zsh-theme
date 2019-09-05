@@ -22,12 +22,12 @@ __apollo_dir_run() {
     __apollo_set_mode dir "readonly"
   fi
 
-  zstyle -b "apollo:dir:${mode}:${line}:${side}" absolute absolute
-  zstyle -s "apollo:dir:${mode}:${line}:${side}" last_count last_count
-  zstyle -s "apollo:dir:${mode}:${line}:${side}" shorten_length shorten_length
-  zstyle -s "apollo:dir:${mode}:${line}:${side}" shorten_string shorten_string
+  zstyle -b ":apollo:dir:${mode}:${line}:${side}" absolute absolute
+  zstyle -s ":apollo:dir:${mode}:${line}:${side}" last_count last_count
+  zstyle -s ":apollo:dir:${mode}:${line}:${side}" shorten_length shorten_length
+  zstyle -s ":apollo:dir:${mode}:${line}:${side}" shorten_string shorten_string
 
-  __apollo_set_style "apollo:dir:${mode}:${line}:${side}:sep" "default"
+  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:sep" "default"
   sep="${__APOLLO_RETURN_MESSAGE}"
 
   if [[ "$absolute" == "yes" ]]; then
@@ -57,13 +57,13 @@ __apollo_dir_run() {
     fi
 
   fi
-  __apollo_set_style "apollo:dir:${mode}:${line}:${side}:sep" "default"
+  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:sep" "default"
   sep="${__APOLLO_RETURN_MESSAGE}"
 
-  __apollo_set_style "apollo:dir:${mode}:${line}:${side}:element" "dynamic"
+  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:element" "dynamic"
   element_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
-  __apollo_set_style "apollo:dir:${mode}:${line}:${side}:shortened" "dynamic"
+  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:shortened" "dynamic"
   short_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
   split_dir=("${(s:/:)dir}")
@@ -87,7 +87,7 @@ __apollo_dir_run() {
 
   done
 
-  __apollo_set_style "apollo:dir:${mode}:${line}:${side}:last" "dynamic"
+  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:last" "dynamic"
   last_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
   output+="${last_style[1]}${split_dir[element]}${last_style[2]}"
@@ -99,13 +99,13 @@ __apollo_dir_run() {
 local bookmark pattern bookmark_name
 local -a bookmarks bookmark_patterns split_pattern
 
-zstyle -a "apollo:dir:${mode}:${line}:${side}" bookmarks bookmarks
+zstyle -a ":apollo:dir:${mode}:${line}:${side}" bookmarks bookmarks
 
 for bookmark in "${bookmarks[@]}"; do
   hash -d "${bookmark}" 2> /dev/null
 done
 
-zstyle -a "apollo:dir:${mode}:${line}:${side}" bookmark_patterns bookmark_patterns
+zstyle -a ":apollo:dir:${mode}:${line}:${side}" bookmark_patterns bookmark_patterns
 
 for pattern in "${bookmark_patterns[@]}"; do
 

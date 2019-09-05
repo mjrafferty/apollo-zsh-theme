@@ -8,7 +8,7 @@ __apollo_decorate_prompt() {
   local -a line_modules
   local do_decorate
 
-  zstyle -b "apollo:core:decorations" enabled do_decorate
+  zstyle -b ":apollo:core:decorations" enabled do_decorate
 
   if [[ "$do_decorate" == "no" ]]; then
     return;
@@ -34,7 +34,7 @@ __apollo_decorate_prompt() {
 
       if (( __APOLLO_MODULE_HAS_LENGTH[$num] > 0 )); then
 
-        context="apollo:${module}:${__APOLLO_MODULE_MODE[$module]:-default}:${line}:left"
+        context=":apollo:${module}:${__APOLLO_MODULE_MODE[$module]:-default}:${line}:left"
 
         if [[ -n "$first_module" ]]; then
 
@@ -78,7 +78,7 @@ __apollo_decorate_prompt() {
 
       if (( __APOLLO_MODULE_HAS_LENGTH[$num] > 0 )); then
 
-        context="apollo:${module}:${__APOLLO_MODULE_MODE[$module]:-default}:${line}:right"
+        context=":apollo:${module}:${__APOLLO_MODULE_MODE[$module]:-default}:${line}:right"
 
         if [[ -n "$first_module" ]]; then
 

@@ -70,8 +70,8 @@ __apollo_status_run() {
     __apollo_set_mode "status" "bad"
     mode="bad"
 
-    zstyle -b "apollo:status:${mode}:${line}:${side}" verbose verbose
-    zstyle -b "apollo:status:${mode}:${line}:${side}" pipe_status pipe_status
+    zstyle -b ":apollo:status:${mode}:${line}:${side}" verbose verbose
+    zstyle -b ":apollo:status:${mode}:${line}:${side}" pipe_status pipe_status
 
     if [[ "${pipe}" == 1 && "$pipe_status" == "yes" ]]; then
 
@@ -101,8 +101,8 @@ __apollo_status_run() {
 
   else
 
-    zstyle -b "apollo:status:${mode}:${line}:${side}" always_show always_show
-    zstyle -b "apollo:status:${mode}:${line}:${side}" verbose verbose
+    zstyle -b ":apollo:status:${mode}:${line}:${side}" always_show always_show
+    zstyle -b ":apollo:status:${mode}:${line}:${side}" verbose verbose
 
     if [[ "$always_show" == "yes" ]]; then
 

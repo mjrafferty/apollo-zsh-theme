@@ -25,8 +25,8 @@ __apollo_public_ip_async() {
   side="$2"
   mode="default"
 
-  zstyle -a "apollo:public_ip:${mode}:${line}:${side}" methods methods
-  zstyle -s "apollo:public_ip:${mode}:${line}:${side}" host host
+  zstyle -a ":apollo:public_ip:${mode}:${line}:${side}" methods methods
+  zstyle -s ":apollo:public_ip:${mode}:${line}:${side}" host host
 
   for method in "${methods[@]}"; do
 

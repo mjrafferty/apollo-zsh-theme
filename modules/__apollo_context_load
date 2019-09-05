@@ -35,7 +35,7 @@ __apollo_context_run() {
     __apollo_set_mode "context" "sudo"
   fi
 
-  zstyle -a "apollo:context:${mode}:${line}:${side}:user:ignore" users ignored_users
+  zstyle -a ":apollo:context:${mode}:${line}:${side}:user:ignore" users ignored_users
 
   for user in "${ignored_users[@]}"; do
     if [[ "$USER" =~ $user ]]; then
@@ -43,7 +43,7 @@ __apollo_context_run() {
     fi
   done
 
-  zstyle -a "apollo:context:${mode}:${line}:${side}:host:ignore" hosts ignored_hosts
+  zstyle -a ":apollo:context:${mode}:${line}:${side}:host:ignore" hosts ignored_hosts
 
   for host in "${ignored_hosts[@]}"; do
     if [[ "$HOST" =~ $host ]]; then
@@ -57,27 +57,27 @@ __apollo_context_run() {
 
   elif ((ignore_user==1)); then
 
-    __apollo_set_style "apollo:context:${mode}:${line}:${side}:host" "default" "${host_text}"
+    __apollo_set_style ":apollo:context:${mode}:${line}:${side}:host" "default" "${host_text}"
     host_text="${__APOLLO_RETURN_MESSAGE}"
 
     __APOLLO_RETURN_MESSAGE="${host_text}"
 
   elif ((ignore_host==1)); then
 
-    __apollo_set_style "apollo:context:${mode}:${line}:${side}:user" "default" "${user_text}"
+    __apollo_set_style ":apollo:context:${mode}:${line}:${side}:user" "default" "${user_text}"
     user_text="${__APOLLO_RETURN_MESSAGE}"
 
     __APOLLO_RETURN_MESSAGE="${user_text}"
 
   else
 
-    __apollo_set_style "apollo:context:${mode}:${line}:${side}:host" "default" "${host_text}"
+    __apollo_set_style ":apollo:context:${mode}:${line}:${side}:host" "default" "${host_text}"
     host_text="${__APOLLO_RETURN_MESSAGE}"
 
-    __apollo_set_style "apollo:context:${mode}:${line}:${side}:user" "default" "${user_text}"
+    __apollo_set_style ":apollo:context:${mode}:${line}:${side}:user" "default" "${user_text}"
     user_text="${__APOLLO_RETURN_MESSAGE}"
 
-    __apollo_set_style "apollo:context:${mode}:${line}:${side}:sep" "default"
+    __apollo_set_style ":apollo:context:${mode}:${line}:${side}:sep" "default"
     sep="${__APOLLO_RETURN_MESSAGE}"
 
     __APOLLO_RETURN_MESSAGE="${user_text}${sep}${host_text}"

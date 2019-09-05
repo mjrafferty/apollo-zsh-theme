@@ -23,7 +23,7 @@ __apollo_set_style() {
         zstyle -b "${context}" blend blend
 
         if [[ "$blend" == "yes" ]]; then
-          zstyle -s "${context}:bg" color bg_color
+          zstyle -s "${context}" bg_color bg_color
           __apollo_format_string "${text}" "${context}" "${bg_color}" "clear"
         else
           __apollo_format_string "${text}" "${context}"
@@ -43,10 +43,10 @@ __apollo_set_style() {
         zstyle -b "${context}" revblend revblend
 
         if [[ "$blend" == "yes" ]]; then
-          zstyle -s "${context}:bg" color bg_color
+          zstyle -s "${context}" bg_color bg_color
           __apollo_format_string "${text}" "${context}" "keep" "${bg_color}"
         elif [[ "$revblend" == "yes" ]]; then
-          zstyle -s "${context}:bg" color fg_color
+          zstyle -s "${context}" bg_color fg_color
           __apollo_format_string "${text}" "${context}" "${fg_color}" "keep"
         else
           __apollo_format_string "${text}" "${context}"

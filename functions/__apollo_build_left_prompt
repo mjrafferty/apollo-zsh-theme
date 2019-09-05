@@ -6,7 +6,7 @@ __apollo_build_left_prompt() {
   local -i line_index line
   local -a left_modules
 
-  zstyle -a 'apollo:core:modules:left' modules left_modules
+  zstyle -a ':apollo:core:modules:left' modules left_modules
 
   line_index=1;
 
@@ -56,7 +56,7 @@ __apollo_build_left_prompt() {
 
   __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_END[$line_index]}"
 
-  __apollo_set_style 'apollo:core:prompt:end'
+  __apollo_set_style ':apollo:core:prompt:end'
 
   PROMPT+="$__APOLLO_RETURN_MESSAGE%{%f%k%}"
 

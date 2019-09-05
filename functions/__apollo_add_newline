@@ -11,9 +11,9 @@ __apollo_add_newline() {
     __APOLLO_PROMPT_LINES[line]+="%{%k%}\${(el.\$((\$COLUMNS - \${__APOLLO_PROMPT_LINE_LENGTH[$line]})).. .)}"
   else
 
-    zstyle -s "apollo:core:${line}:ruler" text ruler_text
+    zstyle -s ":apollo:core:${line}:ruler" text ruler_text
 
-    __apollo_format_string "\${(el.\$((\$COLUMNS - \${(e)__APOLLO_PROMPT_LINE_LENGTH[$line]}))..${ruler_text}.)}" "apollo:core:${line}:ruler"
+    __apollo_format_string "\${(el.\$((\$COLUMNS - \${(e)__APOLLO_PROMPT_LINE_LENGTH[$line]}))..${ruler_text}.)}" ":apollo:core:${line}:ruler"
     __APOLLO_PROMPT_LINES[line]+="${__APOLLO_RETURN_MESSAGE}"
 
     __APOLLO_LEFT_HAS_LENGTH[line]+=" + 1"
