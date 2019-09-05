@@ -1,0 +1,19 @@
+# vim:ft=zsh
+
+__apollo_git_cache_key() {
+  __APOLLO_RETURN_MESSAGE="$PWD"
+}
+
+__apollo_git_run() {
+
+  local line="$1"
+  local side="$2"
+  local async_results="$3"
+
+  __APOLLO_RETURN_MESSAGE="${async_results}"
+
+}
+
+__apollo_git_always_async() {
+  git --no-optional-locks status -b --porcelain=2
+}

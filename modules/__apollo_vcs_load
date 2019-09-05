@@ -1,9 +1,85 @@
 # vim:ft=zsh
 
+__apollo_vcs_cache_key() {
+  __APOLLO_RETURN_MESSAGE="$PWD"
+}
+
+__apollo_vcs_run() {
+
+  local line="$1"
+  local side="$2"
+  local async_results="$3"
+
+  __APOLLO_RETURN_MESSAGE="${async_results}"
+
+}
+
+__apollo_vcs_always_async() {
+  #vcs_info hello
+  #echo "${vcs_info_msg_0_}"
+  git --no-optional-locks status -b --porcelain=2 | head -n1
+}
+
+
+estyle-cfc() {
+  local d
+  local -a cfc_dirs
+  cfc_dirs=(
+    ${HOME}/src/code/*(/N)
+  )
+
+  for d in ${cfc_dirs}; do
+    d=${d%/##}
+    [[ $PWD == $d(|/*) ]] && return 0
+  done
+  return 1
+}
+
++vi-git-remotebranch() {
+  local remote
+
+  # Are we on a remote-tracking branch?
+  remote=${$(git rev-parse --verify ${hook_com[branch]}@{upstream} --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
+
+  # The first test will show a tracking branch whenever there is one. The
+  # second test, however, will only show the remote branch's name if it
+  # differs from the local one.
+  if [[ -n ${remote} ]] ; then
+  #if [[ -n ${remote} && ${remote#*/} != ${hook_com[branch]} ]] ; then
+    hook_com[branch]="${hook_com[branch]} [${remote}]"
+  fi
+}
+
+
++vi-git-st() {
+  local ahead behind
+  local -a gitstatus
+
+  # for git prior to 1.7
+  # ahead=$(git rev-list origin/${hook_com[branch]}..HEAD | wc -l)
+  ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
+  (( $ahead )) && gitstatus+=( "+${ahead}" )
+
+  # for git prior to 1.7
+  # behind=$(git rev-list HEAD..origin/${hook_com[branch]} | wc -l)
+  behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
+  (( $behind )) && gitstatus+=( "-${behind}" )
+
+  hook_com[misc]+=${(j:/:)gitstatus}
+}
+
++vi-git-untracked(){
+  if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
+    git status --porcelain | grep '??' &> /dev/null ; then
+    hook_com[staged]+='T'
+  fi
+}
+
 autoload -Uz vcs_info
-zstyle ':vcs_info:*' formats "VCS:%s" "Repo:%r" "Branch:%b" "Rev:%12.12i" "Base:%R" "Misc:%m" "Staged:%c" "Unstaged:%u"
-zstyle ':vcs_info:*' actionformats "VCS:%s" "Repo:%r" "Branch:%b" "Action:%a" "Rev:%12.12i" "Base:%R" "Misc:%m" "Staged:%c" "Unstaged:%u"
-zstyle ':vcs_info:*' max-exports 9
+
+zstyle ':vcs_info:*' formats "VCS:%s|Repo:%r|Branch:%b|Action:%a|Rev:%12.12i|Base:%R|Misc:%m|Staged:%c|Unstaged:%u"
+zstyle ':vcs_info:*' actionformats "VCS:%s|Repo:%r|Branch:%b|Action:%a|Rev:%12.12i|Base:%R|Misc:%m|Staged:%c|Unstaged:%u"
+zstyle ':vcs_info:*' max-exports 1
 zstyle ':vcs_info:*' check-for-changes "true"
 zstyle ':vcs_info:*' check-for-staged-changes "true"
 zstyle ':vcs_info:*' get-revision "true"
@@ -11,73 +87,4 @@ zstyle ':vcs_info:*' disable-patterns "true"
 
 zstyle -e ':vcs_info:git:*' check-for-changes 'estyle-cfc && reply=( true ) || reply=( false )'
 zstyle -e ':vcs_info:git:*' check-for-staged-changes 'estyle-cfc && reply=( true ) || reply=( false )'
-
-estyle-cfc() {
-	local d
-	local -a cfc_dirs
-	cfc_dirs=(
-		${HOME}/src/code/*(/N)
-	)
-
-	for d in ${cfc_dirs}; do
-		d=${d%/##}
-		[[ $PWD == $d(|/*) ]] && return 0
-	done
-	return 1
-}
-
-
 zstyle ':vcs_info:git*+set-message:*' hooks git-untracked git-st git-remotebranch
-
-+vi-git-remotebranch() {
-    local remote
-
-    # Are we on a remote-tracking branch?
-    remote=${$(git rev-parse --verify ${hook_com[branch]}@{upstream} --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
-
-    # The first test will show a tracking branch whenever there is one. The
-    # second test, however, will only show the remote branch's name if it
-    # differs from the local one.
-    if [[ -n ${remote} ]] ; then
-    #if [[ -n ${remote} && ${remote#*/} != ${hook_com[branch]} ]] ; then
-        hook_com[branch]="${hook_com[branch]} [${remote}]"
-    fi
-}
-
-
-+vi-git-st() {
-    local ahead behind
-    local -a gitstatus
-
-    # for git prior to 1.7
-    # ahead=$(git rev-list origin/${hook_com[branch]}..HEAD | wc -l)
-    ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
-    (( $ahead )) && gitstatus+=( "+${ahead}" )
-
-    # for git prior to 1.7
-    # behind=$(git rev-list HEAD..origin/${hook_com[branch]} | wc -l)
-    behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
-    (( $behind )) && gitstatus+=( "-${behind}" )
-
-    hook_com[misc]+=${(j:/:)gitstatus}
-}
-
-+vi-git-untracked(){
-    if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
-        git status --porcelain | grep '??' &> /dev/null ; then
-        # This will show the marker if there are any untracked files in repo.
-        # If instead you want to show the marker only if there are untracked
-        # files in $PWD, use:
-        #[[ -n $(git ls-files --others --exclude-standard) ]] ; then
-        hook_com[staged]+='T'
-    fi
-}
-
-__apollo_vcs_run() {
-
-  vcs_info hello
-
-  __APOLLO_RETURN_MESSAGE="${vcs_info_msg_0_}${vcs_info_msg_1_}${vcs_info_msg_2_}${vcs_info_msg_3_}${vcs_info_msg_4_}"
-  __APOLLO_RETURN_MESSAGE+="${vcs_info_msg_5_}${vcs_info_msg_6_}${vcs_info_msg_7_}${vcs_info_msg_8_}"
-
-}

@@ -286,6 +286,8 @@ __apollo_set_colors() {
         fg="%F{$1}"
         ;;
     esac
+  else
+    fg="%f"
   fi
 
   if [[ -n "$bg" ]]; then
@@ -303,6 +305,8 @@ __apollo_set_colors() {
         bg="%K{$2}"
         ;;
     esac
+  else
+    bg="%k"
   fi
 
   __APOLLO_RETURN_MESSAGE="%{${fg}${bg}%}"
