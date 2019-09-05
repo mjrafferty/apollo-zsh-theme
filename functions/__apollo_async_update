@@ -3,6 +3,7 @@
 __apollo_async_update() {
 
   local module="$1"
+  local -i has_next="$2"
   local x side cache_key
   local -a module_info
   local -i line num
@@ -74,8 +75,9 @@ __apollo_async_update() {
 
   done
 
-  __APOLLO_RESET_NEEDED=1
-  __apollo_safe_prompt_reset;
+  if (( has_next == 0 )); then
+    zle && zle .reset-prompt
+  fi
 
 }
 

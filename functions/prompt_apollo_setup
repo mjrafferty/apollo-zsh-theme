@@ -144,9 +144,6 @@ prompt_apollo_setup() {
 	unfunction __apollo_add_newline __apollo_build_right_prompt __apollo_build_left_prompt __apollo_load_utilities
 	unset __APOLLO_CURRENT_RPROMPT __APOLLO_INSTALL_DIR __APOLLO_MODULE_INDEX
 
-  TMOUT=1
-  trap "__apollo_safe_prompt_reset" ALRM
-
 }
 
 prompt_apollo_setup "$@"

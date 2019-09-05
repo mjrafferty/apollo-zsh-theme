@@ -7,7 +7,7 @@ __apollo_async_callback() {
   local stdout="$3"
   local exec_time="$4"
   local stderr="$5"
-  local has_next="$6"
+  local -i has_next="$6"
 
   local module
 
@@ -22,7 +22,7 @@ __apollo_async_callback() {
 
   __APOLLO_ASYNC_RESULTS[$module]="$stdout"
 
-  __apollo_async_update "$module"
+  __apollo_async_update "$module" "$has_next"
 
   __APOLLO_ASYNC_RESULTS[$module]=""
   __APOLLO_ASYNC_TIMES[$module]="$exec_time"
