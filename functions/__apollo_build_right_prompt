@@ -18,7 +18,6 @@ __apollo_build_right_prompt(){
 
     case "${current_module}" in
       "newline")
-        __APOLLO_RETURN_MESSAGE+="\${__APOLLO_RIGHT_END[$line_index]}"
         ((__APOLLO_CURRENT_RPROMPT++));
         break;
         ;;
@@ -36,9 +35,7 @@ __apollo_build_right_prompt(){
 
   done
 
-  if ((__APOLLO_CURRENT_RPROMPT > ${#right_modules[@]} )); then
-    __APOLLO_RETURN_MESSAGE+="\${__APOLLO_RIGHT_END[$line_index]}"
-  fi
+  __APOLLO_RETURN_MESSAGE+="\${__APOLLO_RIGHT_END[$line_index]}"
 
 }
 
