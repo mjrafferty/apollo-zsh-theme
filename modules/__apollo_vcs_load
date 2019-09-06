@@ -15,9 +15,8 @@ __apollo_vcs_run() {
 }
 
 __apollo_vcs_always_async() {
-  #vcs_info hello
-  #echo "${vcs_info_msg_0_}"
-  git --no-optional-locks status -b --porcelain=2 | head -n1
+  vcs_info hello
+  echo "${vcs_info_msg_0_}"
 }
 
 

@@ -9,11 +9,87 @@ __apollo_git_run() {
   local line="$1"
   local side="$2"
   local async_results="$3"
+  local -a results_array elements element_style
+  local repo_path git_dir commit_hash branch_info return_string object
+  local -i object_count
 
-  __APOLLO_RETURN_MESSAGE="${async_results}"
+  if [[ -z "$async_results" ]]; then
+    __APOLLO_RETURN_MESSAGE=""
+    return;
+  fi
+
+  results_array=(${(f)async_results})
+
+  repo_path="${results_array[1]}"
+  git_dir="${repo_path}/${results_array[2]}"
+  commit_hash="${results_array[3]}"
+  branch_info="${results_array[4]}"
+  # ## master...origin/master [ahead 1]
+
+  zstyle -a ":apollo:git:${mode}:${line}:${side}" elements elements
+
+  for element in "${elements[@]}"; do
+    case "$element" in
+      "repo_path")
+        __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" "dynamic"
+        element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        return_string+="${element_style[1]}${repo_path}${element_style[2]}"
+        ;;
+      "commit_hash")
+        __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" "dynamic"
+        element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        return_string+="${element_style[1]}${commit_hash}${element_style[2]}"
+        ;;
+      "local_branch")
+        __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" "dynamic"
+        element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        return_string+="${element_style[1]}${branch_info}${element_style[2]}"
+        ;;
+      "remote_branch")
+        __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" "dynamic"
+        element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        return_string+="${element_style[1]}${branch_info}${element_style[2]}"
+        ;;
+      "ahead")
+        __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" "dynamic"
+        element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        return_string+="${element_style[1]}${branch_info}${element_style[2]}"
+        ;;
+      "behind")
+        __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" "dynamic"
+        element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        return_string+="${element_style[1]}${branch_info}${element_style[2]}"
+        ;;
+      "modified")
+        object_count=0
+        for object in ${results_array[5,-1]}; do
+          [[ "$object" != "??"* ]] && ((object_count+=1));
+        done
+        __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" "dynamic" ""
+        element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        return_string+="${element_style[1]}${object_count}${element_style[2]}"
+        ;;
+      "untracked")
+        object_count=0
+        for object in ${results_array[5,-1]}; do
+          [[ "$object" == "??"* ]] && ((object_count+=1));
+        done
+        __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" "dynamic" ""
+        element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        return_string+="${element_style[1]}${object_count}${element_style[2]}"
+        ;;
+      *)
+        return_string+="${element}"
+        ;;
+    esac
+  done
+
+  __APOLLO_RETURN_MESSAGE="${return_string}"
 
 }
 
 __apollo_git_always_async() {
-  git --no-optional-locks status -b --porcelain=2
+  # --ignore-submodules
+  # --short=8
+  git rev-parse --short=8 --show-toplevel --git-dir HEAD && git status --porcelain -b
 }
