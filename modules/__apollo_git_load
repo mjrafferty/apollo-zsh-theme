@@ -89,7 +89,14 @@ __apollo_git_run() {
 }
 
 __apollo_git_always_async() {
+
+  local line="$1"
+  local side="$2"
+
+  # .git/logs/refs/stash < stash count
   # --ignore-submodules
   # --short=8
+  # tag=$(command git describe --tags --exact-match HEAD 2>/dev/null)
   git rev-parse --short=8 --show-toplevel --git-dir HEAD && git status --porcelain -b
+
 }
