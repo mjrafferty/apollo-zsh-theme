@@ -8,12 +8,13 @@ __apollo_add_newline() {
   line="$2"
 
   if [[ "${module}" == "newline" ]]; then
-    __APOLLO_PROMPT_LINES[line]+="%{%k%}\${(el.\$((\$COLUMNS - \${__APOLLO_PROMPT_LINE_LENGTH[$line]})).. .)}"
+    __APOLLO_PROMPT_LINES[line]+="%{%k%}\${(er.\$((\$COLUMNS - \${__APOLLO_PROMPT_LINE_LENGTH[$line]})).. .)}"
   else
 
     zstyle -s ":apollo:core:${line}:ruler" text ruler_text
 
-    __apollo_format_string "\${(el.\$((\$COLUMNS - \${(e)__APOLLO_PROMPT_LINE_LENGTH[$line]}))..${ruler_text}.)}" ":apollo:core:${line}:ruler"
+    # Using ¬ as a flag delimiter as it seems pretty uncommon and unlikely to be contained in the value of $ruler_text
+    __apollo_format_string "\${(er¬\$((\$COLUMNS - \${(e)__APOLLO_PROMPT_LINE_LENGTH[$line]}))¬¬${ruler_text}¬)}" ":apollo:core:${line}:ruler"
     __APOLLO_PROMPT_LINES[line]+="${__APOLLO_RETURN_MESSAGE}"
 
     __APOLLO_LEFT_HAS_LENGTH[line]+=" + 1"
