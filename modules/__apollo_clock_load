@@ -74,9 +74,13 @@ __apollo_clock_run() {
 
 }
 
+local live
+
 zstyle -b ':apollo:clock:*:*:*' live live
 
 if [[ "$live" == "yes" ]]; then
   TMOUT=1
   TRAPALRM(){ zle && zle .reset-prompt }
 fi
+
+unset live
