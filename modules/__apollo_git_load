@@ -28,6 +28,7 @@ __apollo_git_always_async() {
   # --short=8
   # tag=$(command git describe --tags --exact-match HEAD 2>/dev/null)
   results="$(git rev-parse --short=8 --show-toplevel --git-dir HEAD && git status --porcelain -b)"
+  [[ -z "$results" ]] && return;
   results_array=(${(f)results})
 
   repo_path="${results_array[1]}"
