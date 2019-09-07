@@ -19,9 +19,9 @@ __apollo_git_always_async() {
   local line="$1"
   local side="$2"
   local -a results_array elements
-  local results object return_string element
+  local results object return_string element stash
   local repo_path git_dir commit_hash local_branch remote_branch ahead behind
-  local -i modified untracked
+  local -i modified untracked stash_count
 
   # .git/logs/refs/stash < stash count
   # --ignore-submodules
@@ -35,13 +35,9 @@ __apollo_git_always_async() {
   git_dir="${repo_path}/${results_array[2]}"
   commit_hash="${results_array[3]}"
   branch_info="${results_array[4]}"
-  local_branch="${results_array[4]}"
   remote_branch="${results_array[4]}"
   ahead="${results_array[4]}"
   behind="${results_array[4]}"
-
-  local_branch="${local_branch##\#\# }"
-  local_branch="${local_branch%...*}"
 
   remote_branch="${remote_branch##*...}"
   remote_branch="${remote_branch% \[*}"
@@ -58,7 +54,32 @@ __apollo_git_always_async() {
 
   for element in "${elements[@]}"; do
     case "$element" in
-      "repo_path"|"commit_hash"|"local_branch"|"remote_branch"|"ahead"|"behind"|"modified"|"untracked")
+      "repo_path"|"commit_hash"|"local_branch"|"remote_branch"|"ahead"|"behind"|"modified"|"untracked"|"stash_count")
+        case "$element" in
+          "local_branch")
+            local_branch="${results_array[4]}"
+            local_branch="${local_branch##\#\# }"
+            local_branch="${local_branch%...*}"
+            ;;
+          "remote_branch")
+            remote_branch=${$(git rev-parse --verify ${hook_com[branch]}@{upstream} --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
+            ;;
+          "stash_count")
+            while read line; do ((stash_count+=1)); done < "${git_dir}/logs/refs/stash"
+            ;;
+          "ahead")
+            # for git prior to 1.7
+              # ahead=$(git rev-list origin/${hook_com[branch]}..HEAD | wc -l)
+              ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
+              (( $ahead )) && gitstatus+=( "+${ahead}" )
+            ;;
+          "behind")
+            # for git prior to 1.7
+              # behind=$(git rev-list HEAD..origin/${hook_com[branch]} | wc -l)
+              behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
+              (( $behind )) && gitstatus+=( "-${behind}" )
+            ;;
+        esac
         __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" "dynamic"
         element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
         return_string+="${element_style[1]}${(P)element}${element_style[2]}"
@@ -70,5 +91,19 @@ __apollo_git_always_async() {
   done
 
   echo "$return_string"
+
+estyle-cfc() {
+  local d
+  local -a cfc_dirs
+  cfc_dirs=(
+    ${HOME}/src/code/*(/N)
+  )
+
+  for d in ${cfc_dirs}; do
+    d=${d%/##}
+    [[ $PWD == $d(|/*) ]] && return 0
+  done
+  return 1
+}
 
 }

@@ -19,6 +19,7 @@ __apollo_vcs_always_async() {
   echo "${vcs_info_msg_0_}"
 }
 
+
 estyle-cfc() {
   local d
   local -a cfc_dirs
@@ -33,6 +34,45 @@ estyle-cfc() {
   return 1
 }
 
++vi-git-remotebranch() {
+  local remote
+
+  # Are we on a remote-tracking branch?
+  remote=${$(git rev-parse --verify ${hook_com[branch]}@{upstream} --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
+
+  # The first test will show a tracking branch whenever there is one. The
+  # second test, however, will only show the remote branch's name if it
+  # differs from the local one.
+  if [[ -n ${remote} ]] ; then
+  #if [[ -n ${remote} && ${remote#*/} != ${hook_com[branch]} ]] ; then
+    hook_com[branch]="${hook_com[branch]} [${remote}]"
+  fi
+}
+
++vi-git-st() {
+  local ahead behind
+  local -a gitstatus
+
+  # for git prior to 1.7
+  # ahead=$(git rev-list origin/${hook_com[branch]}..HEAD | wc -l)
+  ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
+  (( $ahead )) && gitstatus+=( "+${ahead}" )
+
+  # for git prior to 1.7
+  # behind=$(git rev-list HEAD..origin/${hook_com[branch]} | wc -l)
+  behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
+  (( $behind )) && gitstatus+=( "-${behind}" )
+
+  hook_com[misc]+=${(j:/:)gitstatus}
+}
+
++vi-git-untracked(){
+  if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
+    git status --porcelain | grep '??' &> /dev/null ; then
+    hook_com[staged]+='T'
+  fi
+}
+
 autoload -Uz vcs_info
 
 zstyle ':vcs_info:*' formats "VCS:%s|Repo:%r|Branch:%b|Action:%a|Rev:%12.12i|Base:%R|Misc:%m|Staged:%c|Unstaged:%u"
@@ -45,3 +85,4 @@ zstyle ':vcs_info:*' disable-patterns "true"
 
 zstyle -e ':vcs_info:git:*' check-for-changes 'estyle-cfc && reply=( true ) || reply=( false )'
 zstyle -e ':vcs_info:git:*' check-for-staged-changes 'estyle-cfc && reply=( true ) || reply=( false )'
+zstyle ':vcs_info:git*+set-message:*' hooks git-untracked git-st git-remotebranch
