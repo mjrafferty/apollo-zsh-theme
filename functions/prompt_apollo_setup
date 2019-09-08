@@ -118,8 +118,16 @@ prompt_apollo_setup() {
 	RPROMPT=""
 
   if ((__APOLLO_ASYNC == 1)); then
+
     __apollo_lib_async_load
     async_start_worker apollo_async_helper -u -n
+
+    for module in "${left_modules[@]}" "${right_modules[@]}"; do
+      if ((${+functions[__apollo_${module}_init_async]})); then
+        async_worker_eval apollo_async_helper "__apollo_${module}_init_async"
+      fi
+    done
+
   fi
 
 	__apollo_build_left_prompt

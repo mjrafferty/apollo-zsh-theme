@@ -18,66 +18,60 @@ __apollo_git_always_async() {
 
   local line="$1"
   local side="$2"
-  local -a results_array elements
-  local results object return_string element stash
-  local repo_path git_dir commit_hash local_branch remote_branch ahead behind
-  local -i modified untracked stash_count
+  local -a elements
+  local object return_string element item
+  local repo_path git_dir commit_hash local_branch remote_branch tag
+  local -i modified untracked stash_count ahead behind
 
-  # .git/logs/refs/stash < stash count
   # --ignore-submodules
   # --short=8
-  # tag=$(command git describe --tags --exact-match HEAD 2>/dev/null)
-  results="$(git rev-parse --short=8 --show-toplevel --git-dir HEAD && git status --porcelain -b)"
-  [[ -z "$results" ]] && return;
-  results_array=(${(f)results})
 
-  repo_path="${results_array[1]}"
-  git_dir="${repo_path}/${results_array[2]}"
-  commit_hash="${results_array[3]}"
-  branch_info="${results_array[4]}"
-  remote_branch="${results_array[4]}"
-  ahead="${results_array[4]}"
-  behind="${results_array[4]}"
 
-  remote_branch="${remote_branch##*...}"
-  remote_branch="${remote_branch% \[*}"
+  git_dir="$(git rev-parse --git-dir)"
 
-  for object in ${results_array[5,-1]}; do
-    if [[ "$object" == "??"* ]]; then
-      (( untracked+=1 ))
-    else
-      (( modified+=1 ))
-    fi
-  done
+  [[ -z "$git_dir" ]] && return 0
+
+  local_branch=$(__apollo_git_getbranch "${git_dir}")
+  action=$(__apollo_git_getaction "${git_dir}")
 
   zstyle -a ":apollo:git:${mode}:${line}:${side}" elements elements
 
   for element in "${elements[@]}"; do
     case "$element" in
-      "repo_path"|"commit_hash"|"local_branch"|"remote_branch"|"ahead"|"behind"|"modified"|"untracked"|"stash_count")
+      "repo_path"|"commit_hash"|"local_branch"|"remote_branch"|"ahead"|"behind"|"modified"|"untracked"|"stash_count"|"tag"|"action")
         case "$element" in
-          "local_branch")
-            local_branch="${results_array[4]}"
-            local_branch="${local_branch##\#\# }"
-            local_branch="${local_branch%...*}"
+          "repo_path")
+            repo_path="$(git rev-parse --show-toplevel )"
+            ;;
+          "commit_hash")
+            commit_hash="$(git rev-parse --short=8 HEAD)"
             ;;
           "remote_branch")
-            remote_branch=${$(git rev-parse --verify ${hook_com[branch]}@{upstream} --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
+            remote_branch=${$(git rev-parse --verify ${local_branch}@{upstream} --symbolic-full-name)/refs\/remotes\/}
             ;;
           "stash_count")
-            while read line; do ((stash_count+=1)); done < "${git_dir}/logs/refs/stash"
+            while read item; do ((stash_count+=1)); done < "${git_dir}/logs/refs/stash"
             ;;
           "ahead")
-            # for git prior to 1.7
-              # ahead=$(git rev-list origin/${hook_com[branch]}..HEAD | wc -l)
-              ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
-              (( $ahead )) && gitstatus+=( "+${ahead}" )
+            git rev-list ${local_branch}@{upstream}..HEAD \
+              | while read item; do ((ahead+=1)); done
             ;;
           "behind")
-            # for git prior to 1.7
-              # behind=$(git rev-list HEAD..origin/${hook_com[branch]} | wc -l)
-              behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
-              (( $behind )) && gitstatus+=( "-${behind}" )
+            git rev-list HEAD..${local_branch}@{upstream} \
+              | while read item; do ((behind+=1)); done
+            ;;
+          "tag")
+            tag=$(git describe --tags --exact-match HEAD)
+            ;;
+          "modified"|"untracked")
+            git status --porcelain \
+              | while read item; do
+              if [[ "$item" == "??"* ]]; then
+                (( untracked+=1 ))
+              else
+                (( modified+=1 ))
+              fi
+            done
             ;;
         esac
         __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" "dynamic"
@@ -92,9 +86,11 @@ __apollo_git_always_async() {
 
   echo "$return_string"
 
+}
+
 estyle-cfc() {
-  local d
-  local -a cfc_dirs
+local d
+local -a cfc_dirs
   cfc_dirs=(
     ${HOME}/src/code/*(/N)
   )
@@ -105,5 +101,93 @@ estyle-cfc() {
   done
   return 1
 }
+
+__apollo_git_init_async() {
+
+  __apollo_git_getaction () {
+
+      local gitdir=$1
+      local tmp
+
+      for tmp in "${gitdir}/rebase-apply" "${gitdir}/rebase" "${gitdir}/../.dotest" ; do
+        if [[ -d ${tmp} ]] ; then
+          if   [[ -f "${tmp}/rebasing" ]] ; then
+            gitaction="rebase"
+          elif [[ -f "${tmp}/applying" ]] ; then
+            gitaction="am"
+          else
+            gitaction="am/rebase"
+          fi
+          return 0
+        fi
+      done
+
+      for tmp in "${gitdir}/rebase-merge/interactive" "${gitdir}/.dotest-merge/interactive" ; do
+        [[ -f "${tmp}" ]] && gitaction="rebase-i" && return 0
+      done
+
+      for tmp in "${gitdir}/rebase-merge" "${gitdir}/.dotest-merge" ; do
+        [[ -d "${tmp}" ]] && gitaction="rebase-m" && return 0
+      done
+
+      [[ -f "${gitdir}/MERGE_HEAD" ]] && gitaction="merge" && return 0
+
+      [[ -f "${gitdir}/BISECT_LOG" ]] && gitaction="bisect" && return 0
+
+      if [[ -f "${gitdir}/CHERRY_PICK_HEAD" ]] ; then
+        if [[ -d "${gitdir}/sequencer" ]] ; then
+          gitaction=cherry-seq
+        else
+          gitaction=cherry
+        fi
+        return 0
+      fi
+
+      [[ -d "${gitdir}/sequencer" ]] && gitaction="cherry-or-revert" && return 0
+
+      return 1
+  }
+
+  __apollo_git_getbranch () {
+
+    local gitdir=$1 tmp actiondir gitbranch
+    local gitsymref="git symbolic-ref --short HEAD"
+
+    for tmp in "${gitdir}/rebase-apply" "${gitdir}/rebase" "${gitdir}/../.dotest"; do
+      if [[ -d ${tmp} ]]; then
+        actiondir=${tmp}
+        break
+      fi
+    done
+
+    if [[ -n ${actiondir} ]]; then
+      gitbranch="$(${(z)gitsymref} )"
+      [[ -z ${gitbranch} ]] && [[ -r ${actiondir}/head-name ]] \
+          && gitbranch="$(< ${actiondir}/head-name)"
+      [[ -z ${gitbranch} || ${gitbranch} == 'detached HEAD' ]] && [[ -r ${actiondir}/onto ]] \
+          && gitbranch="$(< ${actiondir}/onto)"
+    elif [[ -f "${gitdir}/MERGE_HEAD" ]] ; then
+      gitbranch="$(${(z)gitsymref} )"
+      [[ -z ${gitbranch} ]] && gitbranch="$(< ${gitdir}/ORIG_HEAD)"
+    elif [[ -d "${gitdir}/rebase-merge" ]] ; then
+      gitbranch="$(< ${gitdir}/rebase-merge/head-name)"
+      if [[ $gitbranch == 'detached HEAD' ]]; then
+        gitbranch="$(< ${gitdir}/rebase-merge/orig-head)"
+      fi
+    elif [[ -d "${gitdir}/.dotest-merge" ]] ; then
+      gitbranch="$(< ${gitdir}/.dotest-merge/head-name)"
+    elif gitbranch="$(${(z)gitsymref} )" ; then
+    elif gitbranch="refs/tags/$(git describe --all --exact-match HEAD )" ; then
+    elif gitbranch="$(git describe --contains HEAD )" ; then
+    elif gitbranch="$(git name-rev --name-only --no-undefined --always HEAD )" ; then
+    fi
+
+    if [[ -z ${gitbranch} ]]; then
+      gitbranch="${${"$(< $gitdir/HEAD)"}[1,7]}..."
+    fi
+
+    echo "$gitbranch"
+
+  }
 
 }
