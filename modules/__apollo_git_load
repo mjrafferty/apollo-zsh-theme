@@ -19,13 +19,9 @@ __apollo_git_always_async() {
   local line="$1"
   local side="$2"
   local -a elements
-  local object return_string element item
+  local return_string element item hash_length ignore_submodules
   local repo_path git_dir commit_hash local_branch remote_branch tag
   local -i modified untracked stash_count ahead behind
-
-  # --ignore-submodules
-  # --short=8
-
 
   git_dir="$(git rev-parse --git-dir)"
 
@@ -44,7 +40,14 @@ __apollo_git_always_async() {
             repo_path="$(git rev-parse --show-toplevel )"
             ;;
           "commit_hash")
-            commit_hash="$(git rev-parse --short=8 HEAD)"
+
+            zstyle -s ":apollo:git:${mode}:${line}:${side}" hash_length hash_length
+
+            if [[ "$hash_length" == [0-9]* ]]; then
+              commit_hash="$(git rev-parse --short="$hash_length" HEAD)"
+            else
+              commit_hash="$(git rev-parse --short=8 HEAD)"
+            fi
             ;;
           "remote_branch")
             remote_branch=${$(git rev-parse --verify ${local_branch}@{upstream} --symbolic-full-name)/refs\/remotes\/}
@@ -64,7 +67,14 @@ __apollo_git_always_async() {
             tag=$(git describe --tags --exact-match HEAD)
             ;;
           "modified"|"untracked")
-            git status --porcelain \
+
+            zstyle -b ":apollo:git:${mode}:${line}:${side}" ignore_submodules ignore_submodules
+
+            if [[ "${ignore_submodules}" == "yes" ]]; then
+              git status --porcelain --ignore-submodules
+            else
+              git status --porcelain
+            fi \
               | while read item; do
               if [[ "$item" == "??"* ]]; then
                 (( untracked+=1 ))
