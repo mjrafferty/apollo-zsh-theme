@@ -23,36 +23,36 @@ __apollo_date_run() {
       "dow")
         zstyle -b ":apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%A}"
+          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%A}"
         else
-          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%a}"
+          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%a}"
         fi
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "day")
         zstyle -b ":apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%e}"
+          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%e}"
         else
-          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%m}"
+          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%m}"
         fi
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "month")
         zstyle -b ":apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%B}"
+          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%B}"
         else
-          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%d}"
+          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%d}"
         fi
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "year")
         zstyle -b ":apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%Y}"
+          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%Y}"
         else
-          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "default" "%D{%y}"
+          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%y}"
         fi
         format+="${__APOLLO_RETURN_MESSAGE}"
         ;;

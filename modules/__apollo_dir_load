@@ -27,7 +27,7 @@ __apollo_dir_run() {
   zstyle -s ":apollo:dir:${mode}:${line}:${side}" shorten_length shorten_length
   zstyle -s ":apollo:dir:${mode}:${line}:${side}" shorten_string shorten_string
 
-  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:sep" "default"
+  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:sep"
   sep="${__APOLLO_RETURN_MESSAGE}"
 
   if [[ "$absolute" == "yes" ]]; then
@@ -57,13 +57,13 @@ __apollo_dir_run() {
     fi
 
   fi
-  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:sep" "default"
+  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:sep"
   sep="${__APOLLO_RETURN_MESSAGE}"
 
-  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:element" "dynamic"
+  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:element" --dynamic
   element_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
-  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:shortened" "dynamic"
+  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:shortened" --dynamic
   short_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
   split_dir=("${(s:/:)dir}")
@@ -87,7 +87,7 @@ __apollo_dir_run() {
 
   done
 
-  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:last" "dynamic"
+  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:last" --dynamic
   last_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
   output+="${last_style[1]}${split_dir[element]}${last_style[2]}"

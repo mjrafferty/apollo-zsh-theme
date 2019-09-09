@@ -84,7 +84,7 @@ __apollo_git_always_async() {
             done
             ;;
         esac
-        __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" "dynamic"
+        __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" --dynamic
         element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
         return_string+="${element_style[1]}${(P)element}${element_style[2]}"
         ;;
