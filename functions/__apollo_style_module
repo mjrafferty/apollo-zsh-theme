@@ -7,7 +7,7 @@ __apollo_style_module() {
   local left_padding right_padding
   local left_label right_label
   local left_surround right_surround
-  local format_string="\0\0"
+  local style_string
   local -a cache
 
   context="$1"
@@ -17,34 +17,22 @@ __apollo_style_module() {
 
   if [[ -z "$cache[1]" ]]; then
 
-    __apollo_format_string "${format_string}" "${context}"
-    format_string="${__APOLLO_RETURN_MESSAGE}"
+    __apollo_set_style "${context}" --dynamic
+    style_string="${__APOLLO_RETURN_MESSAGE}"
 
-    zstyle -s "${context}:left:label" text left_label
-    __apollo_format_string "$left_label" "${context}:left:label"
-    left_label="$__APOLLO_RETURN_MESSAGE"
-
-    zstyle -s "${context}:right:label" text right_label
-    __apollo_format_string "$right_label" "${context}:right:label"
-    right_label="$__APOLLO_RETURN_MESSAGE"
-
-    format_string="${left_label}${format_string}${right_label}"
-
-    zstyle -s "${context}:left:surround" text left_surround
-    __apollo_format_string "$left_surround" "${context}:left:surround"
+    __apollo_format_string "${context}:left:surround"
     left_surround="$__APOLLO_RETURN_MESSAGE"
 
-    zstyle -s "${context}:right:surround" text right_surround
-    __apollo_format_string "$right_surround" "${context}:right:surround"
+    __apollo_format_string "${context}:right:surround"
     right_surround="$__APOLLO_RETURN_MESSAGE"
 
     zstyle -s "$context" bg_color bg_color
     __apollo_set_colors "$bg_color" "keep"
 
-    format_string="${left_surround}\0${format_string}\0${right_surround}${__APOLLO_RETURN_MESSAGE}"
+    style_string="${left_surround}\0${style_string}\0${right_surround}${__APOLLO_RETURN_MESSAGE}"
 
-    cache=("${(s.\0.)format_string}")
-    __APOLLO_STYLE_CACHE[$context]="$format_string"
+    cache=("${(s.\0.)style_string}")
+    __APOLLO_STYLE_CACHE[$context]="$style_string"
 
   fi
 

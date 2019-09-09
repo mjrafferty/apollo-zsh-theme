@@ -38,7 +38,7 @@ __apollo_decorate_prompt() {
 
         if [[ -n "$first_module" ]]; then
 
-          __apollo_set_style "${context}:separator" "separator"
+          __apollo_set_style "${context}:separator" --separator
           __APOLLO_LEFT_SEPARATORS[num]="${__APOLLO_RETURN_MESSAGE}"
 
           last_module="$module"
@@ -50,7 +50,7 @@ __apollo_decorate_prompt() {
           last_module="$module"
           last_context="$context"
 
-          __apollo_set_style "${context}:begin" "begin"
+          __apollo_set_style "${context}:begin" --begin
           __APOLLO_LEFT_BEGIN[line]="${__APOLLO_RETURN_MESSAGE}"
 
         fi
@@ -62,7 +62,7 @@ __apollo_decorate_prompt() {
     done
 
     if [[ -n "$last_module" ]]; then
-      __apollo_set_style "${last_context}:end" "end"
+      __apollo_set_style "${last_context}:end" --end
       __APOLLO_LEFT_END[line]="${__APOLLO_RETURN_MESSAGE}"
     fi
 
@@ -85,7 +85,7 @@ __apollo_decorate_prompt() {
 
         if [[ -n "$first_module" ]]; then
 
-          __apollo_set_style "${context}:separator" "separator"
+          __apollo_set_style "${context}:separator" --separator
           __APOLLO_RIGHT_SEPARATORS[num]="${__APOLLO_RETURN_MESSAGE}"
 
           last_module="$module"
@@ -97,7 +97,7 @@ __apollo_decorate_prompt() {
           last_module="$module"
           last_context="$context"
 
-          __apollo_set_style "${context}:begin" "begin"
+          __apollo_set_style "${context}:begin" --begin
           __APOLLO_RIGHT_BEGIN[line]="${__APOLLO_RETURN_MESSAGE}"
 
         fi
@@ -109,7 +109,7 @@ __apollo_decorate_prompt() {
     done
 
     if [[ -n "$last_module" ]]; then
-      __apollo_set_style "${last_context}:end" "end"
+      __apollo_set_style "${last_context}:end" --end
       __APOLLO_RIGHT_END[line]="${__APOLLO_RETURN_MESSAGE}"
     fi
 

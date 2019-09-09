@@ -5,62 +5,67 @@ __apollo_set_style() {
   local context text type cache
   local blend revblend
   local fg_color bg_color
+  local left_label right_label
 
   context="$1"
-  type="$2"
-  text="$3"
+
+  if [[ "$2" == "--"* ]]; then
+    type="$2"
+    shift;
+  fi
+
+  text="$2"
 
   cache="${__APOLLO_STYLE_CACHE[$context]}"
 
   if [[ -z "$cache" ]]; then
 
-    if [[ -z "$text" ]]; then
-      zstyle -s "${context}" text text
-    fi
-
     case "$type" in
-      "begin")
+      "--begin")
         zstyle -b "${context}" blend blend
-
         if [[ "$blend" == "yes" ]]; then
-          zstyle -s "${context}" bg_color bg_color
-          __apollo_format_string "${text}" "${context}" "${bg_color}" "clear"
-        else
-          __apollo_format_string "${text}" "${context}"
+          zstyle -s "${context}" bg_color fg_color
+          bg_color="clear"
         fi
         ;;
-      "end")
+      "--end")
         zstyle -b "${context}" blend blend
-
         if [[ "$blend" == "yes" ]]; then
-          __apollo_format_string "${text}" "${context}" "keep" "clear"
-        else
-          __apollo_format_string "${text}" "${context}"
+          fg_color="keep"
+          bg_color="clear"
         fi
         ;;
-      "separator")
+      "--separator")
         zstyle -b "${context}" blend blend
         zstyle -b "${context}" revblend revblend
-
         if [[ "$blend" == "yes" ]]; then
           zstyle -s "${context}" bg_color bg_color
-          __apollo_format_string "${text}" "${context}" "keep" "${bg_color}"
+          fg_color="keep"
         elif [[ "$revblend" == "yes" ]]; then
           zstyle -s "${context}" bg_color fg_color
-          __apollo_format_string "${text}" "${context}" "${fg_color}" "keep"
-        else
-          __apollo_format_string "${text}" "${context}"
+          bg_color="keep"
         fi
         ;;
-      "dynamic")
-        __apollo_format_string "\0\0" "${context}"
+      "--dynamic")
+        text="\0\0"
+
+        __apollo_format_string "${context}:left:label"
+        left_label="$__APOLLO_RETURN_MESSAGE"
+
+        __apollo_format_string "${context}:right:label"
+        right_label="$__APOLLO_RETURN_MESSAGE"
         ;;
       *)
-        __apollo_format_string "${text}" "${context}"
+        __apollo_format_string "${context}:left:label"
+        left_label="$__APOLLO_RETURN_MESSAGE"
+
+        __apollo_format_string "${context}:right:label"
+        right_label="$__APOLLO_RETURN_MESSAGE"
         ;;
     esac
 
-    text="${__APOLLO_RETURN_MESSAGE}"
+    __apollo_format_string "${context}" "${text}" "${fg_color}" "${bg_color}"
+    text="${left_label}${__APOLLO_RETURN_MESSAGE}${right_label}"
 
     __APOLLO_STYLE_CACHE[$context]="${text}"
     __APOLLO_RETURN_MESSAGE="${text}"

@@ -5,10 +5,14 @@ __apollo_format_string() {
   local style string context fg_color bg_color
   local -a styles
 
-  string="$1"
-  context="$2"
+  context="$1"
+  string="$2"
   fg_color="$3"
   bg_color="$4"
+
+  if [[ -z "$string" ]]; then
+    zstyle -s "${context}" text string
+  fi
 
   if [[ -z "$string" ]]; then
     __APOLLO_RETURN_MESSAGE=""

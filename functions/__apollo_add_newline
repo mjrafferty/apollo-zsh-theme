@@ -14,7 +14,7 @@ __apollo_add_newline() {
     zstyle -s ":apollo:core:${line}:ruler" text ruler_text
 
     # Using ¬ as a flag delimiter as it seems pretty uncommon and unlikely to be contained in the value of $ruler_text
-    __apollo_format_string "\${(er¬\$((\$COLUMNS - \${(e)__APOLLO_PROMPT_LINE_LENGTH[$line]}))¬¬${ruler_text}¬)}" ":apollo:core:${line}:ruler"
+    __apollo_set_style ":apollo:core:${line}:ruler" "\${(er¬\$((\$COLUMNS - \${(e)__APOLLO_PROMPT_LINE_LENGTH[$line]}))¬¬${ruler_text}¬)}"
     __APOLLO_PROMPT_LINES[line]+="${__APOLLO_RETURN_MESSAGE}"
 
     __APOLLO_LEFT_HAS_LENGTH[line]+=" + 1"
