@@ -35,7 +35,7 @@ __apollo_context_run() {
     __apollo_set_mode "context" "sudo"
   fi
 
-  zstyle -a ":apollo:context:${mode}:${line}:${side}:user:ignore" users ignored_users
+  zstyle -a ":apollo:context:${mode}:${line}:${side}" ignore_users ignored_users
 
   for user in "${ignored_users[@]}"; do
     if [[ "$USER" =~ $user ]]; then
@@ -43,7 +43,7 @@ __apollo_context_run() {
     fi
   done
 
-  zstyle -a ":apollo:context:${mode}:${line}:${side}:host:ignore" hosts ignored_hosts
+  zstyle -a ":apollo:context:${mode}:${line}:${side}" ignore_hosts ignored_hosts
 
   for host in "${ignored_hosts[@]}"; do
     if [[ "$HOST" =~ $host ]]; then
