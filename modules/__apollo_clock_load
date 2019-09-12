@@ -6,67 +6,65 @@ __apollo_clock_cache_key() {
 
 __apollo_clock_run() {
 
-  local -i line
-  local side mode
+  local context mode
 
-  line="$1"
-  side="$2"
+  context="$1"
   mode="default"
 
 	local -a elements misc_style
   local return_string verbose
 
-  zstyle -a ":apollo:clock:${mode}:${line}:${side}" elements elements
+  zstyle -a "${context}:${mode}" elements elements
 
   for element in "${elements[@]}"; do
     case "$element" in
       "12hour")
-        zstyle -b ":apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%l}"
+          __apollo_set_style "${context}:${mode}:${element}" "%D{%l}"
         else
-          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%I}"
+          __apollo_set_style "${context}:${mode}:${element}" "%D{%I}"
         fi
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "24hour")
-        zstyle -b ":apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%k}"
+          __apollo_set_style "${context}:${mode}:${element}" "%D{%k}"
         else
-          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%H}"
+          __apollo_set_style "${context}:${mode}:${element}" "%D{%H}"
         fi
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "min")
-        __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%M}"
+        __apollo_set_style "${context}:${mode}:${element}" "%D{%M}"
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "sec")
-        __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%S}"
+        __apollo_set_style "${context}:${mode}:${element}" "%D{%S}"
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "ampm")
-        zstyle -b ":apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%p}"
+          __apollo_set_style "${context}:${mode}:${element}" "%D{%p}"
         else
-          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%P}"
+          __apollo_set_style "${context}:${mode}:${element}" "%D{%P}"
         fi
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "timezone")
-        zstyle -b ":apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose
         if [[ "${verbose}" == "yes" ]]; then
-          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%Z}"
+          __apollo_set_style "${context}:${mode}:${element}" "%D{%Z}"
         else
-          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%z}"
+          __apollo_set_style "${context}:${mode}:${element}" "%D{%z}"
         fi
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       *)
         if [[ -z "$misc_style" ]]; then
-          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:misc" --dynamic
+          __apollo_set_style "${context}:${mode}:misc" --dynamic
           misc_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
         fi
         return_string+="${misc_style[1]}${element}${misc_style[2]}"

@@ -38,7 +38,7 @@ __apollo_precmd() {
 
       module="${__APOLLO_MODULE_MAP[num]}"
 
-      __apollo_get_module_text "$module" "right" "$line" "$num"
+      __apollo_get_module_text "$line" "right" "$module" "$num"
 
     done
 
@@ -48,7 +48,7 @@ __apollo_precmd() {
 
       module="${__APOLLO_MODULE_MAP[num]}"
 
-      __apollo_get_module_text  "$module" "left" "$line" "$num"
+      __apollo_get_module_text "$line" "left" "$module" "$num"
 
     done
 

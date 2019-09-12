@@ -10,25 +10,27 @@ __apollo_run_module() {
   local left_padding right_padding
   local -i width min_width
 
-  module="$1"
-  line="$2"
-  side="$3"
+  line="$1"
+  side="$2"
+  module="$3"
   num="$4"
   cache_key="$5"
+
+  context=":apollo:${line}:${side}:${module}"
 
   __APOLLO_MODULE_MODE[$module]="default"
 
   # Clear out old message before passing to module
   __APOLLO_RETURN_MESSAGE=""
 
-  "__apollo_${module}_run" "${line}" "${side}" "${__APOLLO_ASYNC_RESULTS[$module]}" >&"${__APOLLO_BUFFER_FD}"
+  "__apollo_${module}_run" "${context}" "${__APOLLO_ASYNC_RESULTS[$module]}" >&"${__APOLLO_BUFFER_FD}"
 
   # Flush any remaining data in buffer
   while read -rt dump <&"${__APOLLO_BUFFER_FD}"; do true; done
 
   mode="${__APOLLO_MODULE_MODE[$module]}"
 
-  zstyle -b ":apollo:${module}:${mode}:${line}:${side}" always_show always_show
+  zstyle -b "${context}" always_show always_show
 
   if [[ "$always_show" == "no" && ${#__APOLLO_RETURN_MESSAGE} == 0 ]]; then
     __APOLLO_MODULE_HAS_LENGTH[$num]="0"
@@ -39,7 +41,7 @@ __apollo_run_module() {
     return;
   fi
 
-  __apollo_style_module ":apollo:${module}:${mode}:${line}:${side}" "$__APOLLO_RETURN_MESSAGE"
+  __apollo_style_module "${context}:${mode}" "$__APOLLO_RETURN_MESSAGE"
 
   __APOLLO_MODULE_TEXT[$num]="${__APOLLO_RETURN_MESSAGE}"
 

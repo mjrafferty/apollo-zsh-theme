@@ -6,9 +6,8 @@ __apollo_git_cache_key() {
 
 __apollo_git_run() {
 
-  local line="$1"
-  local side="$2"
-  local async_results="$3"
+  local context="$1"
+  local async_results="$2"
 
   __APOLLO_RETURN_MESSAGE="$async_results"
 
@@ -16,8 +15,7 @@ __apollo_git_run() {
 
 __apollo_git_always_async() {
 
-  local line="$1"
-  local side="$2"
+  local context="$1"
   local -a elements misc_style element_style
   local return_string element item hash_length ignore_submodules
   local repo_path git_dir commit_hash local_branch remote_branch tag
@@ -30,7 +28,7 @@ __apollo_git_always_async() {
   local_branch=$(__apollo_git_getbranch "${git_dir}")
   action=$(__apollo_git_getaction "${git_dir}")
 
-  zstyle -a ":apollo:git:${mode}:${line}:${side}" elements elements
+  zstyle -a "${context}:${mode}" elements elements
 
   for element in "${elements[@]}"; do
     case "$element" in
@@ -41,7 +39,7 @@ __apollo_git_always_async() {
             ;;
           "commit_hash")
 
-            zstyle -s ":apollo:git:${mode}:${line}:${side}" hash_length hash_length
+            zstyle -s "${context}:${mode}" hash_length hash_length
 
             if [[ "$hash_length" == [0-9]* ]]; then
               commit_hash="$(git rev-parse --short="$hash_length" HEAD)"
@@ -68,7 +66,7 @@ __apollo_git_always_async() {
             ;;
           "modified"|"untracked")
 
-            zstyle -b ":apollo:git:${mode}:${line}:${side}" ignore_submodules ignore_submodules
+            zstyle -b "${context}:${mode}" ignore_submodules ignore_submodules
 
             if [[ "${ignore_submodules}" == "yes" ]]; then
               git status --porcelain --ignore-submodules
@@ -85,14 +83,14 @@ __apollo_git_always_async() {
             ;;
         esac
         if [[ -n "${(P)element}" ]]; then
-          __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" --dynamic
+          __apollo_set_style "${context}:${mode}:${element}" --dynamic
           element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
           return_string+="${element_style[1]}${(P)element}${element_style[2]}"
         fi
         ;;
       *)
         if [[ -z "$misc_style" ]]; then
-          __apollo_set_style ":apollo:git:${mode}:${line}:${side}:misc" --dynamic
+          __apollo_set_style "${context}:${mode}:misc" --dynamic
           misc_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
         fi
         return_string+="${misc_style[1]}${element}${misc_style[2]}"

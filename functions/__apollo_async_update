@@ -24,7 +24,7 @@ __apollo_async_update() {
 
     if ((${+functions[__apollo_${module}_cache_key]})); then
       "__apollo_${module}_cache_key";
-      cache_key="${side}-${line}-${num}-${__APOLLO_RETURN_MESSAGE}"
+      cache_key="${line}-${side}-${num}-${__APOLLO_RETURN_MESSAGE}"
     fi
 
     case "$side" in
@@ -39,7 +39,7 @@ __apollo_async_update() {
     module_before="${__APOLLO_MODULE_HAS_LENGTH[$num]}"
     mode_before="${__APOLLO_MODULE_MODE[$module]}"
 
-    __apollo_run_module "${module}" "${line}" "${side}" "${num}" "${cache_key}"
+    __apollo_run_module "${line}" "${side}" "${module}" "${num}" "${cache_key}"
 
     module_after="${__APOLLO_MODULE_HAS_LENGTH[$num]}"
     mode_after="${__APOLLO_MODULE_MODE[$module]}"

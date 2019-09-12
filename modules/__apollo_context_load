@@ -13,11 +13,9 @@ __apollo_context_cache_key() {
 
 __apollo_context_run() {
 
-  local -i line
-  local side mode
+  local context mode
 
-  line="$1"
-  side="$2"
+  context="$1"
   mode="default"
 
   local -a ignored_users ignored_hosts
@@ -35,7 +33,7 @@ __apollo_context_run() {
     __apollo_set_mode "context" "sudo"
   fi
 
-  zstyle -a ":apollo:context:${mode}:${line}:${side}" ignore_users ignored_users
+  zstyle -a "${context}:${mode}" ignore_users ignored_users
 
   for user in "${ignored_users[@]}"; do
     if [[ "$USER" =~ $user ]]; then
@@ -43,7 +41,7 @@ __apollo_context_run() {
     fi
   done
 
-  zstyle -a ":apollo:context:${mode}:${line}:${side}" ignore_hosts ignored_hosts
+  zstyle -a "${context}:${mode}" ignore_hosts ignored_hosts
 
   for host in "${ignored_hosts[@]}"; do
     if [[ "$HOST" =~ $host ]]; then
@@ -57,27 +55,27 @@ __apollo_context_run() {
 
   elif ((ignore_user==1)); then
 
-    __apollo_set_style ":apollo:context:${mode}:${line}:${side}:host" "${host_text}"
+    __apollo_set_style "${context}:${mode}:host" "${host_text}"
     host_text="${__APOLLO_RETURN_MESSAGE}"
 
     __APOLLO_RETURN_MESSAGE="${host_text}"
 
   elif ((ignore_host==1)); then
 
-    __apollo_set_style ":apollo:context:${mode}:${line}:${side}:user" "${user_text}"
+    __apollo_set_style "${context}:${mode}:user" "${user_text}"
     user_text="${__APOLLO_RETURN_MESSAGE}"
 
     __APOLLO_RETURN_MESSAGE="${user_text}"
 
   else
 
-    __apollo_set_style ":apollo:context:${mode}:${line}:${side}:host" "${host_text}"
+    __apollo_set_style "${context}:${mode}:host" "${host_text}"
     host_text="${__APOLLO_RETURN_MESSAGE}"
 
-    __apollo_set_style ":apollo:context:${mode}:${line}:${side}:user" "${user_text}"
+    __apollo_set_style "${context}:${mode}:user" "${user_text}"
     user_text="${__APOLLO_RETURN_MESSAGE}"
 
-    __apollo_set_style ":apollo:context:${mode}:${line}:${side}:sep"
+    __apollo_set_style "${context}:${mode}:sep"
     sep="${__APOLLO_RETURN_MESSAGE}"
 
     __APOLLO_RETURN_MESSAGE="${user_text}${sep}${host_text}"

@@ -35,12 +35,11 @@ __apollo_status_get_signal() {
 
 __apollo_status_run() {
 
-  local -i line error pipe
-  local side mode pipe_status verbose always_show
+  local -i  error pipe
+  local context mode pipe_status verbose always_show
   local -a error_text
 
-  line="$1"
-  side="$2"
+  context="$1"
   mode="default"
 
   if (( $#__APOLLO_PIPE_EXIT_CODES > 1 )); then
@@ -70,8 +69,8 @@ __apollo_status_run() {
     __apollo_set_mode "status" "bad"
     mode="bad"
 
-    zstyle -b ":apollo:status:${mode}:${line}:${side}" verbose verbose
-    zstyle -b ":apollo:status:${mode}:${line}:${side}" pipe_status pipe_status
+    zstyle -b "${context}:${mode}" verbose verbose
+    zstyle -b "${context}:${mode}" pipe_status pipe_status
 
     if [[ "${pipe}" == 1 && "$pipe_status" == "yes" ]]; then
 
@@ -101,8 +100,8 @@ __apollo_status_run() {
 
   else
 
-    zstyle -b ":apollo:status:${mode}:${line}:${side}" always_show always_show
-    zstyle -b ":apollo:status:${mode}:${line}:${side}" verbose verbose
+    zstyle -b "${context}:${mode}" always_show always_show
+    zstyle -b "${context}:${mode}" verbose verbose
 
     if [[ "$always_show" == "yes" ]]; then
 

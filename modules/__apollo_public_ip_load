@@ -8,25 +8,22 @@ __apollo_public_ip_cache_key() {
 
 __apollo_public_ip_run() {
 
-  local line="$1"
-  local side="$2"
-  local async_results="$3"
+  local context="$1"
+  local async_results="$2"
 
     __APOLLO_RETURN_MESSAGE="${async_results}"
 }
 
 __apollo_public_ip_async() {
 
-  local -i line
-  local side mode method host
+  local context mode method host
   local -a methods
 
-  line="$1"
-  side="$2"
+  context="$1"
   mode="default"
 
-  zstyle -a ":apollo:public_ip:${mode}:${line}:${side}" methods methods
-  zstyle -s ":apollo:public_ip:${mode}:${line}:${side}" host host
+  zstyle -a "${context}:${mode}" methods methods
+  zstyle -s "${context}:${mode}" host host
 
   for method in "${methods[@]}"; do
 

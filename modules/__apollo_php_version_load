@@ -8,9 +8,8 @@ __apollo_php_version_cache_key() {
 
 __apollo_php_version_run() {
 
-  local line="$1"
-  local side="$2"
-  local async_results="$3"
+  local context="$1"
+  local async_results="$2"
 
     __APOLLO_RETURN_MESSAGE="${async_results}"
 

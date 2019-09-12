@@ -17,13 +17,13 @@ __apollo_style_module() {
 
   if [[ -z "$cache[1]" ]]; then
 
-    __apollo_set_style "${context}" --dynamic
+    __apollo_set_style "${context}:" --dynamic
     style_string="${__APOLLO_RETURN_MESSAGE}"
 
-    __apollo_format_string "${context}:left:surround"
+    __apollo_format_string "${context}:surround:left"
     left_surround="$__APOLLO_RETURN_MESSAGE"
 
-    __apollo_format_string "${context}:right:surround"
+    __apollo_format_string "${context}:surround:right"
     right_surround="$__APOLLO_RETURN_MESSAGE"
 
     zstyle -s "$context" bg_color bg_color

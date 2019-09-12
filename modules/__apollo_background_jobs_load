@@ -7,14 +7,11 @@ __apollo_background_jobs_cache_key() {
 
 __apollo_background_jobs_run() {
 
-  local -i line
-  local side mode always_show
+  local context mode always_show
 
-  line="$1"
-  side="$2"
   mode="default"
 
-  zstyle -b ":apollo:background_jobs:${mode}:${line}:${side}" always_show always_show
+  zstyle -b "${context}:${mode}" always_show always_show
 
   if [[ "${always_show}" == "yes" ]]; then
     __APOLLO_RETURN_MESSAGE="${(%):-%j}"

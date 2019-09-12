@@ -8,9 +8,9 @@ __apollo_get_module_text() {
   local cache_key cache_status
   local -a cache
 
-  module="$1"
+  line="$1"
   side="$2"
-  line="$3"
+  module="$3"
   num="$4"
 
   if [[ "$profiler" == "yes" ]]; then
@@ -18,12 +18,12 @@ __apollo_get_module_text() {
   fi
 
   if (( __APOLLO_ASYNC == 1 && ${+functions[__apollo_${module}_always_async]} )); then
-    async_job apollo_async_helper "__apollo_${module}_always_async" "$line" "$side"
+    async_job apollo_async_helper "__apollo_${module}_always_async" ":apollo:${line}:${side}:${module}"
   fi
 
   if ((${+functions[__apollo_${module}_cache_key]})); then
     "__apollo_${module}_cache_key";
-    cache_key="${side}-${line}-${num}-${__APOLLO_RETURN_MESSAGE}"
+    cache_key="${line}-${side}-${num}-${__APOLLO_RETURN_MESSAGE}"
     cache=("${(s.\0.)__APOLLO_MODULE_CACHE["${cache_key}"]}")
   fi
 
@@ -35,10 +35,10 @@ __apollo_get_module_text() {
   else
 
     if (( __APOLLO_ASYNC == 1 && ${+functions[__apollo_${module}_async]} )); then
-      async_job apollo_async_helper "__apollo_${module}_async" "$line" "$side"
+      async_job apollo_async_helper "__apollo_${module}_async" ":apollo:${line}:${side}:${module}"
     fi
 
-    __apollo_run_module "$module" "$line" "$side" "$num" "$cache_key"
+    __apollo_run_module "$line" "$side" "$module" "$num" "$cache_key"
     cache_status="MISS"
 
   fi

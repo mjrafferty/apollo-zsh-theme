@@ -34,7 +34,7 @@ __apollo_decorate_prompt() {
 
       if (( __APOLLO_MODULE_HAS_LENGTH[$num] > 0 )); then
 
-        context=":apollo:${module}:${__APOLLO_MODULE_MODE[$module]:-default}:${line}:left"
+        context=":apollo:${line}:left:${module}:${__APOLLO_MODULE_MODE[$module]:-default}"
 
         if [[ -n "$first_module" ]]; then
 
@@ -81,7 +81,7 @@ __apollo_decorate_prompt() {
 
       if (( __APOLLO_MODULE_HAS_LENGTH[$num] > 0 )); then
 
-        context=":apollo:${module}:${__APOLLO_MODULE_MODE[$module]:-default}:${line}:right"
+        context=":apollo:${line}:right:${module}:${__APOLLO_MODULE_MODE[$module]:-default}"
 
         if [[ -n "$first_module" ]]; then
 

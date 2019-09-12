@@ -9,12 +9,11 @@ __apollo_dir_cache_key() {
 
 __apollo_dir_run() {
 
-  local -i line last_count
-  local side mode method absolute dir sep output element shorten_length
+  local -i  last_count
+  local context mode method absolute dir sep output element shorten_length
   local -a split_dir last_style element_style short_style
 
-  line="$1"
-  side="$2"
+  context="$1"
   mode="default"
 
   if [[ ! -w "$PWD" ]]; then
@@ -22,12 +21,12 @@ __apollo_dir_run() {
     __apollo_set_mode dir "readonly"
   fi
 
-  zstyle -b ":apollo:dir:${mode}:${line}:${side}" absolute absolute
-  zstyle -s ":apollo:dir:${mode}:${line}:${side}" last_count last_count
-  zstyle -s ":apollo:dir:${mode}:${line}:${side}" shorten_length shorten_length
-  zstyle -s ":apollo:dir:${mode}:${line}:${side}" shorten_string shorten_string
+  zstyle -b "${context}:${mode}" absolute absolute
+  zstyle -s "${context}:${mode}" last_count last_count
+  zstyle -s "${context}:${mode}" shorten_length shorten_length
+  zstyle -s "${context}:${mode}" shorten_string shorten_string
 
-  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:sep"
+  __apollo_set_style "${context}:${mode}:sep"
   sep="${__APOLLO_RETURN_MESSAGE}"
 
   if [[ "$absolute" == "yes" ]]; then
@@ -57,13 +56,13 @@ __apollo_dir_run() {
     fi
 
   fi
-  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:sep"
+  __apollo_set_style "${context}:${mode}:sep"
   sep="${__APOLLO_RETURN_MESSAGE}"
 
-  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:element" --dynamic
+  __apollo_set_style "${context}:${mode}:element" --dynamic
   element_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
-  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:shortened" --dynamic
+  __apollo_set_style "${context}:${mode}:shortened" --dynamic
   short_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
   split_dir=("${(s:/:)dir}")
@@ -87,7 +86,7 @@ __apollo_dir_run() {
 
   done
 
-  __apollo_set_style ":apollo:dir:${mode}:${line}:${side}:last" --dynamic
+  __apollo_set_style "${context}:${mode}:last" --dynamic
   last_style=("${(s.\0.)__APOLLO_RETURN_MESSAGE}")
 
   output+="${last_style[1]}${split_dir[element]}${last_style[2]}"
@@ -99,13 +98,13 @@ __apollo_dir_run() {
 local bookmark pattern bookmark_name
 local -a bookmarks bookmark_patterns split_pattern
 
-zstyle -a ":apollo:dir:${mode}:${line}:${side}" bookmarks bookmarks
+zstyle -a "${context}:${mode}" bookmarks bookmarks
 
 for bookmark in "${bookmarks[@]}"; do
   hash -d "${bookmark}" 2> /dev/null
 done
 
-zstyle -a ":apollo:dir:${mode}:${line}:${side}" bookmark_patterns bookmark_patterns
+zstyle -a "${context}:${mode}" bookmark_patterns bookmark_patterns
 
 for pattern in "${bookmark_patterns[@]}"; do
 
