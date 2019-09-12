@@ -13,8 +13,8 @@ __apollo_date_run() {
   side="$2"
   mode="default"
 
-	local -a elements
-  local format verbose
+	local -a elements misc_style
+  local return_string verbose
 
   zstyle -a ":apollo:date:${mode}:${line}:${side}" elements elements
 
@@ -27,7 +27,7 @@ __apollo_date_run() {
         else
           __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%a}"
         fi
-        format+="${__APOLLO_RETURN_MESSAGE}"
+        return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "day")
         zstyle -b ":apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
@@ -36,7 +36,7 @@ __apollo_date_run() {
         else
           __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%m}"
         fi
-        format+="${__APOLLO_RETURN_MESSAGE}"
+        return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "month")
         zstyle -b ":apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
@@ -45,7 +45,7 @@ __apollo_date_run() {
         else
           __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%d}"
         fi
-        format+="${__APOLLO_RETURN_MESSAGE}"
+        return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "year")
         zstyle -b ":apollo:date:${mode}:${line}:${side}:${element}" verbose verbose
@@ -54,14 +54,18 @@ __apollo_date_run() {
         else
           __apollo_set_style ":apollo:date:${mode}:${line}:${side}:${element}" "%D{%y}"
         fi
-        format+="${__APOLLO_RETURN_MESSAGE}"
+        return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       *)
-        format+="${element}"
+        if [[ -z "$misc_style" ]]; then
+          __apollo_set_style ":apollo:date:${mode}:${line}:${side}:misc" --dynamic
+          misc_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        fi
+        return_string+="${misc_style[1]}${element}${misc_style[2]}"
         ;;
     esac
   done
 
-  __APOLLO_RETURN_MESSAGE="${format}"
+  __APOLLO_RETURN_MESSAGE="${return_string}"
 
 }

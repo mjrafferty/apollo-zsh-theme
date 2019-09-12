@@ -65,7 +65,12 @@ __apollo_set_style() {
     esac
 
     __apollo_format_string "${context}" "${text}" "${fg_color}" "${bg_color}"
-    text="${left_label}${__APOLLO_RETURN_MESSAGE}${right_label}"
+
+    if [[ -z "$__APOLLO_RETURN_MESSAGE" ]]; then
+      text=""
+    else
+      text="${left_label}${__APOLLO_RETURN_MESSAGE}${right_label}"
+    fi
 
     __APOLLO_STYLE_CACHE[$context]="${text}"
     __APOLLO_RETURN_MESSAGE="${text}"

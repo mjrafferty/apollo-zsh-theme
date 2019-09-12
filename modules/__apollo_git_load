@@ -18,7 +18,7 @@ __apollo_git_always_async() {
 
   local line="$1"
   local side="$2"
-  local -a elements
+  local -a elements misc_style element_style
   local return_string element item hash_length ignore_submodules
   local repo_path git_dir commit_hash local_branch remote_branch tag
   local -i modified untracked stash_count ahead behind
@@ -84,12 +84,18 @@ __apollo_git_always_async() {
             done
             ;;
         esac
-        __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" --dynamic
-        element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
-        return_string+="${element_style[1]}${(P)element}${element_style[2]}"
+        if [[ -n "${(P)element}" ]]; then
+          __apollo_set_style ":apollo:git:${mode}:${line}:${side}:${element}" --dynamic
+          element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+          return_string+="${element_style[1]}${(P)element}${element_style[2]}"
+        fi
         ;;
       *)
-        return_string+="${element}"
+        if [[ -z "$misc_style" ]]; then
+          __apollo_set_style ":apollo:git:${mode}:${line}:${side}:misc" --dynamic
+          misc_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        fi
+        return_string+="${misc_style[1]}${element}${misc_style[2]}"
         ;;
     esac
   done
@@ -122,38 +128,38 @@ __apollo_git_init_async() {
       for tmp in "${gitdir}/rebase-apply" "${gitdir}/rebase" "${gitdir}/../.dotest" ; do
         if [[ -d ${tmp} ]] ; then
           if   [[ -f "${tmp}/rebasing" ]] ; then
-            gitaction="rebase"
+            echo "rebase"
           elif [[ -f "${tmp}/applying" ]] ; then
-            gitaction="am"
+            echo "am"
           else
-            gitaction="am/rebase"
+            echo "am/rebase"
           fi
           return 0
         fi
       done
 
       for tmp in "${gitdir}/rebase-merge/interactive" "${gitdir}/.dotest-merge/interactive" ; do
-        [[ -f "${tmp}" ]] && gitaction="rebase-i" && return 0
+        [[ -f "${tmp}" ]] && echo "rebase-i" && return 0
       done
 
       for tmp in "${gitdir}/rebase-merge" "${gitdir}/.dotest-merge" ; do
-        [[ -d "${tmp}" ]] && gitaction="rebase-m" && return 0
+        [[ -d "${tmp}" ]] && echo "rebase-m" && return 0
       done
 
-      [[ -f "${gitdir}/MERGE_HEAD" ]] && gitaction="merge" && return 0
+      [[ -f "${gitdir}/MERGE_HEAD" ]] && echo "merge" && return 0
 
-      [[ -f "${gitdir}/BISECT_LOG" ]] && gitaction="bisect" && return 0
+      [[ -f "${gitdir}/BISECT_LOG" ]] && echo "bisect" && return 0
 
       if [[ -f "${gitdir}/CHERRY_PICK_HEAD" ]] ; then
         if [[ -d "${gitdir}/sequencer" ]] ; then
-          gitaction=cherry-seq
+          echo "cherry-seq"
         else
-          gitaction=cherry
+          echo "cherry"
         fi
         return 0
       fi
 
-      [[ -d "${gitdir}/sequencer" ]] && gitaction="cherry-or-revert" && return 0
+      [[ -d "${gitdir}/sequencer" ]] && echo "cherry-or-revert" && return 0
 
       return 1
   }

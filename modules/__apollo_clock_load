@@ -13,8 +13,8 @@ __apollo_clock_run() {
   side="$2"
   mode="default"
 
-	local -a elements
-  local format verbose
+	local -a elements misc_style
+  local return_string verbose
 
   zstyle -a ":apollo:clock:${mode}:${line}:${side}" elements elements
 
@@ -27,7 +27,7 @@ __apollo_clock_run() {
         else
           __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%I}"
         fi
-        format+="${__APOLLO_RETURN_MESSAGE}"
+        return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "24hour")
         zstyle -b ":apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
@@ -36,15 +36,15 @@ __apollo_clock_run() {
         else
           __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%H}"
         fi
-        format+="${__APOLLO_RETURN_MESSAGE}"
+        return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "min")
         __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%M}"
-        format+="${__APOLLO_RETURN_MESSAGE}"
+        return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "sec")
         __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%S}"
-        format+="${__APOLLO_RETURN_MESSAGE}"
+        return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "ampm")
         zstyle -b ":apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
@@ -53,7 +53,7 @@ __apollo_clock_run() {
         else
           __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%P}"
         fi
-        format+="${__APOLLO_RETURN_MESSAGE}"
+        return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "timezone")
         zstyle -b ":apollo:clock:${mode}:${line}:${side}:${element}" verbose verbose
@@ -62,15 +62,19 @@ __apollo_clock_run() {
         else
           __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:${element}" "%D{%z}"
         fi
-        format+="${__APOLLO_RETURN_MESSAGE}"
+        return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       *)
-        format+="${element}"
+        if [[ -z "$misc_style" ]]; then
+          __apollo_set_style ":apollo:clock:${mode}:${line}:${side}:misc" --dynamic
+          misc_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        fi
+        return_string+="${misc_style[1]}${element}${misc_style[2]}"
         ;;
     esac
   done
 
-  __APOLLO_RETURN_MESSAGE="${format}"
+  __APOLLO_RETURN_MESSAGE="${return_string}"
 
 }
 
