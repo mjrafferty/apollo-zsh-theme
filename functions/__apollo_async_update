@@ -58,11 +58,7 @@ __apollo_async_update() {
       esac
 
       if ((line_after != line_before )); then
-
-        if zstyle -t ':apollo:core:links' enabled "true" "yes" "1" "on" ; then
-          __apollo_add_links "${#__APOLLO_PROMPT_LINES}"
-        fi
-
+        __apollo_update_prompts
       fi
 
     fi
