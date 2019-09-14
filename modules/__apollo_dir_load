@@ -98,13 +98,13 @@ __apollo_dir_run() {
 local bookmark pattern bookmark_name
 local -a bookmarks bookmark_patterns split_pattern
 
-zstyle -a "${context}:${mode}" bookmarks bookmarks
+zstyle -a ":apollo:*:*:dir:*" bookmarks bookmarks
 
 for bookmark in "${bookmarks[@]}"; do
   hash -d "${bookmark}" 2> /dev/null
 done
 
-zstyle -a "${context}:${mode}" bookmark_patterns bookmark_patterns
+zstyle -a ":apollo:*:*:dir:*" bookmark_patterns bookmark_patterns
 
 for pattern in "${bookmark_patterns[@]}"; do
 
