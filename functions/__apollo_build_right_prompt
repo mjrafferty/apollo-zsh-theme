@@ -5,8 +5,8 @@ __apollo_build_right_prompt(){
   local current_module line_index
   local -a left_modules right_modules
 
-  zstyle -a ':apollo:core:modules:left' modules left_modules
-  zstyle -a ':apollo:core:modules:right' modules right_modules
+  zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:core:modules:left" modules left_modules
+  zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:core:modules:right" modules right_modules
 
   line_index="$1"
 

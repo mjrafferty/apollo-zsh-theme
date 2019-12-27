@@ -1,48 +1,51 @@
 # vim:ft=zsh
 
-## Necessary global variables
+## Cache types
 typeset -gA __APOLLO_MODULE_CACHE
 typeset -gA __APOLLO_STYLE_CACHE
 
+## Buffer data
 typeset -g	__APOLLO_BUFFER_NAME
 typeset -gi __APOLLO_BUFFER_FD
 
+## Async data
 typeset -gi __APOLLO_ASYNC
 typeset -gA __APOLLO_ASYNC_RESULTS
 typeset -gA __APOLLO_ASYNC_TIMES
 
-typeset -g  __APOLLO_PROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
-typeset -g  __APOLLO_RPROMPT_COPY # To prevent outside scripts messing with PS1/PROMPT
-
-typeset -ga __APOLLO_MODULE_MAP
-typeset -gA __APOLLO_REVERSE_MODULE_MAP
-typeset -ga __APOLLO_LEFT_LINE_MAP
-typeset -ga __APOLLO_RIGHT_LINE_MAP
-typeset -gi __APOLLO_MODULE_INDEX=1
-
-typeset -gA __APOLLO_MODULE_MODE
-
-typeset -ga __APOLLO_PROMPT_LINES
-typeset -ga __APOLLO_MODULE_TEXT
-typeset -ga __APOLLO_LEFT_SEPARATORS
-typeset -ga __APOLLO_LEFT_BEGIN
-typeset -ga __APOLLO_LEFT_END
-typeset -ga __APOLLO_RIGHT_BEGIN
-typeset -ga __APOLLO_RIGHT_END
-typeset -ga __APOLLO_RIGHT_SEPARATORS
-
-typeset -gA __APOLLO_MODULE_HAS_LENGTH
-typeset -ga __APOLLO_PROMPT_LINE_LENGTH
-typeset -ga __APOLLO_LEFT_HAS_LENGTH
-typeset -ga __APOLLO_RIGHT_HAS_LENGTH
-
+## Utility variables
 typeset -gi __APOLLO_BREAK_CACHE_COUNTER
 typeset -gi __APOLLO_EXIT_CODE
 typeset -g  __APOLLO_PIPE_EXIT_CODES
 typeset -g  __APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
-
 typeset -gi __APOLLO_CURRENT_RPROMPT=1
 
+## Decorator variables
+typeset -ga __APOLLO_LEFT_BEGIN
+typeset -ga __APOLLO_LEFT_END
+typeset -ga __APOLLO_LEFT_SEPARATORS
+typeset -ga __APOLLO_RIGHT_BEGIN
+typeset -ga __APOLLO_RIGHT_END
+typeset -ga __APOLLO_RIGHT_SEPARATORS
+
+## Possibly need to modify to be prompt theme specific
+typeset -ga __APOLLO_MODULE_MAP
+typeset -gA __APOLLO_REVERSE_MODULE_MAP
+typeset -gA __APOLLO_MODULE_MODE
+typeset -gA __APOLLO_MODULE_HAS_LENGTH
+typeset -ga __APOLLO_MODULE_TEXT
+typeset -gi __APOLLO_MODULE_INDEX=1
+
+## Possibly prompt theme specific
+typeset -g  __APOLLO_PROMPT_THEME="main"
+typeset -g  __APOLLO_PROMPT_COPY
+typeset -g  __APOLLO_RPROMPT_COPY
+typeset -ga __APOLLO_LEFT_LINE_MAP
+typeset -ga __APOLLO_RIGHT_LINE_MAP
+typeset -ga __APOLLO_PROMPT_LINES
+typeset -ga __APOLLO_PROMPT_LINE_LENGTH
+typeset -ga __APOLLO_LEFT_HAS_LENGTH
+typeset -ga __APOLLO_RIGHT_HAS_LENGTH
 
 __apollo_cleanup() {
 
@@ -65,16 +68,23 @@ __apollo_chpwd() {
   fi
 }
 
+## Update buffered prompt when executing command
+zle-line-finish() {
+  PROMPT=">>> "
+  zle && zle .reset-prompt
+}
+zle -N zle-line-finish
+
 prompt_apollo_setup() {
 
-	local module conf
-	local -a left_modules right_modules
+	local conf
 
 	setopt prompt_subst prompt_percent
   prompt_opts=(subst percent)
 
 	zmodload zsh/datetime
 
+  ## Set fpath ##
   if [[ -n "${__APOLLO_INSTALL_DIR}" ]]; then
 
     if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/functions"]} -gt ${#fpath} ]]; then
@@ -90,57 +100,14 @@ prompt_apollo_setup() {
 
   fi
 
+  ## Load functions ##
 	autoload -Uz +X __apollo_add_links __apollo_decorate_prompt __apollo_get_module_text \
 		__apollo_precmd __apollo_run_module __apollo_add_newline __apollo_build_right_prompt \
 		__apollo_preexec __apollo_build_left_prompt __apollo_set_colors __apollo_update_prompts \
 		__apollo_async_update __apollo_format_string __apollo_style_module __apollo_set_style \
-    __apollo_load_utilities __apollo_lib_async_load __apollo_async_callback
+    __apollo_load_utilities __apollo_lib_async_load __apollo_async_callback __apollo_init_theme
 
   __apollo_load_utilities;
-
-	zstyle -a ':apollo:core:modules:left' modules left_modules
-	zstyle -a ':apollo:core:modules:right' modules right_modules
-
-	# Load enabled modules
-	for module in "${left_modules[@]}" "${right_modules[@]}"; do
-
-		if [[ "$module" == "newline" || "$module" == "ruler" ]]; then
-			continue;
-		fi
-
-    autoload -Uz +X "__apollo_${module}_load" \
-      && "__apollo_${module}_load"
-
-    if ((${+functions[__apollo_${module}_async]})); then
-      __APOLLO_ASYNC_MODULES+=(${module})
-      __APOLLO_ASYNC=1
-    fi
-
-	done
-
-	PROMPT=""
-	RPROMPT=""
-
-  if ((__APOLLO_ASYNC == 1)); then
-
-    __apollo_lib_async_load
-    async_start_worker apollo_async_helper -u -n
-
-    for module in "${left_modules[@]}" "${right_modules[@]}"; do
-      if ((${+functions[__apollo_${module}_init_async]})); then
-        async_worker_eval apollo_async_helper "__apollo_${module}_init_async"
-      fi
-    done
-
-  fi
-
-	__apollo_build_left_prompt
-	__apollo_build_right_prompt "${#__APOLLO_PROMPT_LINES}"
-
-  RPROMPT="${__APOLLO_RETURN_MESSAGE}\${__APOLLO_RIGHT_LINK[${#__APOLLO_PROMPT_LINES}]}"
-
-	__APOLLO_PROMPT_COPY="${PROMPT}"
-	__APOLLO_RPROMPT_COPY="$RPROMPT"
 
 	autoload -Uz add-zsh-hook
 	add-zsh-hook precmd __apollo_precmd
@@ -153,8 +120,10 @@ prompt_apollo_setup() {
   mkfifo "${__APOLLO_BUFFER_NAME}"
   exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
 
-	unfunction __apollo_add_newline __apollo_build_right_prompt __apollo_build_left_prompt __apollo_load_utilities
-	unset __APOLLO_CURRENT_RPROMPT __APOLLO_INSTALL_DIR __APOLLO_MODULE_INDEX
+  PROMPT=""
+  RPROMPT=""
+
+  __apollo_init_theme;
 
 }
 

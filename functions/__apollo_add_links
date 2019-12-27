@@ -270,13 +270,13 @@ typeset -ga __APOLLO_RIGHT_LINK
     esac
 
     if [[ -n "$left_link" ]]; then
-      __apollo_set_style ":apollo:core:links:${line}:left:${left_link}"
+      __apollo_set_style ":apollo:${__APOLLO_PROMPT_THEME}:core:links:${line}:left:${left_link}"
       __APOLLO_LEFT_LINK[line]="${__APOLLO_RETURN_MESSAGE}";
     else
       __APOLLO_LEFT_LINK[line]="";
     fi
     if [[ -n "$right_link" ]]; then
-      __apollo_set_style ":apollo:core:links:${line}:right:${right_link}"
+      __apollo_set_style ":apollo:${__APOLLO_PROMPT_THEME}:core:links:${line}:right:${right_link}"
       __APOLLO_RIGHT_LINK[line]="${__APOLLO_RETURN_MESSAGE}";
     else
       __APOLLO_RIGHT_LINK[line]="";

@@ -78,7 +78,7 @@ __apollo_clock_run() {
 
 local live
 
-zstyle -b ':apollo:clock:*:*:*' live live
+zstyle -b ":apollo:${__APOLLO_PROMPT_THEME}:clock:*:*:*" live live
 
 if [[ "$live" == "yes" ]]; then
   TMOUT=1
