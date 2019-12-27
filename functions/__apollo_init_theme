@@ -1,0 +1,50 @@
+# vim:ft=zsh
+
+
+__apollo_init_theme() {
+
+  local module
+	local -a left_modules right_modules
+
+	zstyle -a ':apollo:core:modules:left' modules left_modules
+	zstyle -a ':apollo:core:modules:right' modules right_modules
+
+	# Load enabled modules
+	for module in "${left_modules[@]}" "${right_modules[@]}"; do
+
+		if [[ "$module" == "newline" || "$module" == "ruler" ]]; then
+			continue;
+		fi
+
+    autoload -Uz +X "__apollo_${module}_load" \
+      && "__apollo_${module}_load"
+
+    if ((${+functions[__apollo_${module}_async]})); then
+      __APOLLO_ASYNC_MODULES+=(${module})
+      __APOLLO_ASYNC=1
+    fi
+
+	done
+
+  if ((__APOLLO_ASYNC == 1)); then
+
+    __apollo_lib_async_load
+    async_start_worker apollo_async_helper -u -n
+
+    for module in "${left_modules[@]}" "${right_modules[@]}"; do
+      if ((${+functions[__apollo_${module}_init_async]})); then
+        async_worker_eval apollo_async_helper "__apollo_${module}_init_async"
+      fi
+    done
+
+  fi
+
+	__apollo_build_left_prompt
+	__apollo_build_right_prompt "${#__APOLLO_PROMPT_LINES}"
+
+  RPROMPT="${__APOLLO_RETURN_MESSAGE}\${__APOLLO_RIGHT_LINK[${#__APOLLO_PROMPT_LINES}]}"
+
+	__APOLLO_PROMPT_COPY="${PROMPT}"
+	__APOLLO_RPROMPT_COPY="$RPROMPT"
+
+}
