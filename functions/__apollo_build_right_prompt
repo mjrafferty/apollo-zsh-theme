@@ -12,13 +12,13 @@ __apollo_build_right_prompt(){
 
   __APOLLO_RETURN_MESSAGE="\${__APOLLO_RIGHT_BEGIN[$line_index]}"
 
-  while ((__APOLLO_CURRENT_RPROMPT <= ${#right_modules[@]} )); do
+  while ((__APOLLO_RPROMPT_MODULE_INDEX <= ${#right_modules[@]} )); do
 
-    current_module="${right_modules[__APOLLO_CURRENT_RPROMPT]}"
+    current_module="${right_modules[__APOLLO_RPROMPT_MODULE_INDEX]}"
 
     case "${current_module}" in
       "newline")
-        ((__APOLLO_CURRENT_RPROMPT++));
+        ((__APOLLO_RPROMPT_MODULE_INDEX++));
         break;
         ;;
       *)
@@ -29,7 +29,7 @@ __apollo_build_right_prompt(){
         __APOLLO_RETURN_MESSAGE+="\${__APOLLO_RIGHT_SEPARATORS[$__APOLLO_MODULE_INDEX]}\${(e)__APOLLO_MODULE_TEXT[$__APOLLO_MODULE_INDEX]}"
         __APOLLO_RIGHT_HAS_LENGTH[line_index]+=" + \$__APOLLO_MODULE_HAS_LENGTH[$__APOLLO_MODULE_INDEX]"
         ((__APOLLO_MODULE_INDEX++));
-        ((__APOLLO_CURRENT_RPROMPT++));
+        ((__APOLLO_RPROMPT_MODULE_INDEX++));
         ;;
     esac
 

@@ -8,7 +8,8 @@ __apollo_build_left_prompt() {
 
   zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:core:modules:left" modules left_modules
 
-  line_index=1;
+  line_index=$(($#__APOLLO_PROMPT_LINES + 1));
+  __APOLLO_PROMPT_THEME_START[$__APOLLO_PROMPT_THEME]="$line_index"
 
   __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_BEGIN[$line_index]}"
 
@@ -22,6 +23,18 @@ __apollo_build_left_prompt() {
 
         __apollo_add_newline "${current_module}" "${line_index}"
         ((line_index++));
+
+        # Initialize variables for new line
+        __APOLLO_LEFT_LINE_MAP[line_index]=""
+        __APOLLO_RIGHT_LINE_MAP[line_index]=""
+        __APOLLO_LEFT_HAS_LENGTH[line_index]=""
+        __APOLLO_RIGHT_HAS_LENGTH[line_index]=""
+        __APOLLO_LEFT_BEGIN[line_index]=""
+        __APOLLO_LEFT_END[line_index]=""
+        __APOLLO_RIGHT_BEGIN[line_index]=""
+        __APOLLO_RIGHT_END[line_index]=""
+        __APOLLO_LEFT_LINK[line_index]=""
+        __APOLLO_RIGHT_LINK[line_index]=""
 
         __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_BEGIN[$line_index]}"
         ;;
@@ -38,7 +51,7 @@ __apollo_build_left_prompt() {
 
   done
 
-  for ((line=1;line<=line_index;line++)); do
+  for ((line=__APOLLO_PROMPT_THEME_START[$__APOLLO_PROMPT_THEME];line<=line_index;line++)); do
 
     if ((line == line_index)); then
       __APOLLO_PROMPT_LINES[$line]="\${__APOLLO_LEFT_LINK[$line]}${__APOLLO_PROMPT_LINES[$line]}"
@@ -46,19 +59,21 @@ __apollo_build_left_prompt() {
       __APOLLO_PROMPT_LINES[$line]="\${__APOLLO_LEFT_LINK[$line]}${__APOLLO_PROMPT_LINES[$line]}\${__APOLLO_RIGHT_LINK[$line]}"
     fi
 
-    PROMPT+="\${(e)__APOLLO_PROMPT_LINES[$line]}"
+    __APOLLO_FINISHED_PROMPTS[$__APOLLO_PROMPT_THEME]+="\${(e)__APOLLO_PROMPT_LINES[$line]}"
 
     if ((line < line_index)); then
-      PROMPT+=$'\n'
+      __APOLLO_FINISHED_PROMPTS[$__APOLLO_PROMPT_THEME]+=$'\n'
     fi
 
   done
+
+  __APOLLO_PROMPT_THEME_END[$__APOLLO_PROMPT_THEME]="$line_index"
 
   __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_END[$line_index]}"
 
   __apollo_set_style ":apollo:${__APOLLO_PROMPT_THEME}:core:prompt:end"
 
-  PROMPT+="$__APOLLO_RETURN_MESSAGE%{%f%k%}"
+  __APOLLO_FINISHED_PROMPTS[$__APOLLO_PROMPT_THEME]+="$__APOLLO_RETURN_MESSAGE%{%f%k%}"
 
 }
 

@@ -18,19 +18,20 @@ typeset -gi __APOLLO_BREAK_CACHE_COUNTER
 typeset -gi __APOLLO_EXIT_CODE
 typeset -g  __APOLLO_PIPE_EXIT_CODES
 typeset -g  __APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
-typeset -gi __APOLLO_CURRENT_RPROMPT=1
 
 ## Decorator variables
-typeset -ga __APOLLO_LEFT_BEGIN
-typeset -ga __APOLLO_LEFT_END
 typeset -ga __APOLLO_LEFT_SEPARATORS
-typeset -ga __APOLLO_RIGHT_BEGIN
-typeset -ga __APOLLO_RIGHT_END
 typeset -ga __APOLLO_RIGHT_SEPARATORS
+typeset -ga __APOLLO_LEFT_BEGIN
+typeset -ga __APOLLO_RIGHT_BEGIN
+typeset -ga __APOLLO_LEFT_END
+typeset -ga __APOLLO_RIGHT_END
+typeset -ga __APOLLO_LEFT_LINK
+typeset -ga __APOLLO_RIGHT_LINK
 
 ## Possibly need to modify to be prompt theme specific
 typeset -ga __APOLLO_MODULE_MAP
-typeset -gA __APOLLO_REVERSE_MODULE_MAP
+typeset -gA __APOLLO_REVERSE_MODULE_MAP # Needs adjusting to include theme
 typeset -gA __APOLLO_MODULE_MODE
 typeset -gA __APOLLO_MODULE_HAS_LENGTH
 typeset -ga __APOLLO_MODULE_TEXT
@@ -38,14 +39,19 @@ typeset -gi __APOLLO_MODULE_INDEX=1
 
 ## Possibly prompt theme specific
 typeset -g  __APOLLO_PROMPT_THEME="main"
-typeset -g  __APOLLO_PROMPT_COPY
-typeset -g  __APOLLO_RPROMPT_COPY
-typeset -ga __APOLLO_LEFT_LINE_MAP
-typeset -ga __APOLLO_RIGHT_LINE_MAP
+typeset -gA __APOLLO_PROMPT_THEME_START
+typeset -gA __APOLLO_PROMPT_THEME_END
+
 typeset -ga __APOLLO_PROMPT_LINES
 typeset -ga __APOLLO_PROMPT_LINE_LENGTH
+typeset -ga __APOLLO_LEFT_LINE_MAP
+typeset -ga __APOLLO_RIGHT_LINE_MAP
 typeset -ga __APOLLO_LEFT_HAS_LENGTH
 typeset -ga __APOLLO_RIGHT_HAS_LENGTH
+
+typeset -gA __APOLLO_FINISHED_PROMPTS
+typeset -gA __APOLLO_FINISHED_RPROMPTS
+typeset -gA __APOLLO_MODULES_LOADED
 
 __apollo_cleanup() {
 
@@ -70,8 +76,16 @@ __apollo_chpwd() {
 
 ## Update buffered prompt when executing command
 zle-line-finish() {
-  PROMPT=">>> "
+
+  local current_theme="$__APOLLO_PROMPT_THEME"
+
+  __APOLLO_PROMPT_THEME="test"
+  __apollo_precmd
+
   zle && zle .reset-prompt
+
+  __APOLLO_PROMPT_THEME="$current_theme"
+
 }
 zle -N zle-line-finish
 
