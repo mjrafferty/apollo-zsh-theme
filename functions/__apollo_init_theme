@@ -1,52 +1,49 @@
 # vim:ft=zsh
 
-
 __apollo_init_theme() {
 
   local module theme
-	local -a left_modules right_modules
+  local -a left_modules right_modules
 
   theme="${__APOLLO_PROMPT_THEME}"
 
-	zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:core:modules:left" modules left_modules
-	zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:core:modules:right" modules right_modules
+  zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:core:modules:left" modules left_modules
+  zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:core:modules:right" modules right_modules
 
-	# Load enabled modules
-	for module in "${left_modules[@]}" "${right_modules[@]}"; do
+  # Load enabled modules
+  for module in "${left_modules[@]}" "${right_modules[@]}"; do
 
-		if [[ "$module" == "newline" || "$module" == "ruler" || "${__APOLLO_MODULES_LOADED[$module]}" == 1 ]]; then
-			continue;
-		fi
+    if [[ "$module" == "newline" || "$module" == "ruler" || "${__APOLLO_MODULES_LOADED[$module]}" == 1 ]]; then
+      continue;
+    fi
 
     autoload -Uz +X "__apollo_${module}_load" \
       && "__apollo_${module}_load"
 
     if (( ${+functions[__apollo_${module}_async]} || ${+functions[__apollo_${module}_always_async]} )); then
-      __APOLLO_ASYNC=1
-    else
-      __APOLLO_MODULES_LOADED[$module]=1
-    fi
 
-	done
+      if ((__APOLLO_ASYNC != 1)); then
+        __apollo_lib_async_load
+        async_start_worker apollo_async_helper -u -n
+        __APOLLO_ASYNC=1
+      else
+        async_worker_eval apollo_async_helper "autoload -Uz +X __apollo_${module}_load && __apollo_${module}_load"
+      fi
 
-  if ((__APOLLO_ASYNC == 1)); then
-
-    __apollo_lib_async_load
-    async_start_worker apollo_async_helper -u -n
-
-    for module in "${left_modules[@]}" "${right_modules[@]}"; do
-      if ((${+functions[__apollo_${module}_init_async]})) && [[ "${__APOLLO_MODULES_LOADED[$module]}" != 1 ]]; then
+      if ((${+functions[__apollo_${module}_init_async]})); then
         async_worker_eval apollo_async_helper "__apollo_${module}_init_async"
       fi
-      __APOLLO_MODULES_LOADED[$module]=1
-    done
 
-  fi
+    fi
+
+    __APOLLO_MODULES_LOADED[$module]=1
+
+  done
 
   typeset -gi __APOLLO_RPROMPT_MODULE_INDEX=1
 
-	__apollo_build_left_prompt
-	__apollo_build_right_prompt "${__APOLLO_PROMPT_THEME_END[$__APOLLO_PROMPT_THEME]}"
+  __apollo_build_left_prompt
+  __apollo_build_right_prompt "${__APOLLO_PROMPT_THEME_END[$__APOLLO_PROMPT_THEME]}"
 
   unset __APOLLO_RPROMPT_MODULE_INDEX
 

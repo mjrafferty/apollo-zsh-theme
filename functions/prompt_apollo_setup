@@ -53,42 +53,6 @@ typeset -gA __APOLLO_FINISHED_PROMPTS
 typeset -gA __APOLLO_FINISHED_RPROMPTS
 typeset -gA __APOLLO_MODULES_LOADED
 
-__apollo_cleanup() {
-
-  exec {__APOLLO_BUFFER_FD}>&-
-  rm "$__APOLLO_BUFFER_NAME"
-
-  if (( __APOLLO_ASYNC == 1 )); then
-    async_stop_worker apollo_async_helper
-  fi
-
-}
-
-__apollo_chpwd() {
-
-  ## Seeing bug $PWD not always updating. Hoping this will work around it
-  PWD="${(%):-%d}"
-
-  if ((__APOLLO_ASYNC == 1)); then
-    async_worker_eval apollo_async_helper "cd $PWD"
-  fi
-}
-
-## Update buffered prompt when executing command
-zle-line-finish() {
-
-  local current_theme="$__APOLLO_PROMPT_THEME"
-
-  __APOLLO_PROMPT_THEME="test"
-  __apollo_precmd
-
-  zle && zle .reset-prompt
-
-  __APOLLO_PROMPT_THEME="$current_theme"
-
-}
-zle -N zle-line-finish
-
 prompt_apollo_setup() {
 
 	local conf
@@ -119,25 +83,27 @@ prompt_apollo_setup() {
 		__apollo_precmd __apollo_run_module __apollo_add_newline __apollo_build_right_prompt \
 		__apollo_preexec __apollo_build_left_prompt __apollo_set_colors __apollo_update_prompts \
 		__apollo_async_update __apollo_format_string __apollo_style_module __apollo_set_style \
-    __apollo_load_utilities __apollo_lib_async_load __apollo_async_callback __apollo_init_theme
+    __apollo_load_utilities __apollo_lib_async_load __apollo_async_callback __apollo_init_theme \
+    __apollo_run_prompt
 
   __apollo_load_utilities;
+
+  PROMPT=""
+  RPROMPT=""
+
+  __apollo_init_theme;
 
 	autoload -Uz add-zsh-hook
 	add-zsh-hook precmd __apollo_precmd
 	add-zsh-hook preexec __apollo_preexec
 	add-zsh-hook chpwd __apollo_chpwd
 	add-zsh-hook zshexit __apollo_cleanup
+  zle -N zle-line-finish
 
 	# Open a buffer for modules to use
   __APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
   mkfifo "${__APOLLO_BUFFER_NAME}"
   exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
-
-  PROMPT=""
-  RPROMPT=""
-
-  __apollo_init_theme;
 
 }
 

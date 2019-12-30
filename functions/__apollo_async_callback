@@ -18,6 +18,8 @@ __apollo_async_callback() {
     *_async)
       module="${job_name[10,-7]}"
       ;;
+    "[async/eval]")
+      return;
   esac
 
   __APOLLO_ASYNC_RESULTS[$module]="$stdout"

@@ -1,28 +1,10 @@
 # vim:ft=zsh
 
-typeset -g __APOLLO_BYTE_SUFFIX
-__APOLLO_BYTE_SUFFIX=('B' 'K' 'M' 'G' 'T' 'P' 'E' 'Z' 'Y')
-
 __apollo_get_display_width(){
 
   local format_regex='%{*%}'
 
   __APOLLO_RETURN_MESSAGE="${(m)#${(S%)1//$~format_regex/}}"
-
-}
-
-__apollo_human_readable_bytes() {
-
-  local suf
-  typeset -F 2 n
-  n=$1
-
-  for suf in $__APOLLO_BYTE_SUFFIX; do
-    (( n < 100 )) && break
-    (( n /= 1024 ))
-  done
-
-  __APOLLO_RETURN_MESSAGE=$n$suf
 
 }
 
@@ -32,88 +14,38 @@ __apollo_set_mode() {
 
 }
 
-__apollo_parse_ip() {
+__apollo_cleanup() {
 
-  local desiredInterface rawInterfaces pattern relevantInterfaces newline interfaceName interface ipFound
-  local -a interfaces relevantInterfaces interfaceStates
+  exec {__APOLLO_BUFFER_FD}>&-
+  rm "$__APOLLO_BUFFER_NAME"
 
-  desiredInterface=${1:-'^[^ ]+'}
-
-  if [[ $OS == OSX ]]; then
-
-    if [[ ! -x /sbin/ifconfig ]]; then
-      return
-    fi
-
-    rawInterfaces="$(/sbin/ifconfig -l 2>/dev/null)";
-
-    if [[ -z $rawInterfaces ]]; then
-      return
-    fi
-
-    interfaces=(${(A)=rawInterfaces})
-    pattern="${desiredInterface}[^ ]?"
-
-    for rawInterface in $interfaces; do
-      if [[ "$rawInterface" =~ $pattern ]]; then
-        relevantInterfaces+=$MATCH
-      fi
-    done
-
-    newline=$'\n'
-
-    echo "${relevantInterfaces[*]}"
-    for interfaceName in $relevantInterfaces; do
-
-      interface="$(/sbin/ifconfig $interfaceName 2>/dev/null)" || continue
-
-      if [[ "${interface}" =~ "lo[0-9]*" ]]; then
-        continue
-      fi
-
-      if [[ "${interface//${newline}/}" =~ "<([^>]*)>(.*)inet[ ]+([^ ]*)" ]]; then
-
-        ipFound="${match[3]}"
-        interfaceStates=(${(s.\0.)match[1]})
-
-        if (( ${interfaceStates[(I)UP]} )); then
-          __APOLLO_RETURN_MESSAGE=$ipFound
-          return
-        fi
-
-      fi
-    done
-  else
-
-    if [[ ! -x /sbin/ip ]]; then
-      return
-    fi
-
-    interfaces=( "${(f)$(/sbin/ip -brief -4 a show 2>/dev/null)}" )
-    pattern="^${desiredInterface}[[:space:]]+UP[[:space:]]+([^/ ]+)"
-
-    for interface in "${(@)interfaces}"; do
-      if [[ "$interface" =~ $pattern ]]; then
-        __APOLLO_RETURN_MESSAGE=$match[1]
-        return
-      fi
-    done
-
+  if (( __APOLLO_ASYNC == 1 )); then
+    async_stop_worker apollo_async_helper
   fi
-
-  return 1
 
 }
 
-__apollo_read_file() {
+__apollo_chpwd() {
 
-  __APOLLO_RETURN_MESSAGE=''
+  ## Seeing bug $PWD not always updating. Hoping this will work around it
+  PWD="${(%):-%d}"
 
-  if [[ -n $1 ]]; then
-    read -r __APOLLO_RETURN_MESSAGE <$1
+  if ((__APOLLO_ASYNC == 1)); then
+    async_worker_eval apollo_async_helper "cd $PWD"
   fi
+}
 
-  [[ -n $__APOLLO_RETURN_MESSAGE ]]
+## Update buffered prompt when executing command
+zle-line-finish() {
+
+  local current_theme="$__APOLLO_PROMPT_THEME"
+
+  __APOLLO_PROMPT_THEME="test"
+  __apollo_run_prompt
+
+  zle && zle .reset-prompt
+
+  __APOLLO_PROMPT_THEME="$current_theme"
 
 }
 

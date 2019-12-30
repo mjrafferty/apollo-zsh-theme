@@ -1,0 +1,60 @@
+# vim:ft=zsh
+
+__apollo_run_prompt() {
+
+  local start startmod profiler
+	local module
+  local -a line_modules
+  local -i line num
+
+  if [[ -z "${__APOLLO_FINISHED_PROMPTS[$__APOLLO_PROMPT_THEME]}" ]]; then
+    __apollo_init_theme;
+  fi
+
+  PROMPT="${__APOLLO_FINISHED_PROMPTS[$__APOLLO_PROMPT_THEME]}"
+  RPROMPT="${__APOLLO_FINISHED_RPROMPTS[$__APOLLO_PROMPT_THEME]}"
+
+  zstyle -b ":apollo:${__APOLLO_PROMPT_THEME}:core:profiler" enabled profiler
+
+  if [[ "$profiler" == "yes" ]] ; then
+    start="$EPOCHREALTIME"
+    startmod=${EPOCHREALTIME}
+  fi
+
+  for ((line=__APOLLO_PROMPT_THEME_START[$__APOLLO_PROMPT_THEME]; line <= __APOLLO_PROMPT_THEME_END[$__APOLLO_PROMPT_THEME]; line++)); do
+
+    line_modules=(${(s.\0.)__APOLLO_RIGHT_LINE_MAP[line]})
+
+    for num in "${line_modules[@]}"; do
+
+      module="${__APOLLO_MODULE_MAP[num]}"
+
+      __apollo_get_module_text "$line" "right" "$module" "$num"
+
+    done
+
+    line_modules=(${(s.\0.)__APOLLO_LEFT_LINE_MAP[line]})
+
+    for num in "${line_modules[@]}"; do
+
+      module="${__APOLLO_MODULE_MAP[num]}"
+
+      __apollo_get_module_text "$line" "left" "$module" "$num"
+
+    done
+
+  done
+
+  if [[ "$profiler" == "yes" ]] ; then
+    printf "%25s: %f\n" "modules_total" "$((EPOCHREALTIME - startmod))"
+  fi
+
+  __apollo_update_prompts
+
+  if [[ "$profiler" == "yes" ]] ; then
+    printf "%25s: %f\n" "total" "$((EPOCHREALTIME-start))"
+  fi
+
+}
+
+__apollo_run_prompt "$@"
