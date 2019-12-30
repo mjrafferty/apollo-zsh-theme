@@ -4,9 +4,9 @@ __apollo_async_update() {
 
   local module="$1"
   local -i has_next="$2"
-  local x side cache_key
+  local x side cache_key theme
   local -a module_info
-  local -i line num
+  local -i line num change_made
   local line_before line_after
   local module_before module_after
 
@@ -17,6 +17,12 @@ __apollo_async_update() {
     line="${module_info[1]}"
     side="${module_info[2]}"
     num="${module_info[3]}"
+    theme="${module_info[4]}"
+
+    # If this module isn't in the active theme, skip it
+    if [[ "$theme" != "$__APOLLO_PROMPT_THEME" ]]; then
+      continue;
+    fi
 
     if ((line == 0)); then
       break;
@@ -24,7 +30,7 @@ __apollo_async_update() {
 
     if ((${+functions[__apollo_${module}_cache_key]})); then
       "__apollo_${module}_cache_key";
-      cache_key="${line}-${side}-${num}-${__APOLLO_RETURN_MESSAGE}"
+      cache_key="${__APOLLO_PROMPT_THEME}-${line}-${side}-${num}-${__APOLLO_RETURN_MESSAGE}"
     fi
 
     case "$side" in
@@ -47,6 +53,8 @@ __apollo_async_update() {
     if [[ "$module_after" != "$module_before" || "$mode_after" != "$mode_before" ]]; then
 
       __apollo_decorate_prompt
+
+      change_made=1
 
       case "$side" in
         "left")
@@ -71,7 +79,7 @@ __apollo_async_update() {
 
   done
 
-  if (( has_next == 0 )); then
+  if (( has_next == 0 && change_made == 1 )); then
     zle && zle .reset-prompt
   fi
 

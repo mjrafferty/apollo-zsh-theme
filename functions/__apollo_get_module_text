@@ -23,7 +23,7 @@ __apollo_get_module_text() {
 
   if ((${+functions[__apollo_${module}_cache_key]})); then
     "__apollo_${module}_cache_key";
-    cache_key="${line}-${side}-${num}-${__APOLLO_RETURN_MESSAGE}"
+    cache_key="${__APOLLO_PROMPT_THEME}-${line}-${side}-${num}-${__APOLLO_RETURN_MESSAGE}"
     cache=("${(s.\0.)__APOLLO_MODULE_CACHE["${cache_key}"]}")
   fi
 
