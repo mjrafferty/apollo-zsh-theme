@@ -68,6 +68,7 @@ prompt_apollo_setup() {
     if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/functions"]} -gt ${#fpath} ]]; then
       fpath+=("${__APOLLO_INSTALL_DIR}/functions.zwc" "${__APOLLO_INSTALL_DIR}/functions")
     fi
+
     if [[ ${fpath[(ie)"${__APOLLO_INSTALL_DIR}/modules"]} -gt ${#fpath} ]]; then
       fpath+=("${__APOLLO_INSTALL_DIR}/modules.zwc" "${__APOLLO_INSTALL_DIR}/modules")
     fi
@@ -83,17 +84,15 @@ prompt_apollo_setup() {
 		__apollo_precmd __apollo_run_module __apollo_add_newline __apollo_build_right_prompt \
 		__apollo_preexec __apollo_build_left_prompt __apollo_set_colors __apollo_update_prompts \
 		__apollo_async_update __apollo_format_string __apollo_style_module __apollo_set_style \
-    __apollo_load_utilities __apollo_lib_async_load __apollo_async_callback __apollo_init_theme \
-    __apollo_run_prompt
+    __apollo_load_utilities __apollo_async_callback __apollo_init_theme __apollo_run_prompt
 
   __apollo_load_utilities;
 
   PROMPT=""
   RPROMPT=""
 
-  __apollo_init_theme;
-
 	autoload -Uz add-zsh-hook
+
 	add-zsh-hook precmd __apollo_precmd
 	add-zsh-hook preexec __apollo_preexec
 	add-zsh-hook chpwd __apollo_chpwd

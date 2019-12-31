@@ -23,9 +23,20 @@ __apollo_init_theme() {
     if (( ${+functions[__apollo_${module}_async]} || ${+functions[__apollo_${module}_always_async]} )); then
 
       if ((__APOLLO_ASYNC != 1)); then
-        __apollo_lib_async_load
+
+        if ((!${+functions[async_start_worker]})); then
+          # If async library already present, use it. Else use bundled
+          if ((${+functions[async_init]})); then
+            async_init
+          else
+            autoload -Uz +X __apollo_lib_async_load \
+              && __apollo_lib_async_load
+          fi
+        fi
+
         async_start_worker apollo_async_helper -u -n
         __APOLLO_ASYNC=1
+
       else
         async_worker_eval apollo_async_helper "autoload -Uz +X __apollo_${module}_load && __apollo_${module}_load"
       fi
