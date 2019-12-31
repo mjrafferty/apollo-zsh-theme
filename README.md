@@ -25,6 +25,9 @@ Heavily customizable, compatible, and performant zsh theme.
 
 ### Prezto:
 
+```shell
+```
+
 ### Oh-My-Zsh:
 
 ```shell
@@ -78,6 +81,8 @@ prompt apollo
 
 
 #### Syntax:
+
+```shell
  zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element/module_side>' attribute "value"
                     ^      ^        ^            ^        ^         ^              ^                ^
                     |      |        |            |        |         |              |                Attribute name
@@ -95,6 +100,7 @@ prompt apollo
                     |      Prompt line number. * for all lines
                     |
                     Active theme or * for all themes
+```
 
  Module attributes:
    - width
@@ -121,7 +127,7 @@ prompt apollo
      - bg_color
      - text
      - style
-     - blend     - Not valid for surround or label elements.
+     - blend (Not valid for surround or label elements.)
 
 ### Settings provided to all modules by framework:
 
@@ -152,10 +158,12 @@ prompt apollo
 |--------|------|-------------|---------|
 |`a`|  |  |  |
 
-#zstyle ':apollo:*:*:*:background_jobs:*' always_show "true"
+```shell
+zstyle ':apollo:*:*:*:background_jobs:*' always_show "true"
 zstyle ':apollo:*:*:*:background_jobs:*' fg_color "white"
 zstyle ':apollo:*:*:*:background_jobs:*' bg_color "cyan"
 zstyle ':apollo:*:*:*:background_jobs:*:left:label' text "Jobs: "
+```
 
 #### clock
 
@@ -177,12 +185,14 @@ zstyle ':apollo:*:*:*:background_jobs:*:left:label' text "Jobs: "
 |`live`|  |  |  |
 |`verbose`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:clock:*' elements "12hour" ":" "min" ":" "sec" " " "ampm" " " "timezone"
 zstyle ':apollo:*:*:*:clock:*' verbose "true"
-#zstyle ':apollo:*:*:*:clock:*' live "true"
+zstyle ':apollo:*:*:*:clock:*' live "true"
 zstyle ':apollo:*:*:*:clock:*' fg_color "white"
 zstyle ':apollo:*:*:*:clock:*' bg_color "darkgreen"
-#zstyle ':apollo:*:*:*:clock:*' style "bold"
+zstyle ':apollo:*:*:*:clock:*' style "bold"
+```
 
 #### command_execution_time
 
@@ -199,10 +209,12 @@ zstyle ':apollo:*:*:*:clock:*' bg_color "darkgreen"
 |`min_duration`|  |  |  |
 |`precision`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:command_execution_time:*' fg_color "white"
 zstyle ':apollo:*:*:*:command_execution_time:*' bg_color "navy"
 zstyle ':apollo:*:*:*:command_execution_time:*' precision "2"
 zstyle ':apollo:*:*:*:command_execution_time:*' min_duration "1"
+```
 
 #### context
 
@@ -224,6 +236,7 @@ zstyle ':apollo:*:*:*:command_execution_time:*' min_duration "1"
 
 Ignore multiple hosts or users matching array of basic regex values:
 
+```shell
 zstyle ':apollo:*:*:*:context:*' fg_color "white"
 zstyle ':apollo:*:*:*:context:*' bg_color "navy"
 zstyle ':apollo:*:*:*:context:default' ignore_users ".*matt.*" ".*raff.*" "root"
@@ -232,6 +245,7 @@ zstyle ':apollo:*:*:*:context:sudo' ignore_users "root"
 zstyle ':apollo:*:*:*:context:*default' ignore_hosts ".*"
 zstyle ':apollo:*:*:*:context:sudo' ignore_hosts ".*"
 zstyle ':apollo:*:*:*:context:*:sep' text "@"
+```
 
 #### date
 
@@ -252,13 +266,15 @@ zstyle ':apollo:*:*:*:context:*:sep' text "@"
 |`elements`|  |  |  |
 
 Extra formatting characters like comma space and slash are allowed as "elements" in the array
+
+```shell
 zstyle ':apollo:*:*:*:date' elements "dow" " " "day" "/" "month" "/" "year"
 zstyle ':apollo:*:*:*:date:*:dow' verbose "true"
-
 zstyle ':apollo:*:*:*:date:*' elements "dow" " " "month" " " "day"  ", " "year"
 zstyle ':apollo:*:*:*:date:*' fg_color "white"
 zstyle ':apollo:*:*:*:date:*' bg_color "blue"
 zstyle ':apollo:*:*:*:date:*' verbose "true"
+```
 
 #### dir
 
@@ -280,6 +296,7 @@ zstyle ':apollo:*:*:*:date:*' verbose "true"
 |`shorten_length`|  |  |  |
 |`shorten_string`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:dir:*' bg_color "blue"
 zstyle ':apollo:*:*:*:dir:*' fg_color "white"
 zstyle ':apollo:*:*:*:dir:*' absolute "true"
@@ -296,6 +313,7 @@ zstyle ':apollo:*:*:*:dir:*:last' style "bold"
 zstyle ':apollo:*:*:*:dir:*:last' fg_color "red"
 zstyle ':apollo:*:*:*:dir:*:shortened' style "bold"
 zstyle ':apollo:*:*:*:dir:*:shortened' fg_color "grey30"
+```
 
 #### game
 
@@ -311,8 +329,10 @@ zstyle ':apollo:*:*:*:dir:*:shortened' fg_color "grey30"
 |--------|------|-------------|---------|
 |`a`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:game:*' bg_color "darkblue"
 zstyle ':apollo:*:*:*:game:*' fg_color "white"
+```
 
 #### git
 
@@ -336,6 +356,7 @@ zstyle ':apollo:*:*:*:game:*' fg_color "white"
 |--------|------|-------------|---------|
 |`elements`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:git:*' elements "local_branch" "action" " " "commit_hash" " " "remote_branch" " " "modified" "|" "untracked" "|" "stash_count"
 zstyle ':apollo:*:*:*:git:*' bg_color "black"
 zstyle ':apollo:*:*:*:git:*::left:label' text "git "
@@ -345,6 +366,7 @@ zstyle ':apollo:*:*:*:git:*:local_branch' fg_color "green"
 zstyle ':apollo:*:*:*:git:*:action:left:label' text " "
 zstyle ':apollo:*:*:*:git:*:remote_branch' fg_color "red"
 zstyle ':apollo:*:*:*:git:*:untracked' fg_color "purple"
+```
 
 #### php_version
 
@@ -360,9 +382,11 @@ zstyle ':apollo:*:*:*:git:*:untracked' fg_color "purple"
 |--------|------|-------------|---------|
 |`a`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:php_version:*' fg_color "grey93"
 zstyle ':apollo:*:*:*:php_version:*' bg_color "fuchsia"
 zstyle ':apollo:*:*:*:php_version:*:left:label' text "PHP "
+```
 
 #### public_ip
 
@@ -379,10 +403,12 @@ zstyle ':apollo:*:*:*:php_version:*:left:label' text "PHP "
 |`methods`|  |  |  |
 |`host`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:public_ip:*' fg_color "white"
 zstyle ':apollo:*:*:*:public_ip:*' bg_color "darkgreen"
 zstyle ':apollo:*:*:*:public_ip:*' methods "curl"
 zstyle ':apollo:*:*:*:public_ip:*' host "ipv4.nexcess.net"
+```
 
 #### quota
 
@@ -398,8 +424,10 @@ zstyle ':apollo:*:*:*:public_ip:*' host "ipv4.nexcess.net"
 |--------|------|-------------|---------|
 |`a`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:quota:*' fg_color "white"
 zstyle ':apollo:*:*:*:quota:*' bg_color "red"
+```
 
 #### root_indicator
 
@@ -415,8 +443,10 @@ zstyle ':apollo:*:*:*:quota:*' bg_color "red"
 |--------|------|-------------|---------|
 |`a`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:root_indicator:*' fg_color "yellow"
 zstyle ':apollo:*:*:*:root_indicator:*' bg_color "black"
+```
 
 #### status
 
@@ -434,12 +464,14 @@ zstyle ':apollo:*:*:*:root_indicator:*' bg_color "black"
 |`pipe_status`|  |  |  |
 |`always_show`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:status:*' fg_color "white"
 zstyle ':apollo:*:*:*:status:*' bg_color "green"
 zstyle ':apollo:*:*:*:status:*' always_show "true"
 zstyle ':apollo:*:*:*:status:*' pipe_status "true"
 zstyle ':apollo:*:*:*:status:*' verbose "true"
 zstyle ':apollo:*:*:*:status:*' bg_color "red"
+```
 
 #### vcs
 
@@ -455,8 +487,10 @@ zstyle ':apollo:*:*:*:status:*' bg_color "red"
 |--------|------|-------------|---------|
 |`a`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:vcs:*' fg_color "white"
 zstyle ':apollo:*:*:*:vcs:*' bg_color "green"
+```
 
 #### vi_mode
 
@@ -475,12 +509,14 @@ zstyle ':apollo:*:*:*:vcs:*' bg_color "green"
 |--------|------|-------------|---------|
 |`a`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:vi_mode:*' fg_color "white"
 zstyle ':apollo:*:*:*:vi_mode:*' bg_color "grey30"
 zstyle ':apollo:*:*:*:vi_mode:insert:mode' text "INSERT"
 zstyle ':apollo:*:*:*:vi_mode:visual:mode' text "VISUAL"
 zstyle ':apollo:*:*:*:vi_mode:normal:mode' text "NORMAL"
 zstyle ':apollo:*:*:*:vi_mode:replace:mode' text "REPLACE"
+```
 
 #### virtualenv
 
@@ -496,8 +532,10 @@ zstyle ':apollo:*:*:*:vi_mode:replace:mode' text "REPLACE"
 |--------|------|-------------|---------|
 |`a`|  |  |  |
 
+```shell
 zstyle ':apollo:*:*:*:virtualenv:*' fg_color "white"
 zstyle ':apollo:*:*:*:virtualenv:*' bg_color "blue"
+```
 
 ---
 
