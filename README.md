@@ -124,7 +124,7 @@ zstyle ':apollo:example:core:decorations' enabled "true"
 Option|Type|Description
 ---|---|---
 zstyle ':apollo:example:core:links' enabled|boolean|
-zstyle ':apollo:example:core:links:<line>:<side>:<link_type>' text|string|
+zstyle ':apollo:example:core:links:\<line\>:\<side\>:\<link_type\>' text|string|
 
 Link Type|Description
 ---|---
@@ -154,7 +154,7 @@ zstyle ':apollo:example:core:links:*:*:none' text ""
 
 Option|Type|Description
 ---|---|---
-zstyle ':apollo:example:core:<line>:ruler' text|string|
+zstyle ':apollo:example:core:\<line\>:ruler' text|string|
 
 Examples:
 ```
