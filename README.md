@@ -14,8 +14,9 @@ Heavily customizable, compatible, and performant zsh theme.
       * [Features](#features)
       * [Usage](#usage)
       * [Configuration](#configuration)
+         * [Core Options](#core-options)
          * [Modules](#modules)
-         * [Syntax:](#syntax)
+         * [Syntax](#syntax)
          * [Options provided to all modules by framework:](#options-provided-to-all-modules-by-framework)
          * [Module List](#module-list)
             * [background_jobs](#background_jobs)
@@ -75,32 +76,90 @@ prompt apollo
 
 ## Configuration
 
+The prompts are made up of a combination of modules, and each module is made up of one or more elements. There are
+elements available to every module, as well as elements specific to certain modules. Both the modules and the elements
+that they contain each have access to a variety of attributes to define them. There are a number of attributes available
+to every module/element, as well as module specific ones.
+
+All configuration is made done using zstyle's. This offers tremendous context aware flexibility as well as wildcards to
+set attributes for a variety of matching modules/elements. Zstyle is provided by the zsh/zutil module and you can read
+more about it in the zshmodules man page.
+
+### Core Options
+
+```
+zstyle ':apollo:*:core:modules:left' modules 'virtualenv' 'quota' 'public_ip' 'newline' 'root_indicator' 'context' 'dir' 'git' 'vi_mode' 'ruler'
+zstyle ':apollo:*:core:modules:right' modules 'command_execution_time' 'background_jobs' 'date' 'clock' 'status' 'newline' 'php_version'
+
+zstyle ':apollo:*:core:*:ruler' style "bold"
+zstyle ':apollo:*:core:*:ruler' fg_color "white"
+zstyle ':apollo:*:core:*:ruler' text "─"
+
+zstyle ':apollo:*:core:links' enabled "true"
+
+zstyle ':apollo:*:core:cache' disable "true"
+zstyle ':apollo:*:core:cache:clear' disable "true"
+zstyle ':apollo:*:core:cache:clear' count "3"
+
+zstyle ':apollo:*:core:links:*:*' fg_color "white"
+zstyle ':apollo:*:core:links:*:*:*' style "bold"
+zstyle ':apollo:*:core:links:*:left:top' text "╭─"
+zstyle ':apollo:*:core:links:*:left:mid' text "├─"
+zstyle ':apollo:*:core:links:*:left:str' text "│ "
+zstyle ':apollo:*:core:links:*:left:bot' text "╰─"
+zstyle ':apollo:*:core:links:*:right:top' text "─╮"
+zstyle ':apollo:*:core:links:*:right:mid' text "─┤"
+zstyle ':apollo:*:core:links:*:right:str' text " │"
+zstyle ':apollo:*:core:links:*:right:bot' text "─╯"
+zstyle ':apollo:*:core:links:*:*:none' text ""
+
+zstyle ':apollo:*:core:prompt:end' text "> "
+zstyle ':apollo:*:core:prompt:end' fg_color "white"
+
+zstyle ':apollo:*:core:profiler' enabled "true"
+
+zstyle ':apollo:*:core:decorations' enabled "true"
+
+zstyle ':apollo:*:*:*:*:*:surround:*' text " "
+
+zstyle ':apollo:*:*:right:*:*:separator' text ""
+zstyle ':apollo:*:*:right:*:*:separator' revblend "true"
+zstyle ':apollo:*:*:left:*:*:separator' text ""
+zstyle ':apollo:*:*:left:*:*:separator' blend "true"
+
+zstyle ':apollo:*:*:*:*:*:begin' blend "true"
+zstyle ':apollo:*:*:*:*:*:begin' text ""
+zstyle ':apollo:*:*:*:*:*:end' blend "true"
+zstyle ':apollo:*:*:*:*:*:end' text ""
+```
+
 ### Modules
 
 Module Name |Description
 ---|---
-background_jobs|
-clock|
-command_execution_time|
-context|
-date|
-dir|
-game|
-git|
-history|
-php_version|
-public_ip|
-quota|
-root_indicator|
-status|
-vcs|
-vi_mode|
-virtualenv|
-newline*|
-ruler*|
+background_jobs|Dispaly number of jobs in background
+clock|Displays current time
+command_execution_time|Execution time of last command
+context|User and hostname
+date|Today's date
+dir|Current directory
+game|Slots game
+git|Git repository information
+history|History number
+php_version|PHP version number from php --version
+public_ip|Public IP address
+quota|Disk quota warnings
+root_indicator|Root status
+status|Exit status of last command
+vcs|Version control information from vcs_info
+vi_mode|Vi mode indicator when using vi key bindings
+virtualenv|Active Python virtual environment
+newline*|For multiline prompts, signals end of line in module array
+ruler**|Same as newline, but finishes line with configurable ruler string. Not useful in right prompt
 
+  \* These are not actual modules and therefore most of the options below do not apply.
 
-### Syntax:
+### Syntax
 
 ```
 zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element/module_side>' attribute "value"
@@ -126,45 +185,70 @@ zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element
 
 Module attributes:
 
-  Attributes|Description
-  ---|---
-  width|
-  always_show|
-  fg_color|
-  bg_color|
-  style|
+Attribute|Description
+---|---
+width|Minimum width to enforce on module.
+always_show|Show module even when it contains empty output.
+fg_color|Foreground color for module.
+bg_color|Background color for module.
+style|Style for module text (bold,standout,underline)
 
 All modules include the following special elements provided by the framework:
 
-  Element|Description
-  ---|---
-  separator|
-  begin|
-  end|
-  left:surround|
-  right:surround|
+Element|Description
+---|---
+separator|String to use as left module separator when NOT at beginning of line
+begin|String to use to left of module when at beginning of line
+end|String to use to right of module when at end of line
+left:surround|String to left of module text
+right:surround|String to right of module text
 
-Two special elements can be set at the module level AND as extensions of individual regular elements:
+Two special elements can be set at the module level *AND* as extensions of individual regular elements:
 
-  Element|Description
-  ---|---
-  left:label|
-  right:label|
+Element|Description
+---|---
+left:label|String to left of module/element
+right:label|String to right of module/element
 
-Each of the special elements the following attributes:
+To better understand how these all fit together, here's a quick reference. The first is a look at the module as a
+whole, the second is a closer breakdown of module_text, which is made up of the elements inside the module:
 
-  Special Element Attributes:
+```
+{separator/begin}{left:surround}{left:label}{module_text}{right:label}{right:surround}{end}
+```
 
-  Attributes|Description
-  ---|---
-  fg_color|
-  bg_color|
-  text|
-  style|
-  blend*|
-  revblend*|
+```
+{left:label}{element1_text}{right:label}{left:label}{element2_text}{right:label}{etc...}
+```
+
+Each of the special elements offer the following attributes:
+
+Attribute|Description
+---|---
+fg_color|
+bg_color|
+text|
+style|
+blend*|
+revblend*|
 
   \*Not valid for surround or label elements.
+
+Modules may also provide additional elements. Any element not listed as "special" above has the following attributes
+provided by the framework:
+
+Attribute|Description
+---|---
+fg_color|
+bg_color|
+text|
+style|
+
+The "text" attribute will not have an effect in many cases if the text is dynamic and generated by the module, but any
+elements with static text may utilize the "text" attribute.
+
+All other module options should be controlled via attributes at the module scope, even if they only impact an individual
+element in the module. This is done for the sake of providing a uniform configuration interface.
 
 ### Module List
 
