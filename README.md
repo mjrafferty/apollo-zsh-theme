@@ -2,38 +2,29 @@
 
 Heavily customizable, compatible, and performant zsh theme.
 
----
-
 ## Table of Contents
-
-- [Installation](# installation)
-- [Features](# features)
-- [Contributing](# contributing)
-- [FAQ](# faq)
-- [Support](# support)
-- [License](# license)
-
----
 
 ## Installation
 
 
-### Zplugin:
+#### Zplugin:
+
+```
+zplugin ice lucid atinit'fpath+=($PWD/functions.zwc $PWD/functions $PWD/modules.zwc $PWD/modules)'
+zplugin light mjrafferty/apollo-zsh-theme
+```
+
+#### Prezto:
 
 ```
 ```
 
-### Prezto:
+#### Oh-My-Zsh:
 
 ```
 ```
 
-### Oh-My-Zsh:
-
-```
-```
-
-### Manual install:
+#### Manual install:
 
 ```
 fpath+=( $HOME/apollo-zsh-theme/functions $HOME/apollo-zsh-theme/modules )
@@ -41,21 +32,14 @@ autoload -Uz promptinit && promptinit
 source apollo-zsh-theme/conf/theme.conf
 prompt apollo
 ```
----
 
 ## Features
 
-
----
-
 ## Usage
-
----
-
 
 ## Configuration
 
-### Modules
+#### Modules
 
 Module Name |Description
 ---|---
@@ -102,6 +86,8 @@ zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element
                    Active theme or * for all themes
 ```
 
+#### Options provided to all modules by framework:
+
 Module attributes:
 
   Attributes|Description
@@ -140,37 +126,12 @@ Each of the special elements the following attributes:
   text|
   style|
   blend*|
+  revblend*|
 
   \*Not valid for surround or label elements.
 
-### Settings provided to all modules by framework:
 
-Mode|Description
----|---
-a|
-
-Element|Description
----|---
-a|
-
-Attribute|Type|Description|Example
----|---|---|---
-a|  |  |
-
-
-##### background_jobs
-
-Mode|Description
----|---
-a|
-
-Element|Description
----|---
-a|
-
-Attribute|Type|Description|Example
----|---|---|---
-a|  |  |
+#### background_jobs
 
 ```
 zstyle ':apollo:*:*:*:background_jobs:*' always_show "true"
@@ -180,10 +141,6 @@ zstyle ':apollo:*:*:*:background_jobs:*:left:label' text "Jobs: "
 ```
 
 #### clock
-
-Mode|Description
----|---
-a|
 
 Element|Description
 ---|---
@@ -209,14 +166,6 @@ zstyle ':apollo:*:*:*:clock:*' style "bold"
 ```
 
 #### command_execution_time
-
-Mode|Description
----|---
-a|
-
-Element|Description
----|---
-a|
 
 Attribute|Type|Description|Example
 ---|---|---|---
@@ -262,10 +211,6 @@ zstyle ':apollo:*:*:*:context:*:sep' text "@"
 ```
 
 #### date
-
-Mode|Description
----|---
-a|
 
 Element|Description
 ---|---
@@ -331,28 +276,12 @@ zstyle ':apollo:*:*:*:dir:*:shortened' fg_color "grey30"
 
 #### game
 
-Mode|Description
----|---
-a|
-
-Element|Description
----|---
-a|
-
-Attribute|Type|Description|Example
----|---|---|---
-a|  |  |
-
 ```
 zstyle ':apollo:*:*:*:game:*' bg_color "darkblue"
 zstyle ':apollo:*:*:*:game:*' fg_color "white"
 ```
 
 #### git
-
-Mode|Description
----|---
-a|
 
 Element|Description
 ---|---
@@ -384,18 +313,6 @@ zstyle ':apollo:*:*:*:git:*:untracked' fg_color "purple"
 
 #### php_version
 
-Mode|Description
----|---
-a|
-
-Element|Description
----|---
-a|
-
-Attribute|Type|Description|Example
----|---|---|---
-a|  |  |
-
 ```
 zstyle ':apollo:*:*:*:php_version:*' fg_color "grey93"
 zstyle ':apollo:*:*:*:php_version:*' bg_color "fuchsia"
@@ -403,14 +320,6 @@ zstyle ':apollo:*:*:*:php_version:*:left:label' text "PHP "
 ```
 
 #### public_ip
-
-Mode|Description
----|---
-a|
-
-Element|Description
----|---
-a|
 
 Attribute|Type|Description|Example
 ---|---|---|---
@@ -426,36 +335,12 @@ zstyle ':apollo:*:*:*:public_ip:*' host "ipv4.nexcess.net"
 
 #### quota
 
-Mode|Description
----|---
-a|
-
-Element|Description
----|---
-a|
-
-Attribute|Type|Description|Example
----|---|---|---
-a|  |  |
-
 ```
 zstyle ':apollo:*:*:*:quota:*' fg_color "white"
 zstyle ':apollo:*:*:*:quota:*' bg_color "red"
 ```
 
 #### root_indicator
-
-Mode|Description
----|---
-a|
-
-Element|Description
----|---
-a|
-
-Attribute|Type|Description|Example
----|---|---|---
-a|  |  |
 
 ```
 zstyle ':apollo:*:*:*:root_indicator:*' fg_color "yellow"
@@ -467,10 +352,6 @@ zstyle ':apollo:*:*:*:root_indicator:*' bg_color "black"
 Mode|Description
 ---|---
 bad|
-
-Element|Description
----|---
-a|
 
 Attribute|Type|Description|Example
 ---|---|---|---
@@ -488,18 +369,6 @@ zstyle ':apollo:*:*:*:status:*' bg_color "red"
 ```
 
 #### vcs
-
-Mode|Description
----|---
-a|
-
-Element|Description
----|---
-a|
-
-Attribute|Type|Description|Example
----|---|---|---
-a|  |  |
 
 ```
 zstyle ':apollo:*:*:*:vcs:*' fg_color "white"
@@ -519,10 +388,6 @@ Element|Description
 ---|---
 mode|
 
-Attribute|Type|Description|Example
----|---|---|---
-a|  |  |
-
 ```
 zstyle ':apollo:*:*:*:vi_mode:*' fg_color "white"
 zstyle ':apollo:*:*:*:vi_mode:*' bg_color "grey30"
@@ -534,18 +399,6 @@ zstyle ':apollo:*:*:*:vi_mode:replace:mode' text "REPLACE"
 
 #### virtualenv
 
-Mode|Description
----|---
-a|
-
-Element|Description
----|---
-a|
-
-Attribute|Type|Description|Example
----|---|---|---
-a|  |  |
-
 ```
 zstyle ':apollo:*:*:*:virtualenv:*' fg_color "white"
 zstyle ':apollo:*:*:*:virtualenv:*' bg_color "blue"
@@ -555,22 +408,11 @@ zstyle ':apollo:*:*:*:virtualenv:*' bg_color "blue"
 
 ## Contributing
 
----
-
 ## FAQ
-
-- **How do I do *specifically* so and so?**
-   - No problem! Just do this.
-
----
 
 ## Support
 
----
-
 ## Acknowledgments
-
----
 
 ## License
 
