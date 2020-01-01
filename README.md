@@ -15,6 +15,12 @@ Heavily customizable, compatible, and performant zsh theme.
       * [Usage](#usage)
       * [Configuration](#configuration)
          * [Core Options](#core-options)
+            * [Decorations](#decorations)
+            * [Links](#links)
+            * [Rulers](#rulers)
+            * [Prompt End](#prompt-end)
+            * [Caching](#caching)
+            * [Profiler](#profiler)
          * [Modules](#modules)
          * [Syntax](#syntax)
          * [Options provided to all modules by framework:](#options-provided-to-all-modules-by-framework)
@@ -81,61 +87,113 @@ elements available to every module, as well as elements specific to certain modu
 that they contain each have access to a variety of attributes to define them. There are a number of attributes available
 to every module/element, as well as module specific ones.
 
-All configuration is made done using zstyle's. This offers tremendous context aware flexibility as well as wildcards to
+All configuration is done using zstyle's. This offers tremendous context aware flexibility as well as wildcards to
 set attributes for a variety of matching modules/elements. Zstyle is provided by the zsh/zutil module and you can read
 more about it in the zshmodules man page.
 
+Below I'll go over all of the available configuration options. For all of the examples given, I'll be using a theme name
+of "example".
+
 ### Core Options
 
+Option|Type|Description
+---|---|---
+zstyle ':apollo:example:core:modules:left' modules|list|
+zstyle ':apollo:example:core:modules:right' modules|list|
+
 ```
-zstyle ':apollo:*:core:modules:left' modules 'virtualenv' 'quota' 'public_ip' 'newline' 'root_indicator' 'context' 'dir' 'git' 'vi_mode' 'ruler'
-zstyle ':apollo:*:core:modules:right' modules 'command_execution_time' 'background_jobs' 'date' 'clock' 'status' 'newline' 'php_version'
+zstyle ':apollo:example:core:modules:left' modules 'virtualenv' 'quota' 'public_ip' 'newline' 'root_indicator' 'context' 'dir' 'git' 'vi_mode' 'ruler'
+zstyle ':apollo:example:core:modules:right' modules 'command_execution_time' 'background_jobs' 'date' 'clock' 'status' 'newline' 'php_version'
+```
 
-zstyle ':apollo:*:core:*:ruler' style "bold"
-zstyle ':apollo:*:core:*:ruler' fg_color "white"
-zstyle ':apollo:*:core:*:ruler' text "─"
+#### Decorations
 
-zstyle ':apollo:*:core:links' enabled "true"
+zstyle ':apollo:example:core:decorations' enabled|boolean|
 
-zstyle ':apollo:*:core:cache' disable "true"
-zstyle ':apollo:*:core:cache:clear' disable "true"
-zstyle ':apollo:*:core:cache:clear' count "3"
+```
+zstyle ':apollo:example:core:decorations' enabled "true"
+```
 
-zstyle ':apollo:*:core:links:*:*' fg_color "white"
-zstyle ':apollo:*:core:links:*:*:*' style "bold"
-zstyle ':apollo:*:core:links:*:left:top' text "╭─"
-zstyle ':apollo:*:core:links:*:left:mid' text "├─"
-zstyle ':apollo:*:core:links:*:left:str' text "│ "
-zstyle ':apollo:*:core:links:*:left:bot' text "╰─"
-zstyle ':apollo:*:core:links:*:right:top' text "─╮"
-zstyle ':apollo:*:core:links:*:right:mid' text "─┤"
-zstyle ':apollo:*:core:links:*:right:str' text " │"
-zstyle ':apollo:*:core:links:*:right:bot' text "─╯"
-zstyle ':apollo:*:core:links:*:*:none' text ""
+#### Links
 
-zstyle ':apollo:*:core:prompt:end' text "> "
-zstyle ':apollo:*:core:prompt:end' fg_color "white"
+Option|Type|Description
+---|---|---
+zstyle ':apollo:example:core:links' enabled|boolean|
+zstyle ':apollo:example:core:links:<line>:<side>:<link_type>' text|string|
 
-zstyle ':apollo:*:core:profiler' enabled "true"
+Link Type|Description
+---|---
+top|
+mid|
+str|
+bot|
+none|
 
-zstyle ':apollo:*:core:decorations' enabled "true"
+```
+zstyle ':apollo:example:core:links' enabled "true"
+zstyle ':apollo:example:core:links:*:*:*' fg_color "white"
+zstyle ':apollo:example:core:links:*:*:*' style "bold"
+zstyle ':apollo:example:core:links:*:left:top' text "╭─"
+zstyle ':apollo:example:core:links:*:left:mid' text "├─"
+zstyle ':apollo:example:core:links:*:left:str' text "│ "
+zstyle ':apollo:example:core:links:*:left:bot' text "╰─"
+zstyle ':apollo:example:core:links:*:right:top' text "─╮"
+zstyle ':apollo:example:core:links:*:right:mid' text "─┤"
+zstyle ':apollo:example:core:links:*:right:str' text " │"
+zstyle ':apollo:example:core:links:*:right:bot' text "─╯"
+zstyle ':apollo:example:core:links:*:*:none' text ""
+```
 
-zstyle ':apollo:*:*:*:*:*:surround:*' text " "
+#### Rulers
 
-zstyle ':apollo:*:*:right:*:*:separator' text ""
-zstyle ':apollo:*:*:right:*:*:separator' revblend "true"
-zstyle ':apollo:*:*:left:*:*:separator' text ""
-zstyle ':apollo:*:*:left:*:*:separator' blend "true"
+Option|Type|Description
+---|---|---
+zstyle ':apollo:example:core:<line>:ruler' text|string|
 
-zstyle ':apollo:*:*:*:*:*:begin' blend "true"
-zstyle ':apollo:*:*:*:*:*:begin' text ""
-zstyle ':apollo:*:*:*:*:*:end' blend "true"
-zstyle ':apollo:*:*:*:*:*:end' text ""
+```
+zstyle ':apollo:example:core:*:ruler' style "bold"
+zstyle ':apollo:example:core:*:ruler' fg_color "white"
+zstyle ':apollo:example:core:*:ruler' text "─"
+```
+
+#### Prompt End
+
+Option|Type|Description
+---|---|---
+zstyle ':apollo:example:core:prompt:end' text|string|
+
+```
+zstyle ':apollo:example:core:prompt:end' text "> "
+zstyle ':apollo:example:core:prompt:end' fg_color "white"
+```
+
+#### Caching
+
+Option|Type|Description
+---|---|---
+zstyle ':apollo:example:core:cache' disable|boolean|
+zstyle ':apollo:example:core:cache:clear' disable|boolean|
+zstyle ':apollo:example:core:cache:clear' count|integer|
+
+```
+zstyle ':apollo:example:core:cache' disable "true"
+zstyle ':apollo:example:core:cache:clear' disable "true"
+zstyle ':apollo:example:core:cache:clear' count "3"
+```
+
+#### Profiler
+
+Option|Type|Description
+---|---|---
+zstyle ':apollo:example:core:profiler' enabled|boolean|
+
+```
+zstyle ':apollo:example:core:profiler' enabled "true"
 ```
 
 ### Modules
 
-Module Name |Description
+Module Name|Description
 ---|---
 background_jobs|Dispaly number of jobs in background
 clock|Displays current time
@@ -181,7 +239,7 @@ zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element
                    Active theme or * for all themes
 ```
 
-### Options provided to all modules by framework:
+### Options provided to all modules by framework
 
 Module attributes:
 
@@ -225,10 +283,10 @@ Each of the special elements offer the following attributes:
 
 Attribute|Description
 ---|---
-fg_color|
-bg_color|
-text|
-style|
+fg_color|Foreground color
+bg_color|Background Color
+text|String to display
+style|Style for element text (bold,standout,underline)
 blend*|
 revblend*|
 
@@ -239,10 +297,10 @@ provided by the framework:
 
 Attribute|Description
 ---|---
-fg_color|
-bg_color|
-text|
-style|
+fg_color|Foreground color
+bg_color|Background color
+text|String to display
+style|Style for element text (bold,standout,underline)
 
 The "text" attribute will not have an effect in many cases if the text is dynamic and generated by the module, but any
 elements with static text may utilize the "text" attribute.
@@ -250,15 +308,29 @@ elements with static text may utilize the "text" attribute.
 All other module options should be controlled via attributes at the module scope, even if they only impact an individual
 element in the module. This is done for the sake of providing a uniform configuration interface.
 
+```
+zstyle ':apollo:example:*:*:*:*:surround:*' text " "
+
+zstyle ':apollo:example:*:right:*:*:separator' text ""
+zstyle ':apollo:example:*:right:*:*:separator' revblend "true"
+zstyle ':apollo:example:*:left:*:*:separator' text ""
+zstyle ':apollo:example:*:left:*:*:separator' blend "true"
+
+zstyle ':apollo:example:*:*:*:*:begin' blend "true"
+zstyle ':apollo:example:*:*:*:*:begin' text ""
+zstyle ':apollo:example:*:*:*:*:end' blend "true"
+zstyle ':apollo:example:*:*:*:*:end' text ""
+```
+
 ### Module List
 
 #### background_jobs
 
 ```
-zstyle ':apollo:*:*:*:background_jobs:*' always_show "true"
-zstyle ':apollo:*:*:*:background_jobs:*' fg_color "white"
-zstyle ':apollo:*:*:*:background_jobs:*' bg_color "cyan"
-zstyle ':apollo:*:*:*:background_jobs:*:left:label' text "Jobs: "
+zstyle ':apollo:example:*:*:background_jobs:*' always_show "true"
+zstyle ':apollo:example:*:*:background_jobs:*' fg_color "white"
+zstyle ':apollo:example:*:*:background_jobs:*' bg_color "cyan"
+zstyle ':apollo:example:*:*:background_jobs:*:left:label' text "Jobs: "
 ```
 
 #### clock
@@ -278,12 +350,12 @@ live|  |  |
 verbose|  |  |
 
 ```
-zstyle ':apollo:*:*:*:clock:*' elements "12hour" ":" "min" ":" "sec" " " "ampm" " " "timezone"
-zstyle ':apollo:*:*:*:clock:*' verbose "true"
-zstyle ':apollo:*:*:*:clock:*' live "true"
-zstyle ':apollo:*:*:*:clock:*' fg_color "white"
-zstyle ':apollo:*:*:*:clock:*' bg_color "darkgreen"
-zstyle ':apollo:*:*:*:clock:*' style "bold"
+zstyle ':apollo:example:*:*:clock:*' elements "12hour" ":" "min" ":" "sec" " " "ampm" " " "timezone"
+zstyle ':apollo:example:*:*:clock:*' verbose "true"
+zstyle ':apollo:example:*:*:clock:*' live "true"
+zstyle ':apollo:example:*:*:clock:*' fg_color "white"
+zstyle ':apollo:example:*:*:clock:*' bg_color "darkgreen"
+zstyle ':apollo:example:*:*:clock:*' style "bold"
 ```
 
 #### command_execution_time
@@ -294,10 +366,10 @@ min_duration|  |  |
 precision|  |  |
 
 ```
-zstyle ':apollo:*:*:*:command_execution_time:*' fg_color "white"
-zstyle ':apollo:*:*:*:command_execution_time:*' bg_color "navy"
-zstyle ':apollo:*:*:*:command_execution_time:*' precision "2"
-zstyle ':apollo:*:*:*:command_execution_time:*' min_duration "1"
+zstyle ':apollo:example:*:*:command_execution_time:*' fg_color "white"
+zstyle ':apollo:example:*:*:command_execution_time:*' bg_color "navy"
+zstyle ':apollo:example:*:*:command_execution_time:*' precision "2"
+zstyle ':apollo:example:*:*:command_execution_time:*' min_duration "1"
 ```
 
 #### context
@@ -321,14 +393,14 @@ ignore_users|  |  |
 Ignore multiple hosts or users matching array of basic regex values:
 
 ```
-zstyle ':apollo:*:*:*:context:*' fg_color "white"
-zstyle ':apollo:*:*:*:context:*' bg_color "navy"
-zstyle ':apollo:*:*:*:context:default' ignore_users ".*matt.*" ".*raff.*" "root"
-zstyle ':apollo:*:*:*:context:ssh' ignore_users ".*matt.*" ".*raff.*" "root"
-zstyle ':apollo:*:*:*:context:sudo' ignore_users "root"
-zstyle ':apollo:*:*:*:context:*default' ignore_hosts ".*"
-zstyle ':apollo:*:*:*:context:sudo' ignore_hosts ".*"
-zstyle ':apollo:*:*:*:context:*:sep' text "@"
+zstyle ':apollo:example:*:*:context:*' fg_color "white"
+zstyle ':apollo:example:*:*:context:*' bg_color "navy"
+zstyle ':apollo:example:*:*:context:default' ignore_users ".*matt.*" ".*raff.*" "root"
+zstyle ':apollo:example:*:*:context:ssh' ignore_users ".*matt.*" ".*raff.*" "root"
+zstyle ':apollo:example:*:*:context:sudo' ignore_users "root"
+zstyle ':apollo:example:*:*:context:*default' ignore_hosts ".*"
+zstyle ':apollo:example:*:*:context:sudo' ignore_hosts ".*"
+zstyle ':apollo:example:*:*:context:*:sep' text "@"
 ```
 
 #### date
@@ -348,12 +420,12 @@ elements|  |  |
 Extra formatting characters like comma space and slash are allowed as "elements" in the array
 
 ```
-zstyle ':apollo:*:*:*:date' elements "dow" " " "day" "/" "month" "/" "year"
-zstyle ':apollo:*:*:*:date:*:dow' verbose "true"
-zstyle ':apollo:*:*:*:date:*' elements "dow" " " "month" " " "day"  ", " "year"
-zstyle ':apollo:*:*:*:date:*' fg_color "white"
-zstyle ':apollo:*:*:*:date:*' bg_color "blue"
-zstyle ':apollo:*:*:*:date:*' verbose "true"
+zstyle ':apollo:example:*:*:date' elements "dow" " " "day" "/" "month" "/" "year"
+zstyle ':apollo:example:*:*:date:*:dow' verbose "true"
+zstyle ':apollo:example:*:*:date:*' elements "dow" " " "month" " " "day"  ", " "year"
+zstyle ':apollo:example:*:*:date:*' fg_color "white"
+zstyle ':apollo:example:*:*:date:*' bg_color "blue"
+zstyle ':apollo:example:*:*:date:*' verbose "true"
 ```
 
 #### dir
@@ -377,29 +449,29 @@ shorten_length|  |  |
 shorten_string|  |  |
 
 ```
-zstyle ':apollo:*:*:*:dir:*' bg_color "blue"
-zstyle ':apollo:*:*:*:dir:*' fg_color "white"
-zstyle ':apollo:*:*:*:dir:*' absolute "true"
-zstyle ':apollo:*:*:*:dir:*' bookmarks "apollo=$HOME/apollo-zsh-theme"
-zstyle ':apollo:*:*:*:dir:*' bookmark_patterns "/home/*/*/html;/html"
-zstyle ':apollo:*:*:*:dir:*' last_count "5"
-zstyle ':apollo:*:*:*:dir:*' shorten_length "auto"
-zstyle ':apollo:*:*:*:dir:*' shorten_string ""
-zstyle ':apollo:*:*:*:dir:*:sep' text "/"
-zstyle ':apollo:*:*:*:dir:*:sep' style "bold"
-zstyle ':apollo:*:*:*:dir:*:sep' fg_color "green"
-zstyle ':apollo:*:*:*:dir:*:element' style "bold"
-zstyle ':apollo:*:*:*:dir:*:last' style "bold"
-zstyle ':apollo:*:*:*:dir:*:last' fg_color "red"
-zstyle ':apollo:*:*:*:dir:*:shortened' style "bold"
-zstyle ':apollo:*:*:*:dir:*:shortened' fg_color "grey30"
+zstyle ':apollo:example:*:*:dir:*' bg_color "blue"
+zstyle ':apollo:example:*:*:dir:*' fg_color "white"
+zstyle ':apollo:example:*:*:dir:*' absolute "true"
+zstyle ':apollo:example:*:*:dir:*' bookmarks "apollo=$HOME/apollo-zsh-theme"
+zstyle ':apollo:example:*:*:dir:*' bookmark_patterns "/home/*/*/html;/html"
+zstyle ':apollo:example:*:*:dir:*' last_count "5"
+zstyle ':apollo:example:*:*:dir:*' shorten_length "auto"
+zstyle ':apollo:example:*:*:dir:*' shorten_string ""
+zstyle ':apollo:example:*:*:dir:*:sep' text "/"
+zstyle ':apollo:example:*:*:dir:*:sep' style "bold"
+zstyle ':apollo:example:*:*:dir:*:sep' fg_color "green"
+zstyle ':apollo:example:*:*:dir:*:element' style "bold"
+zstyle ':apollo:example:*:*:dir:*:last' style "bold"
+zstyle ':apollo:example:*:*:dir:*:last' fg_color "red"
+zstyle ':apollo:example:*:*:dir:*:shortened' style "bold"
+zstyle ':apollo:example:*:*:dir:*:shortened' fg_color "grey30"
 ```
 
 #### game
 
 ```
-zstyle ':apollo:*:*:*:game:*' bg_color "darkblue"
-zstyle ':apollo:*:*:*:game:*' fg_color "white"
+zstyle ':apollo:example:*:*:game:*' bg_color "darkblue"
+zstyle ':apollo:example:*:*:game:*' fg_color "white"
 ```
 
 #### git
@@ -421,23 +493,23 @@ Attribute|Type|Description|Example
 elements|  |  |
 
 ```
-zstyle ':apollo:*:*:*:git:*' elements "local_branch" "action" " " "commit_hash" " " "remote_branch" " " "modified" "|" "untracked" "|" "stash_count"
-zstyle ':apollo:*:*:*:git:*' bg_color "black"
-zstyle ':apollo:*:*:*:git:*::left:label' text "git "
-zstyle ':apollo:*:*:*:git:*::left:label' fg_color "blue"
-zstyle ':apollo:*:*:*:git:*' fg_color "yellow"
-zstyle ':apollo:*:*:*:git:*:local_branch' fg_color "green"
-zstyle ':apollo:*:*:*:git:*:action:left:label' text " "
-zstyle ':apollo:*:*:*:git:*:remote_branch' fg_color "red"
-zstyle ':apollo:*:*:*:git:*:untracked' fg_color "purple"
+zstyle ':apollo:example:*:*:git:*' elements "local_branch" "action" " " "commit_hash" " " "remote_branch" " " "modified" "|" "untracked" "|" "stash_count"
+zstyle ':apollo:example:*:*:git:*' bg_color "black"
+zstyle ':apollo:example:*:*:git:*::left:label' text "git "
+zstyle ':apollo:example:*:*:git:*::left:label' fg_color "blue"
+zstyle ':apollo:example:*:*:git:*' fg_color "yellow"
+zstyle ':apollo:example:*:*:git:*:local_branch' fg_color "green"
+zstyle ':apollo:example:*:*:git:*:action:left:label' text " "
+zstyle ':apollo:example:*:*:git:*:remote_branch' fg_color "red"
+zstyle ':apollo:example:*:*:git:*:untracked' fg_color "purple"
 ```
 
 #### php_version
 
 ```
-zstyle ':apollo:*:*:*:php_version:*' fg_color "grey93"
-zstyle ':apollo:*:*:*:php_version:*' bg_color "fuchsia"
-zstyle ':apollo:*:*:*:php_version:*:left:label' text "PHP "
+zstyle ':apollo:example:*:*:php_version:*' fg_color "grey93"
+zstyle ':apollo:example:*:*:php_version:*' bg_color "fuchsia"
+zstyle ':apollo:example:*:*:php_version:*:left:label' text "PHP "
 ```
 
 #### public_ip
@@ -448,24 +520,24 @@ methods|  |  |
 host|  |  |
 
 ```
-zstyle ':apollo:*:*:*:public_ip:*' fg_color "white"
-zstyle ':apollo:*:*:*:public_ip:*' bg_color "darkgreen"
-zstyle ':apollo:*:*:*:public_ip:*' methods "curl"
-zstyle ':apollo:*:*:*:public_ip:*' host "ipv4.nexcess.net"
+zstyle ':apollo:example:*:*:public_ip:*' fg_color "white"
+zstyle ':apollo:example:*:*:public_ip:*' bg_color "darkgreen"
+zstyle ':apollo:example:*:*:public_ip:*' methods "curl"
+zstyle ':apollo:example:*:*:public_ip:*' host "ipv4.nexcess.net"
 ```
 
 #### quota
 
 ```
-zstyle ':apollo:*:*:*:quota:*' fg_color "white"
-zstyle ':apollo:*:*:*:quota:*' bg_color "red"
+zstyle ':apollo:example:*:*:quota:*' fg_color "white"
+zstyle ':apollo:example:*:*:quota:*' bg_color "red"
 ```
 
 #### root_indicator
 
 ```
-zstyle ':apollo:*:*:*:root_indicator:*' fg_color "yellow"
-zstyle ':apollo:*:*:*:root_indicator:*' bg_color "black"
+zstyle ':apollo:example:*:*:root_indicator:*' fg_color "yellow"
+zstyle ':apollo:example:*:*:root_indicator:*' bg_color "black"
 ```
 
 #### status
@@ -481,19 +553,19 @@ pipe_status|  |  |
 always_show|  |  |
 
 ```
-zstyle ':apollo:*:*:*:status:*' fg_color "white"
-zstyle ':apollo:*:*:*:status:*' bg_color "green"
-zstyle ':apollo:*:*:*:status:*' always_show "true"
-zstyle ':apollo:*:*:*:status:*' pipe_status "true"
-zstyle ':apollo:*:*:*:status:*' verbose "true"
-zstyle ':apollo:*:*:*:status:*' bg_color "red"
+zstyle ':apollo:example:*:*:status:*' fg_color "white"
+zstyle ':apollo:example:*:*:status:*' bg_color "green"
+zstyle ':apollo:example:*:*:status:*' always_show "true"
+zstyle ':apollo:example:*:*:status:*' pipe_status "true"
+zstyle ':apollo:example:*:*:status:*' verbose "true"
+zstyle ':apollo:example:*:*:status:*' bg_color "red"
 ```
 
 #### vcs
 
 ```
-zstyle ':apollo:*:*:*:vcs:*' fg_color "white"
-zstyle ':apollo:*:*:*:vcs:*' bg_color "green"
+zstyle ':apollo:example:*:*:vcs:*' fg_color "white"
+zstyle ':apollo:example:*:*:vcs:*' bg_color "green"
 ```
 
 #### vi_mode
@@ -510,19 +582,19 @@ Element|Description
 mode|
 
 ```
-zstyle ':apollo:*:*:*:vi_mode:*' fg_color "white"
-zstyle ':apollo:*:*:*:vi_mode:*' bg_color "grey30"
-zstyle ':apollo:*:*:*:vi_mode:insert:mode' text "INSERT"
-zstyle ':apollo:*:*:*:vi_mode:visual:mode' text "VISUAL"
-zstyle ':apollo:*:*:*:vi_mode:normal:mode' text "NORMAL"
-zstyle ':apollo:*:*:*:vi_mode:replace:mode' text "REPLACE"
+zstyle ':apollo:example:*:*:vi_mode:*' fg_color "white"
+zstyle ':apollo:example:*:*:vi_mode:*' bg_color "grey30"
+zstyle ':apollo:example:*:*:vi_mode:insert:mode' text "INSERT"
+zstyle ':apollo:example:*:*:vi_mode:visual:mode' text "VISUAL"
+zstyle ':apollo:example:*:*:vi_mode:normal:mode' text "NORMAL"
+zstyle ':apollo:example:*:*:vi_mode:replace:mode' text "REPLACE"
 ```
 
 #### virtualenv
 
 ```
-zstyle ':apollo:*:*:*:virtualenv:*' fg_color "white"
-zstyle ':apollo:*:*:*:virtualenv:*' bg_color "blue"
+zstyle ':apollo:example:*:*:virtualenv:*' fg_color "white"
+zstyle ':apollo:example:*:*:virtualenv:*' bg_color "blue"
 ```
 
 ---
