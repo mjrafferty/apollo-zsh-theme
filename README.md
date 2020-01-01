@@ -4,27 +4,63 @@ Heavily customizable, compatible, and performant zsh theme.
 
 ## Table of Contents
 
+   * [Apollo ZSH Theme](#apollo-zsh-theme)
+      * [Table of Contents](#table-of-contents)
+      * [Installation](#installation)
+         * [Zplugin:](#zplugin)
+         * [Prezto:](#prezto)
+         * [Oh-My-Zsh:](#oh-my-zsh)
+         * [Manual install:](#manual-install)
+      * [Features](#features)
+      * [Usage](#usage)
+      * [Configuration](#configuration)
+         * [Modules](#modules)
+         * [Syntax:](#syntax)
+         * [Options provided to all modules by framework:](#options-provided-to-all-modules-by-framework)
+         * [Module List](#module-list)
+            * [background_jobs](#background_jobs)
+            * [clock](#clock)
+            * [command_execution_time](#command_execution_time)
+            * [context](#context)
+            * [date](#date)
+            * [dir](#dir)
+            * [game](#game)
+            * [git](#git)
+            * [php_version](#php_version)
+            * [public_ip](#public_ip)
+            * [quota](#quota)
+            * [root_indicator](#root_indicator)
+            * [status](#status)
+            * [vcs](#vcs)
+            * [vi_mode](#vi_mode)
+            * [virtualenv](#virtualenv)
+      * [Contributing](#contributing)
+      * [FAQ](#faq)
+      * [Support](#support)
+      * [Acknowledgments](#acknowledgments)
+      * [License](#license)
+
 ## Installation
 
 
-#### Zplugin:
+### Zplugin:
 
 ```
 zplugin ice lucid atinit'fpath+=($PWD/functions.zwc $PWD/functions $PWD/modules.zwc $PWD/modules)'
 zplugin light mjrafferty/apollo-zsh-theme
 ```
 
-#### Prezto:
+### Prezto:
 
 ```
 ```
 
-#### Oh-My-Zsh:
+### Oh-My-Zsh:
 
 ```
 ```
 
-#### Manual install:
+### Manual install:
 
 ```
 fpath+=( $HOME/apollo-zsh-theme/functions $HOME/apollo-zsh-theme/modules )
@@ -39,7 +75,7 @@ prompt apollo
 
 ## Configuration
 
-#### Modules
+### Modules
 
 Module Name |Description
 ---|---
@@ -64,7 +100,7 @@ newline*|
 ruler*|
 
 
-#### Syntax:
+### Syntax:
 
 ```
 zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element/module_side>' attribute "value"
@@ -86,7 +122,7 @@ zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element
                    Active theme or * for all themes
 ```
 
-#### Options provided to all modules by framework:
+### Options provided to all modules by framework:
 
 Module attributes:
 
@@ -130,6 +166,7 @@ Each of the special elements the following attributes:
 
   \*Not valid for surround or label elements.
 
+### Module List
 
 #### background_jobs
 
