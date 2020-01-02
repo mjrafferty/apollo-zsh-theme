@@ -319,6 +319,7 @@ To better understand how these all fit together, here's a quick reference. The f
 ```
 
 Every element has the following attributes available:
+
 Attribute|Description
 ---|---
 fg_color|Foreground color
