@@ -7,10 +7,10 @@ Heavily customizable, compatible, and performant zsh theme.
    * [Apollo ZSH Theme](#apollo-zsh-theme)
       * [Table of Contents](#table-of-contents)
       * [Installation](#installation)
-         * [Zplugin:](#zplugin)
-         * [Prezto:](#prezto)
-         * [Oh-My-Zsh:](#oh-my-zsh)
-         * [Manual install:](#manual-install)
+         * [Zplugin](#zplugin)
+         * [Prezto](#prezto)
+         * [Oh-My-Zsh](#oh-my-zsh)
+         * [Manual install](#manual-install)
       * [Features](#features)
       * [Usage](#usage)
       * [Configuration](#configuration)
@@ -50,24 +50,24 @@ Heavily customizable, compatible, and performant zsh theme.
 ## Installation
 
 
-### Zplugin:
+### Zplugin
 
 ```
 zplugin ice lucid atinit'fpath+=($PWD/functions.zwc $PWD/functions $PWD/modules.zwc $PWD/modules)'
 zplugin light mjrafferty/apollo-zsh-theme
 ```
 
-### Prezto:
+### Prezto
 
 ```
 ```
 
-### Oh-My-Zsh:
+### Oh-My-Zsh
 
 ```
 ```
 
-### Manual install:
+### Manual install
 
 ```
 fpath+=( $HOME/apollo-zsh-theme/functions $HOME/apollo-zsh-theme/modules )
@@ -205,23 +205,23 @@ zstyle ':apollo:example:core:profiler' enabled "true"
 
 Module Name|Description
 ---|---
-background_jobs|Dispaly number of jobs in background
-clock|Displays current time
-command_execution_time|Execution time of last command
-context|User and hostname
-date|Today's date
-dir|Current directory
-game|Slots game
-git|Git repository information
-history|History number
-php_version|PHP version number from php --version
-public_ip|Public IP address
-quota|Disk quota warnings
-root_indicator|Root status
-status|Exit status of last command
-vcs|Version control information from vcs_info
-vi_mode|Vi mode indicator when using vi key bindings
-virtualenv|Active Python virtual environment
+[background_jobs](#background_jobs)|Dispaly number of jobs in background
+[clock](#clock)|Displays current time
+[command_execution_time](#command_execution_time)|Execution time of last command
+[context](#context)|User and hostname
+[date](#date)|Today's date
+[dir](#dir)|Current directory
+[game](#game)|Slots game
+[git](#git)|Git repository information
+[history](#history)|History number
+[php_version](#php_version)|PHP version number from php --version
+[public_ip](#public_ip)|Public IP address
+[quota](#quota)|Disk quota warnings
+[root_indicator](#root_indicator)|Root status
+[status](#status)|Exit status of last command
+[vcs](#vcs)|Version control information from vcs_info
+[vi_mode](#vi_mode)|Vi mode indicator when using vi key bindings
+[virtualenv](#virtualenv)|Active Python virtual environment
 newline*|For multiline prompts, signals end of line in module array
 ruler**|Same as newline, but finishes line with configurable ruler string. Not useful in right prompt
 
