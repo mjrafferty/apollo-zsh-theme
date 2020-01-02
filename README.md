@@ -282,13 +282,13 @@ zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element
 
 Every module has the following attributes available:
 
-Attribute|Description
----|---
-width|Minimum width to enforce on module.
-always_show|Show module even when it contains empty output.
-fg_color|Foreground color for module.
-bg_color|Background color for module.
-style|Style for module text (bold,standout,underline)
+Attribute|Type|Description
+---|---|---
+width|integer|Minimum width to enforce on module.
+always_show|boolean|Show module even when it contains empty output.
+fg_color|color|Foreground color for module.
+bg_color|color|Background color for module.
+style|list|Style for module text (bold,standout,underline)
 
 
 All modules include the following elements provided by the framework:
@@ -320,14 +320,14 @@ To better understand how these all fit together, here's a quick reference. The f
 
 Every element has the following attributes available:
 
-Attribute|Description
----|---
-fg_color|Foreground color
-bg_color|Background Color
-text|String to display
-style|Style for element text (bold,standout,underline)
-blend*|Determines fg_color and bg_color from adjacent modules.
-revblend*|Determines fg_color and bg_color from adjacent modules. Reversed colors compared to blend
+Attribute|Type|Description
+---|---|---
+fg_color|color|Foreground color
+bg_color|color|Background Color
+text|string|String to display
+style|list|Style for element text (bold,standout,underline)
+blend*|boolean|Determines fg_color and bg_color from adjacent modules.
+revblend*|boolean|Determines fg_color and bg_color from adjacent modules. Reversed colors compared to blend
 
   \*Overrides fg_color and bg_color. Only valid for begin/end and separator elements.
 
@@ -375,10 +375,11 @@ sec|
 ampm|
 timezone|
 
-Attribute|Type|Description|Example
----|---|---|---
-live|  |  |
-verbose|  |  |
+Attribute|Type|Description
+---|---|---
+elements|list|
+live|boolean|
+verbose|boolean|
 
 Examples:
 ```shell
@@ -393,10 +394,10 @@ zstyle ':apollo:example:*:*:clock:*' style "bold"
 
 #### command_execution_time
 
-Attribute|Type|Description|Example
----|---|---|---
-min_duration|  |  |
-precision|  |  |
+Attribute|Type|Description
+---|---|---
+min_duration|integer|
+precision|integer|
 
 Examples:
 ```shell
@@ -420,10 +421,10 @@ user|
 host|
 sep|
 
-Attribute|Type|Description|Example
----|---|---|---
-ignore_hosts|  |  |
-ignore_users|  |  |
+Attribute|Type|Description
+---|---|---
+ignore_hosts|list|
+ignore_users|list|
 
 Ignore multiple hosts or users matching array of basic regex values:
 
@@ -449,10 +450,10 @@ dom|
 month|
 year|
 
-Attribute|Type|Description|Example
----|---|---|---
-verbose|  |  |
-elements|  |  |
+Attribute|Type|Description
+---|---|---
+elements|list|
+verbose|boolean|
 
 Extra formatting characters like comma space and slash are allowed as "elements" in the array
 
@@ -479,13 +480,13 @@ element|
 last|
 shortened|
 
-Attribute|Type|Description|Example
----|---|---|---
-absolute|  |  |
-bookmarks|  |  |
-bookmark_patterns|  |  |
-shorten_length|  |  |
-shorten_string|  |  |
+Attribute|Type|Description
+---|---|---
+absolute|boolean|
+bookmarks|list|
+bookmark_patterns|list|
+shorten_length|integer|
+shorten_string|string|
 
 Examples:
 ```shell
@@ -531,9 +532,9 @@ modified|
 untracked|
 stash_count|
 
-Attribute|Type|Description|Example
----|---|---|---
-elements|  |  |
+Attribute|Type|Description
+---|---|---
+elements|list|
 
 Examples:
 ```shell
@@ -561,10 +562,10 @@ zstyle ':apollo:example:*:*:php_version:*:left:label' text "PHP "
 
 #### public_ip
 
-Attribute|Type|Description|Example
----|---|---|---
-methods|  |  |
-host|  |  |
+Attribute|Type|Description
+---|---|---
+methods|list|
+host|string|
 
 Examples:
 ```shell
@@ -599,11 +600,11 @@ Mode|Description
 ---|---
 bad|
 
-Attribute|Type|Description|Example
----|---|---|---
-verbose|  |  |
-pipe_status|  |  |
-always_show|  |  |
+Attribute|Type|Description
+---|---|---
+verbose|boolean|
+pipe_status|boolean|
+always_show|boolean|
 
 Examples:
 ```shell
@@ -671,5 +672,6 @@ zstyle ':apollo:example:*:*:virtualenv:*' bg_color "blue"
 ## License
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-- **[MIT license](http://opensource.org/licenses/mit-license.php)**
+- **[GPL v3 License](http://opensource.org/licenses/mit-license.php)**
