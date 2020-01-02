@@ -35,6 +35,13 @@ __apollo_init_theme() {
         fi
 
         async_start_worker apollo_async_helper -u -n
+
+        async_worker_eval apollo_async_helper "zle -D zle-line-finish"
+        async_worker_eval apollo_async_helper "add-zsh-hook -d precmd __apollo_precmd"
+        async_worker_eval apollo_async_helper "add-zsh-hook -d preexec __apollo_preexec"
+        async_worker_eval apollo_async_helper "add-zsh-hook -d chpwd __apollo_chpwd"
+        async_worker_eval apollo_async_helper "add-zsh-hook -d zshexit __apollo_cleanup"
+
         __APOLLO_ASYNC=1
 
       else

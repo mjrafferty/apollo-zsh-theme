@@ -6,9 +6,11 @@ __APOLLO_INSTALL_DIR="${__APOLLO_INSTALL_DIR%/*}"
 {
 
   for dir in functions modules; do
-    [[ ! -s "${__APOLLO_INSTALL_DIR}/${dir}.zwc" \
-      || "${__APOLLO_INSTALL_DIR}/${dir}" -nt "${__APOLLO_INSTALL_DIR}/${dir}.zwc" ]] \
-      && zcompile "${__APOLLO_INSTALL_DIR}/${dir}.zwc" "${__APOLLO_INSTALL_DIR}/${dir}/"*
+    if [[ ! -s "${__APOLLO_INSTALL_DIR}/${dir}.zwc" \
+      || "${__APOLLO_INSTALL_DIR}/${dir}" -nt "${__APOLLO_INSTALL_DIR}/${dir}.zwc" ]]; then
+          zcompile "${__APOLLO_INSTALL_DIR}/${dir}.tmp.zwc" "${__APOLLO_INSTALL_DIR}/${dir}/"*
+          mv -f "${__APOLLO_INSTALL_DIR}/${dir}.tmp.zwc" "${__APOLLO_INSTALL_DIR}/${dir}.zwc"
+    fi
   done
 
 } &!
