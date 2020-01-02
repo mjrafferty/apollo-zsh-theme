@@ -15,6 +15,7 @@ Heavily customizable, compatible, and performant zsh theme.
       * [Usage](#usage)
       * [Configuration](#configuration)
          * [Core Options](#core-options)
+            * [Module Declaration](#module-declaration)
             * [Decorations](#decorations)
             * [Links](#links)
             * [Rulers](#rulers)
@@ -103,10 +104,18 @@ of "example".
 
 ### Core Options
 
+#### Module declaration
+
+These two options decide what information will be in your prompt and where it will be located. Modules are displayed in
+the order they are defined. For multiline prompts, add "newline" or "ruler" to list to signal end of line. Prompts can be
+any number of lines. Note that right prompt does not use "ruler" and the total number of "newline" in right prompt
+should be less than or equal to the total number of "newline" and "ruler" in left prompt to prevent modules from not
+being displayed.
+
 Option|Type|Description
 ---|---|---
-zstyle ':apollo:example:core:modules:left' modules|list|
-zstyle ':apollo:example:core:modules:right' modules|list|
+zstyle ':apollo:example:core:modules:left' modules|list|Defines what and where items are displayed in left prompt
+zstyle ':apollo:example:core:modules:right' modules|list|Defines what and where items are displayed in right prompt
 
 
 Examples:
@@ -118,9 +127,12 @@ zstyle ':apollo:example:core:modules:right' modules 'command_execution_time' 'ba
 
 #### Decorations
 
+Line begin/end and separator elements are considered to be decorations. They should typically be enabled, but if they
+aren't being used and you really need to shave a few milliseconds off of prompt rendering they can be disabled.
+
 Option|Type|Description
 ---|---|---
-zstyle ':apollo:example:core:decorations' enabled|boolean|
+zstyle ':apollo:example:core:decorations' enabled|boolean|Enable module begin/end and separator elements
 
 Examples:
 ```shell
@@ -130,18 +142,22 @@ zstyle ':apollo:example:core:decorations' enabled "true"
 
 #### Links
 
+Dynamic links added to prompt line ends to join lines together. These get processed on every prompt render, but have
+little to no effect on performance. However, if they are not used anyway, they can be disabled. The string to use for
+each link type is configurable, and can also be unique per side and per prompt line.
+
 Option|Type|Description
 ---|---|---
-zstyle ':apollo:example:core:links' enabled|boolean|
-zstyle ':apollo:example:core:links:\<line\>:\<side\>:\<link_type\>' text|string|
+zstyle ':apollo:example:core:links' enabled|boolean|Enable line links
+zstyle ':apollo:example:core:links:\<line\>:\<side\>:\<link_type\>' text|string|String to use for matching links
 
 Link Type|Description
 ---|---
-top|
-mid|
-str|
-bot|
-none|
+top|Top link if line has content
+mid|Middle link if line has content
+str|Middle link if line has NO content
+bot|Bottom link
+none|Link if line has no content, and lines above have no content
 
 Examples:
 ```shell
@@ -162,9 +178,13 @@ zstyle ':apollo:example:core:links:*:*:none' text ""
 
 #### Rulers
 
+Rulers can be used in multiline prompts to bridge the left and right prompt. The text for these can be made up of strings
+of any length. Depending on terminal width, the string will be repeated as needed, and will resize with termainal window
+size changes. Rulers can be configured to be unique on each prompt line.
+
 Option|Type|Description
 ---|---|---
-zstyle ':apollo:example:core:\<line\>:ruler' text|string|
+zstyle ':apollo:example:core:\<line\>:ruler' text|string|Text to use as ruler for matching lines
 
 Examples:
 ```shell
@@ -176,9 +196,11 @@ zstyle ':apollo:example:core:*:ruler' text "─"
 
 #### Prompt End
 
+This is the text displayed at the very end of the left prompt after all modules.
+
 Option|Type|Description
 ---|---|---
-zstyle ':apollo:example:core:prompt:end' text|string|
+zstyle ':apollo:example:core:prompt:end' text|string|Text to display at very end of left prompt
 
 Examples:
 ```shell
@@ -189,11 +211,17 @@ zstyle ':apollo:example:core:prompt:end' fg_color "white"
 
 #### Caching
 
+Many modules are cached based on parameters determined by the module. For the most part this should not require any
+additional thought for the user, however the user may want to clear cached values on occasion. For instance if a user
+changes networks, the cache for public_ip may not be accurate. To force a refresh, users can hit enter a configurable
+number of times in order to clear module cache and force a refresh. This behavior can be disabled, and caching can also
+be disabled all together if desired.
+
 Option|Type|Description
 ---|---|---
-zstyle ':apollo:example:core:cache' disable|boolean|
-zstyle ':apollo:example:core:cache:clear' disable|boolean|
-zstyle ':apollo:example:core:cache:clear' count|integer|
+zstyle ':apollo:example:core:cache' disable|boolean|Disable caching
+zstyle ':apollo:example:core:cache:clear' disable|boolean|Disable clearing of cache
+zstyle ':apollo:example:core:cache:clear' count|integer|Number of enter presses needed to clear cache
 
 Examples:
 ```shell
@@ -205,9 +233,12 @@ zstyle ':apollo:example:core:cache:clear' count "3"
 
 #### Profiler
 
+This tool is primarily only useful for module development, but if you find your prompt is slow to render it can be used
+to identify which module is responsible. When enabled, each prompt render will output the module run times to the screen.
+
 Option|Type|Description
 ---|---|---
-zstyle ':apollo:example:core:profiler' enabled|boolean|
+zstyle ':apollo:example:core:profiler' enabled|boolean|Enable module profiler
 
 Examples:
 ```shell
@@ -243,6 +274,9 @@ ruler**|Same as newline, but finishes line with configurable ruler string. Not u
 
 
 ### Syntax
+
+All configuration is done using zstyles. Zstyle definitions assign a value to an attribute based on context, and the
+flexibility of this context is what makes it so useful. Below is a guide to describe the strucutre of context within Apollo.
 
 ```
 zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element/module_side>' attribute "value"
