@@ -9,10 +9,10 @@ __apollo_precmd() {
 	local module cache_disabled clearing_disabled
   local -i clear_count
 
-  zstyle -b ":apollo:${__APOLLO_PROMPT_THEME}:core:profiler" enabled profiler
-  zstyle -b ":apollo:${__APOLLO_PROMPT_THEME}:core:cache" disable cache_disabled
-  zstyle -s ":apollo:${__APOLLO_PROMPT_THEME}:core:cache:clear" count clear_count
-  zstyle -b ":apollo:${__APOLLO_PROMPT_THEME}:core:cache:clear" disable clearing_disabled
+  zstyle -b ":apollo:${APOLLO_THEME}:core:profiler" enabled profiler
+  zstyle -b ":apollo:${APOLLO_THEME}:core:cache" disable cache_disabled
+  zstyle -s ":apollo:${APOLLO_THEME}:core:cache:clear" count clear_count
+  zstyle -b ":apollo:${APOLLO_THEME}:core:cache:clear" disable clearing_disabled
 
   if [[ "$cache_disabled" == "yes" ]] \
     || [[ "$clearing_disabled" != "yes" && "$((++__APOLLO_BREAK_CACHE_COUNTER))" -ge "$clear_count" ]]; then

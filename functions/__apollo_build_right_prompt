@@ -5,8 +5,8 @@ __apollo_build_right_prompt(){
   local current_module line_index
   local -a left_modules right_modules
 
-  zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:core:modules:left" modules left_modules
-  zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:core:modules:right" modules right_modules
+  zstyle -a ":apollo:${APOLLO_THEME}:core:modules:left" modules left_modules
+  zstyle -a ":apollo:${APOLLO_THEME}:core:modules:right" modules right_modules
 
   line_index="$1"
 
@@ -23,7 +23,7 @@ __apollo_build_right_prompt(){
         ;;
       *)
         __APOLLO_MODULE_MAP[__APOLLO_MODULE_INDEX]="$current_module"
-        __APOLLO_REVERSE_MODULE_MAP[$current_module]+="${line_index}:right:${__APOLLO_MODULE_INDEX}:${__APOLLO_PROMPT_THEME}\0"
+        __APOLLO_REVERSE_MODULE_MAP[$current_module]+="${line_index}:right:${__APOLLO_MODULE_INDEX}:${APOLLO_THEME}\0"
         __APOLLO_RIGHT_LINE_MAP[line_index]+="${__APOLLO_MODULE_INDEX}\0"
 
         __APOLLO_RETURN_MESSAGE+="\${__APOLLO_RIGHT_SEPARATORS[$__APOLLO_MODULE_INDEX]}\${(e)__APOLLO_MODULE_TEXT[$__APOLLO_MODULE_INDEX]}"

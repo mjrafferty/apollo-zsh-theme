@@ -30,7 +30,7 @@ __apollo_async_update() {
 
     if ((${+functions[__apollo_${module}_cache_key]})); then
       "__apollo_${module}_cache_key";
-      cache_key="${__APOLLO_PROMPT_THEME}-${line}-${side}-${num}-${__APOLLO_RETURN_MESSAGE}"
+      cache_key="${APOLLO_THEME}-${line}-${side}-${num}-${__APOLLO_RETURN_MESSAGE}"
     fi
 
     case "$side" in

@@ -77,7 +77,7 @@ zplugin light mjrafferty/apollo-zsh-theme
 
 ```shell
 git clone https://github.com/mjrafferty/apollo-zsh-theme $HOME/apollo-zsh-theme
-source $HOME/apollo/zsh-theme/apollo-zsh-theme.zsh
+source $HOME/apollo-zsh-theme/apollo-zsh-theme.zsh
 ```
 
 

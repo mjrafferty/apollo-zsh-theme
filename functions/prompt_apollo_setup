@@ -1,5 +1,7 @@
 # vim:ft=zsh
 
+typeset -g  APOLLO_THEME="apollo"
+
 ## Cache types
 typeset -gA __APOLLO_MODULE_CACHE
 typeset -gA __APOLLO_STYLE_CACHE
@@ -29,16 +31,13 @@ typeset -ga __APOLLO_RIGHT_END
 typeset -ga __APOLLO_LEFT_LINK
 typeset -ga __APOLLO_RIGHT_LINK
 
-## Possibly need to modify to be prompt theme specific
 typeset -ga __APOLLO_MODULE_MAP
-typeset -gA __APOLLO_REVERSE_MODULE_MAP # Needs adjusting to include theme
+typeset -gA __APOLLO_REVERSE_MODULE_MAP
 typeset -gA __APOLLO_MODULE_MODE
 typeset -gA __APOLLO_MODULE_HAS_LENGTH
 typeset -ga __APOLLO_MODULE_TEXT
 typeset -gi __APOLLO_MODULE_INDEX=1
 
-## Possibly prompt theme specific
-typeset -g  __APOLLO_PROMPT_THEME="main"
 typeset -gA __APOLLO_PROMPT_THEME_START
 typeset -gA __APOLLO_PROMPT_THEME_END
 

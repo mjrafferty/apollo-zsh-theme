@@ -5,10 +5,10 @@ __apollo_init_theme() {
   local module theme
   local -a left_modules right_modules
 
-  theme="${__APOLLO_PROMPT_THEME}"
+  theme="${APOLLO_THEME}"
 
-  zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:core:modules:left" modules left_modules
-  zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:core:modules:right" modules right_modules
+  zstyle -a ":apollo:${APOLLO_THEME}:core:modules:left" modules left_modules
+  zstyle -a ":apollo:${APOLLO_THEME}:core:modules:right" modules right_modules
 
   # Load enabled modules
   for module in "${left_modules[@]}" "${right_modules[@]}"; do

@@ -5,7 +5,7 @@ __apollo_update_prompts() {
   local line
   local start
 
-  if zstyle -t ":apollo:${__APOLLO_PROMPT_THEME}:core:links" enabled "true" "yes" "1" "on" ; then
+  if zstyle -t ":apollo:${APOLLO_THEME}:core:links" enabled "true" "yes" "1" "on" ; then
     __apollo_add_links
   fi
 

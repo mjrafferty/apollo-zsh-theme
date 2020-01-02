@@ -40,12 +40,12 @@ zle-line-finish() {
 
   local current_theme="$__APOLLO_PROMPT_THEME"
 
-  __APOLLO_PROMPT_THEME="test"
+  APOLLO_THEME="buffer"
   __apollo_run_prompt
 
   zle && zle .reset-prompt
 
-  __APOLLO_PROMPT_THEME="$current_theme"
+  APOLLO_THEME="$current_theme"
 
 }
 

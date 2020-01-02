@@ -14,7 +14,7 @@ __apollo_run_prompt() {
   PROMPT="${__APOLLO_FINISHED_PROMPTS[$__APOLLO_PROMPT_THEME]}"
   RPROMPT="${__APOLLO_FINISHED_RPROMPTS[$__APOLLO_PROMPT_THEME]}"
 
-  zstyle -b ":apollo:${__APOLLO_PROMPT_THEME}:core:profiler" enabled profiler
+  zstyle -b ":apollo:${APOLLO_THEME}:core:profiler" enabled profiler
 
   if [[ "$profiler" == "yes" ]] ; then
     start="$EPOCHREALTIME"

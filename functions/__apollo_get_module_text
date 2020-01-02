@@ -18,12 +18,12 @@ __apollo_get_module_text() {
   fi
 
   if (( __APOLLO_ASYNC == 1 && ${+functions[__apollo_${module}_always_async]} )); then
-    async_job apollo_async_helper "__apollo_${module}_always_async" ":apollo:${__APOLLO_PROMPT_THEME}:${line}:${side}:${module}"
+    async_job apollo_async_helper "__apollo_${module}_always_async" ":apollo:${APOLLO_THEME}:${line}:${side}:${module}"
   fi
 
   if ((${+functions[__apollo_${module}_cache_key]})); then
     "__apollo_${module}_cache_key";
-    cache_key="${__APOLLO_PROMPT_THEME}-${line}-${side}-${num}-${__APOLLO_RETURN_MESSAGE}"
+    cache_key="${APOLLO_THEME}-${line}-${side}-${num}-${__APOLLO_RETURN_MESSAGE}"
     cache=("${(s.\0.)__APOLLO_MODULE_CACHE["${cache_key}"]}")
   fi
 
@@ -35,7 +35,7 @@ __apollo_get_module_text() {
   else
 
     if (( __APOLLO_ASYNC == 1 && ${+functions[__apollo_${module}_async]} )); then
-      async_job apollo_async_helper "__apollo_${module}_async" ":apollo:${__APOLLO_PROMPT_THEME}:${line}:${side}:${module}"
+      async_job apollo_async_helper "__apollo_${module}_async" ":apollo:${APOLLO_THEME}:${line}:${side}:${module}"
     fi
 
     __apollo_run_module "$line" "$side" "$module" "$num" "$cache_key"

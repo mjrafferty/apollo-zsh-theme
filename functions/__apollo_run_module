@@ -16,7 +16,7 @@ __apollo_run_module() {
   num="$4"
   cache_key="$5"
 
-  context=":apollo:${__APOLLO_PROMPT_THEME}:${line}:${side}:${module}"
+  context=":apollo:${APOLLO_THEME}:${line}:${side}:${module}"
 
   __APOLLO_MODULE_MODE[$module]="default"
 
