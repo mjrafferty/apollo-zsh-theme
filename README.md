@@ -671,7 +671,6 @@ zstyle ':apollo:example:*:*:virtualenv:*' bg_color "blue"
 
 ## License
 
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 - **[GPL v3 License](http://opensource.org/licenses/mit-license.php)**
