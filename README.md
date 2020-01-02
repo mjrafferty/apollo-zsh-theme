@@ -351,6 +351,8 @@ zstyle ':apollo:example:*:*:*:*:end' text ""
 
 #### background_jobs
 
+Number of background jobs.
+
 Examples:
 ```shell
 zstyle ':apollo:example:*:*:background_jobs:*' always_show "true"
@@ -362,20 +364,22 @@ zstyle ':apollo:example:*:*:background_jobs:*:left:label' text "Jobs: "
 
 #### clock
 
+Current time.
+
 Element|Description
 ---|---
-12hour|
-24hour|
-min|
-sec|
-ampm|
-timezone|
+12hour|12 hour clock
+24hour|24 hour clock
+min|Minute
+sec|Second
+ampm|AM/PM indicator
+timezone|Timezone
 
 Attribute|Type|Description
 ---|---|---
-elements|list|
-live|boolean|
-verbose|boolean|
+elements|list|List of elements to display in module. Formatting characters can be added as "elements". See examples.
+live|boolean|Refreshes prompt every second. Kind of cool but it causes issues in some environments.
+verbose|boolean|Full or condensed output for element
 
 Examples:
 ```shell
@@ -390,10 +394,12 @@ zstyle ':apollo:example:*:*:clock:*' style "bold"
 
 #### command_execution_time
 
+Execution time for last command.
+
 Attribute|Type|Description
 ---|---|---
-min_duration|integer|
-precision|integer|
+min_duration|integer|Don't show execution time if less than this
+precision|integer|Number of digits to show after decimal
 
 Examples:
 ```shell
@@ -406,21 +412,23 @@ zstyle ':apollo:example:*:*:command_execution_time:*' min_duration "1"
 
 #### context
 
+User and hostname info.
+
 Mode|Description
 ---|---
-ssh|
-sudo|
+ssh|If user logged in via SSH
+sudo|If user is using sudo
 
 Element|Description
 ---|---
-user|
-host|
-sep|
+user|User name
+host|Host name
+sep|Separator between user and host
 
 Attribute|Type|Description
 ---|---|---
-ignore_hosts|list|
-ignore_users|list|
+ignore_hosts|list|List of host names to ignore.
+ignore_users|list|List of user names to ignore.
 
 Ignore multiple hosts or users matching array of basic regex values:
 
@@ -439,17 +447,19 @@ zstyle ':apollo:example:*:*:context:*:sep' text "@"
 
 #### date
 
+Today's date
+
 Element|Description
 ---|---
-dow|
-dom|
-month|
-year|
+dow|Day of week
+dom|Day of month
+month|Month
+year|Year
 
 Attribute|Type|Description
 ---|---|---
-elements|list|
-verbose|boolean|
+elements|list|List of elements to display in module. Formatting characters can be added as "elements". See examples.
+verbose|boolean|Full or condensed output for element
 
 Extra formatting characters like comma space and slash are allowed as "elements" in the array
 
@@ -466,23 +476,25 @@ zstyle ':apollo:example:*:*:date:*' verbose "true"
 
 #### dir
 
+Current working directory.
+
 Mode|Description
 ---|---
-readonly|
+readonly|Mode if user doesn't have write permissions on directory
 
 Element|Description
 ---|---
-element|
-last|
-shortened|
+element|Normal part of path
+last|Last element in path
+shortened|Element that thas been shortened
 
 Attribute|Type|Description
 ---|---|---
-absolute|boolean|
-bookmarks|list|
-bookmark_patterns|list|
-shorten_length|integer|
-shorten_string|string|
+absolute|boolean|Use absolute path
+bookmarks|list|mapping of named directories of the form "name=PATH"
+bookmark_patterns|list|List of patterns to turn into named directories.
+shorten_length|integer|Maximum length of directory element name. Auto for dynamic.
+shorten_string|string|String to add to shortened elements
 
 Examples:
 ```shell
@@ -507,6 +519,8 @@ zstyle ':apollo:example:*:*:dir:*:shortened' fg_color "grey30"
 
 #### game
 
+Stupid little slots game.
+
 Examples:
 ```shell
 zstyle ':apollo:example:*:*:game:*' bg_color "darkblue"
@@ -516,17 +530,19 @@ zstyle ':apollo:example:*:*:game:*' fg_color "white"
 
 #### git
 
+Git repository information.
+
 Element|Description
 ---|---
-local_branch|
-remote_branch|
-ahead|
-behind|
-commit_hash|
-action|
-modified|
-untracked|
-stash_count|
+local_branch|Local branch name
+remote_branch|Remote branch name
+ahead|Commits ahead remote
+behind|Commits behind remote
+commit_hash|Commit hash
+action|Current repository action if any
+modified|Modified file count
+untracked|Untracked file count
+stash_count|Number of stashes
 
 Attribute|Type|Description
 ---|---|---
@@ -548,6 +564,8 @@ zstyle ':apollo:example:*:*:git:*:untracked' fg_color "purple"
 
 #### php_version
 
+Current PHP version.
+
 Examples:
 ```shell
 zstyle ':apollo:example:*:*:php_version:*' fg_color "grey93"
@@ -558,10 +576,12 @@ zstyle ':apollo:example:*:*:php_version:*:left:label' text "PHP "
 
 #### public_ip
 
+Display public IP address.
+
 Attribute|Type|Description
 ---|---|---
-methods|list|
-host|string|
+methods|list|List of methods to retrieve IP info (dig, curl, wget)
+host|string|Hostname to poll for ip info
 
 Examples:
 ```shell
@@ -574,6 +594,8 @@ zstyle ':apollo:example:*:*:public_ip:*' host "ipv4.nexcess.net"
 
 #### quota
 
+Show warning when over disk quota.
+
 Examples:
 ```shell
 zstyle ':apollo:example:*:*:quota:*' fg_color "white"
@@ -582,6 +604,8 @@ zstyle ':apollo:example:*:*:quota:*' bg_color "red"
 
 
 #### root_indicator
+
+Display sudo/root status.
 
 Examples:
 ```shell
@@ -592,15 +616,17 @@ zstyle ':apollo:example:*:*:root_indicator:*' bg_color "black"
 
 #### status
 
+Display exit/return status of last command.
+
 Mode|Description
 ---|---
-bad|
+bad|Mode when return code is abnormal
 
 Attribute|Type|Description
 ---|---|---
-verbose|boolean|
-pipe_status|boolean|
-always_show|boolean|
+verbose|boolean|Display signal name as well as code
+pipe_status|boolean|Display pipe exit codes
+always_show|boolean|Show when exit code is 0
 
 Examples:
 ```shell
@@ -615,6 +641,8 @@ zstyle ':apollo:example:*:*:status:*' bg_color "red"
 
 #### vcs
 
+Version control information provided by vcs_info (Work in progress).
+
 Examples:
 ```shell
 zstyle ':apollo:example:*:*:vcs:*' fg_color "white"
@@ -624,16 +652,18 @@ zstyle ':apollo:example:*:*:vcs:*' bg_color "green"
 
 #### vi_mode
 
+Show current keymapping mode when using Vi key bindings.
+
 Mode|Description
 ---|---
-insert|
-visual|
-normal|
-replace|
+insert|Insert mode
+visual|Visual mode
+normal|Normal mode
+replace|Replace mode
 
 Element|Description
 ---|---
-mode|
+mode|Mode text element
 
 Examples:
 ```shell
@@ -647,6 +677,8 @@ zstyle ':apollo:example:*:*:vi_mode:replace:mode' text "REPLACE"
 
 
 #### virtualenv
+
+Show Python virtual environment name.
 
 Examples:
 ```shell
