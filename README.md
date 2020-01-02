@@ -1,5 +1,7 @@
 # Apollo ZSH Theme
 
+![Demo](media/demo.gif)
+
 Heavily customizable, compatible, and performant zsh theme.
 
 ## Table of Contents
