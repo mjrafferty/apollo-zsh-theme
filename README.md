@@ -89,28 +89,18 @@ prompt apollo
 
 ## Configuration
 
-The prompts are made up of a combination of modules, and each module is made up of one or more elements. There are
-elements available to every module, as well as elements specific to certain modules. Both the modules and the elements
-that they contain each have access to a variety of attributes to define them. There are a number of attributes available
-to every module/element, as well as module specific ones.
+The prompts are made up of a combination of modules, and each module is made up of one or more elements. There are elements available to every module, as well as elements specific to certain modules. Both the modules and the elements that they contain each have access to a variety of attributes to define them. There are a number of attributes available to every module/element, as well as module specific ones.
 
-All configuration is done using zstyle's. This offers tremendous context aware flexibility as well as wildcards to
-set attributes for a variety of matching modules/elements. Zstyle is provided by the zsh/zutil module and you can read
-more about it in the zshmodules man page.
+All configuration is done using zstyle's. This offers tremendous context aware flexibility as well as wildcards to set attributes for a variety of matching modules/elements. Zstyle is provided by the zsh/zutil module and you can read more about it in the zshmodules man page.
 
-Below I'll go over all of the available configuration options. For all of the examples given, I'll be using a theme name
-of "example".
+Below I'll go over all of the available configuration options. For all of the examples given, I'll be using a theme name of "example".
 
 
 ### Core Options
 
 #### Module declaration
 
-These two options decide what information will be in your prompt and where it will be located. Modules are displayed in
-the order they are defined. For multiline prompts, add "newline" or "ruler" to list to signal end of line. Prompts can be
-any number of lines. Note that right prompt does not use "ruler" and the total number of "newline" in right prompt
-should be less than or equal to the total number of "newline" and "ruler" in left prompt to prevent modules from not
-being displayed.
+These two options decide what information will be in your prompt and where it will be located. Modules are displayed in the order they are defined. For multiline prompts, add "newline" or "ruler" to list to signal end of line. Prompts can be any number of lines. Note that right prompt does not use "ruler" and the total number of "newline" in right prompt should be less than or equal to the total number of "newline" and "ruler" in left prompt to prevent modules from not being displayed.
 
 Option|Type|Description
 ---|---|---
@@ -127,8 +117,7 @@ zstyle ':apollo:example:core:modules:right' modules 'command_execution_time' 'ba
 
 #### Decorations
 
-Line begin/end and separator elements are considered to be decorations. They should typically be enabled, but if they
-aren't being used and you really need to shave a few milliseconds off of prompt rendering they can be disabled.
+Line begin/end and separator elements are considered to be decorations. They should typically be enabled, but if they aren't being used and you really need to shave a few milliseconds off of prompt rendering they can be disabled.
 
 Option|Type|Description
 ---|---|---
@@ -142,9 +131,7 @@ zstyle ':apollo:example:core:decorations' enabled "true"
 
 #### Links
 
-Dynamic links added to prompt line ends to join lines together. These get processed on every prompt render, but have
-little to no effect on performance. However, if they are not used anyway, they can be disabled. The string to use for
-each link type is configurable, and can also be unique per side and per prompt line.
+Dynamic links added to prompt line ends to join lines together. These get processed on every prompt render, but have little to no effect on performance. However, if they are not used anyway, they can be disabled. The string to use for each link type is configurable, and can also be unique per side and per prompt line.
 
 Option|Type|Description
 ---|---|---
@@ -178,9 +165,7 @@ zstyle ':apollo:example:core:links:*:*:none' text ""
 
 #### Rulers
 
-Rulers can be used in multiline prompts to bridge the left and right prompt. The text for these can be made up of strings
-of any length. Depending on terminal width, the string will be repeated as needed, and will resize with termainal window
-size changes. Rulers can be configured to be unique on each prompt line.
+Rulers can be used in multiline prompts to bridge the left and right prompt. The text for these can be made up of strings of any length. Depending on terminal width, the string will be repeated as needed, and will resize with termainal window size changes. Rulers can be configured to be unique on each prompt line.
 
 Option|Type|Description
 ---|---|---
@@ -211,11 +196,7 @@ zstyle ':apollo:example:core:prompt:end' fg_color "white"
 
 #### Caching
 
-Many modules are cached based on parameters determined by the module. For the most part this should not require any
-additional thought for the user, however the user may want to clear cached values on occasion. For instance if a user
-changes networks, the cache for public_ip may not be accurate. To force a refresh, users can hit enter a configurable
-number of times in order to clear module cache and force a refresh. This behavior can be disabled, and caching can also
-be disabled all together if desired.
+Many modules are cached based on parameters determined by the module. For the most part this should not require any additional thought for the user, however the user may want to clear cached values on occasion. For instance if a user changes networks, the cache for public_ip may not be accurate. To force a refresh, users can hit enter a configurable number of times in order to clear module cache and force a refresh. This behavior can be disabled, and caching can also be disabled all together if desired.
 
 Option|Type|Description
 ---|---|---
@@ -233,8 +214,7 @@ zstyle ':apollo:example:core:cache:clear' count "3"
 
 #### Profiler
 
-This tool is primarily only useful for module development, but if you find your prompt is slow to render it can be used
-to identify which module is responsible. When enabled, each prompt render will output the module run times to the screen.
+This tool is primarily only useful for module development, but if you find your prompt is slow to render it can be used to identify which module is responsible. When enabled, each prompt render will output the module run times to the screen.
 
 Option|Type|Description
 ---|---|---
@@ -275,8 +255,7 @@ ruler**|Same as newline, but finishes line with configurable ruler string. Not u
 
 ### Syntax
 
-All configuration is done using zstyles. Zstyle definitions assign a value to an attribute based on context, and the
-flexibility of this context is what makes it so useful. Below is a guide to describe the strucutre of context within Apollo.
+All configuration is done using zstyles. Zstyle definitions assign a value to an attribute based on context, and the flexibility of this context is what makes it so useful. Below is a guide to describe the strucutre of context within Apollo.
 
 ```
 zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element/module_side>' attribute "value"
@@ -328,8 +307,7 @@ Element|Description
 left:label|String to left of module/element
 right:label|String to right of module/element
 
-To better understand how these all fit together, here's a quick reference. The first is a look at the module as a
-whole, the second is a closer breakdown of module_text, which is made up of the elements inside the module:
+To better understand how these all fit together, here's a quick reference. The first is a look at the module as a whole, the second is a closer breakdown of module_text, which is made up of the elements inside the module:
 
 ```
 {separator/begin}{left:surround}{left:label}{module_text}{right:label}{right:surround}{end}
@@ -352,8 +330,7 @@ revblend*|
 
   \*Not valid for surround or label elements.
 
-Modules may also provide additional elements. Any element not listed as "special" above has the following attributes
-provided by the framework:
+Modules may also provide additional elements. Any element not listed as "special" above has the following attributes provided by the framework:
 
 Attribute|Description
 ---|---
@@ -362,11 +339,9 @@ bg_color|Background color
 text|String to display
 style|Style for element text (bold,standout,underline)
 
-The "text" attribute will not have an effect in many cases if the text is dynamic and generated by the module, but any
-elements with static text may utilize the "text" attribute.
+The "text" attribute will not have an effect in many cases if the text is dynamic and generated by the module, but any elements with static text may utilize the "text" attribute.
 
-All other module options should be controlled via attributes at the module scope, even if they only impact an individual
-element in the module. This is done for the sake of providing a uniform configuration interface.
+All other module options should be controlled via attributes at the module scope, even if they only impact an individual element in the module. This is done for the sake of providing a uniform configuration interface.
 
 Examples:
 ```shell
