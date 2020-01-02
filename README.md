@@ -57,15 +57,18 @@ zplugin ice lucid atinit'fpath+=($PWD/functions.zwc $PWD/functions $PWD/modules.
 zplugin light mjrafferty/apollo-zsh-theme
 ```
 
+
 ### Prezto
 
 ```shell
 ```
 
+
 ### Oh-My-Zsh
 
 ```shell
 ```
+
 
 ### Manual install
 
@@ -76,9 +79,12 @@ source apollo-zsh-theme/conf/theme.conf
 prompt apollo
 ```
 
+
 ## Features
 
+
 ## Usage
+
 
 ## Configuration
 
@@ -94,6 +100,7 @@ more about it in the zshmodules man page.
 Below I'll go over all of the available configuration options. For all of the examples given, I'll be using a theme name
 of "example".
 
+
 ### Core Options
 
 Option|Type|Description
@@ -108,6 +115,7 @@ zstyle ':apollo:example:core:modules:left' modules 'virtualenv' 'quota' 'public_
 zstyle ':apollo:example:core:modules:right' modules 'command_execution_time' 'background_jobs' 'date' 'clock' 'status' 'newline' 'php_version'
 ```
 
+
 #### Decorations
 
 Option|Type|Description
@@ -118,6 +126,7 @@ Examples:
 ```shell
 zstyle ':apollo:example:core:decorations' enabled "true"
 ```
+
 
 #### Links
 
@@ -150,6 +159,7 @@ zstyle ':apollo:example:core:links:*:right:bot' text "─╯"
 zstyle ':apollo:example:core:links:*:*:none' text ""
 ```
 
+
 #### Rulers
 
 Option|Type|Description
@@ -163,6 +173,7 @@ zstyle ':apollo:example:core:*:ruler' fg_color "white"
 zstyle ':apollo:example:core:*:ruler' text "─"
 ```
 
+
 #### Prompt End
 
 Option|Type|Description
@@ -174,6 +185,7 @@ Examples:
 zstyle ':apollo:example:core:prompt:end' text "> "
 zstyle ':apollo:example:core:prompt:end' fg_color "white"
 ```
+
 
 #### Caching
 
@@ -190,6 +202,7 @@ zstyle ':apollo:example:core:cache:clear' disable "true"
 zstyle ':apollo:example:core:cache:clear' count "3"
 ```
 
+
 #### Profiler
 
 Option|Type|Description
@@ -200,6 +213,7 @@ Examples:
 ```shell
 zstyle ':apollo:example:core:profiler' enabled "true"
 ```
+
 
 ### Modules
 
@@ -227,6 +241,7 @@ ruler**|Same as newline, but finishes line with configurable ruler string. Not u
 
   \* These are not actual modules and therefore most of the options below do not apply.
 
+
 ### Syntax
 
 ```
@@ -248,6 +263,7 @@ zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element
                    |
                    Active theme or * for all themes
 ```
+
 
 ### Options provided to all modules by framework
 
@@ -333,6 +349,7 @@ zstyle ':apollo:example:*:*:*:*:end' blend "true"
 zstyle ':apollo:example:*:*:*:*:end' text ""
 ```
 
+
 ### Module List
 
 #### background_jobs
@@ -344,6 +361,7 @@ zstyle ':apollo:example:*:*:background_jobs:*' fg_color "white"
 zstyle ':apollo:example:*:*:background_jobs:*' bg_color "cyan"
 zstyle ':apollo:example:*:*:background_jobs:*:left:label' text "Jobs: "
 ```
+
 
 #### clock
 
@@ -371,6 +389,7 @@ zstyle ':apollo:example:*:*:clock:*' bg_color "darkgreen"
 zstyle ':apollo:example:*:*:clock:*' style "bold"
 ```
 
+
 #### command_execution_time
 
 Attribute|Type|Description|Example
@@ -385,6 +404,7 @@ zstyle ':apollo:example:*:*:command_execution_time:*' bg_color "navy"
 zstyle ':apollo:example:*:*:command_execution_time:*' precision "2"
 zstyle ':apollo:example:*:*:command_execution_time:*' min_duration "1"
 ```
+
 
 #### context
 
@@ -418,6 +438,7 @@ zstyle ':apollo:example:*:*:context:sudo' ignore_hosts ".*"
 zstyle ':apollo:example:*:*:context:*:sep' text "@"
 ```
 
+
 #### date
 
 Element|Description
@@ -443,6 +464,7 @@ zstyle ':apollo:example:*:*:date:*' fg_color "white"
 zstyle ':apollo:example:*:*:date:*' bg_color "blue"
 zstyle ':apollo:example:*:*:date:*' verbose "true"
 ```
+
 
 #### dir
 
@@ -484,6 +506,7 @@ zstyle ':apollo:example:*:*:dir:*:shortened' style "bold"
 zstyle ':apollo:example:*:*:dir:*:shortened' fg_color "grey30"
 ```
 
+
 #### game
 
 Examples:
@@ -491,6 +514,7 @@ Examples:
 zstyle ':apollo:example:*:*:game:*' bg_color "darkblue"
 zstyle ':apollo:example:*:*:game:*' fg_color "white"
 ```
+
 
 #### git
 
@@ -523,6 +547,7 @@ zstyle ':apollo:example:*:*:git:*:remote_branch' fg_color "red"
 zstyle ':apollo:example:*:*:git:*:untracked' fg_color "purple"
 ```
 
+
 #### php_version
 
 Examples:
@@ -531,6 +556,7 @@ zstyle ':apollo:example:*:*:php_version:*' fg_color "grey93"
 zstyle ':apollo:example:*:*:php_version:*' bg_color "fuchsia"
 zstyle ':apollo:example:*:*:php_version:*:left:label' text "PHP "
 ```
+
 
 #### public_ip
 
@@ -547,6 +573,7 @@ zstyle ':apollo:example:*:*:public_ip:*' methods "curl"
 zstyle ':apollo:example:*:*:public_ip:*' host "ipv4.nexcess.net"
 ```
 
+
 #### quota
 
 Examples:
@@ -555,6 +582,7 @@ zstyle ':apollo:example:*:*:quota:*' fg_color "white"
 zstyle ':apollo:example:*:*:quota:*' bg_color "red"
 ```
 
+
 #### root_indicator
 
 Examples:
@@ -562,6 +590,7 @@ Examples:
 zstyle ':apollo:example:*:*:root_indicator:*' fg_color "yellow"
 zstyle ':apollo:example:*:*:root_indicator:*' bg_color "black"
 ```
+
 
 #### status
 
@@ -585,6 +614,7 @@ zstyle ':apollo:example:*:*:status:*' verbose "true"
 zstyle ':apollo:example:*:*:status:*' bg_color "red"
 ```
 
+
 #### vcs
 
 Examples:
@@ -592,6 +622,7 @@ Examples:
 zstyle ':apollo:example:*:*:vcs:*' fg_color "white"
 zstyle ':apollo:example:*:*:vcs:*' bg_color "green"
 ```
+
 
 #### vi_mode
 
@@ -616,6 +647,7 @@ zstyle ':apollo:example:*:*:vi_mode:normal:mode' text "NORMAL"
 zstyle ':apollo:example:*:*:vi_mode:replace:mode' text "REPLACE"
 ```
 
+
 #### virtualenv
 
 Examples:
@@ -623,6 +655,7 @@ Examples:
 zstyle ':apollo:example:*:*:virtualenv:*' fg_color "white"
 zstyle ':apollo:example:*:*:virtualenv:*' bg_color "blue"
 ```
+
 
 ---
 
