@@ -20,7 +20,7 @@ __apollo_async_update() {
     theme="${module_info[4]}"
 
     # If this module isn't in the active theme, skip it
-    if [[ "$theme" != "$__APOLLO_PROMPT_THEME" ]]; then
+    if [[ "$theme" != "$APOLLO_THEME" ]]; then
       continue;
     fi
 

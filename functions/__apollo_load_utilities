@@ -38,7 +38,7 @@ __apollo_chpwd() {
 ## Update buffered prompt when executing command
 zle-line-finish() {
 
-  local current_theme="$__APOLLO_PROMPT_THEME"
+  local current_theme="$APOLLO_THEME"
 
   APOLLO_THEME="buffer"
   __apollo_run_prompt

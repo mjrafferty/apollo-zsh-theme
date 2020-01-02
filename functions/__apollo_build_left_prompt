@@ -9,7 +9,7 @@ __apollo_build_left_prompt() {
   zstyle -a ":apollo:${APOLLO_THEME}:core:modules:left" modules left_modules
 
   line_index=$(($#__APOLLO_PROMPT_LINES + 1));
-  __APOLLO_PROMPT_THEME_START[$__APOLLO_PROMPT_THEME]="$line_index"
+  __APOLLO_PROMPT_THEME_START[$APOLLO_THEME]="$line_index"
 
   __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_BEGIN[$line_index]}"
 
@@ -51,7 +51,7 @@ __apollo_build_left_prompt() {
 
   done
 
-  for ((line=__APOLLO_PROMPT_THEME_START[$__APOLLO_PROMPT_THEME];line<=line_index;line++)); do
+  for ((line=__APOLLO_PROMPT_THEME_START[$APOLLO_THEME];line<=line_index;line++)); do
 
     if ((line == line_index)); then
       __APOLLO_PROMPT_LINES[$line]="\${__APOLLO_LEFT_LINK[$line]}${__APOLLO_PROMPT_LINES[$line]}"
@@ -59,21 +59,21 @@ __apollo_build_left_prompt() {
       __APOLLO_PROMPT_LINES[$line]="\${__APOLLO_LEFT_LINK[$line]}${__APOLLO_PROMPT_LINES[$line]}\${__APOLLO_RIGHT_LINK[$line]}"
     fi
 
-    __APOLLO_FINISHED_PROMPTS[$__APOLLO_PROMPT_THEME]+="\${(e)__APOLLO_PROMPT_LINES[$line]}"
+    __APOLLO_FINISHED_PROMPTS[$APOLLO_THEME]+="\${(e)__APOLLO_PROMPT_LINES[$line]}"
 
     if ((line < line_index)); then
-      __APOLLO_FINISHED_PROMPTS[$__APOLLO_PROMPT_THEME]+=$'\n'
+      __APOLLO_FINISHED_PROMPTS[$APOLLO_THEME]+=$'\n'
     fi
 
   done
 
-  __APOLLO_PROMPT_THEME_END[$__APOLLO_PROMPT_THEME]="$line_index"
+  __APOLLO_PROMPT_THEME_END[$APOLLO_THEME]="$line_index"
 
   __APOLLO_PROMPT_LINES[line_index]+="\${__APOLLO_LEFT_END[$line_index]}"
 
   __apollo_set_style ":apollo:${APOLLO_THEME}:core:prompt:end"
 
-  __APOLLO_FINISHED_PROMPTS[$__APOLLO_PROMPT_THEME]+="$__APOLLO_RETURN_MESSAGE%{%f%k%}"
+  __APOLLO_FINISHED_PROMPTS[$APOLLO_THEME]+="$__APOLLO_RETURN_MESSAGE%{%f%k%}"
 
 }
 

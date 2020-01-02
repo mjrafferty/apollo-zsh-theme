@@ -18,7 +18,7 @@ __apollo_decorate_prompt() {
     start="$EPOCHREALTIME"
   fi
 
-  for ((line=__APOLLO_PROMPT_THEME_START[$__APOLLO_PROMPT_THEME]; line <= __APOLLO_PROMPT_THEME_END[$__APOLLO_PROMPT_THEME]; line++)); do
+  for ((line=__APOLLO_PROMPT_THEME_START[$APOLLO_THEME]; line <= __APOLLO_PROMPT_THEME_END[$APOLLO_THEME]; line++)); do
 
     __APOLLO_LEFT_BEGIN[line]=""
     __APOLLO_LEFT_END[line]=""

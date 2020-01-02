@@ -8,7 +8,7 @@
     local left_link right_link
     local -a lines_meta
 
-    line_index="${__APOLLO_PROMPT_THEME_END[$__APOLLO_PROMPT_THEME]}";
+    line_index="${__APOLLO_PROMPT_THEME_END[$APOLLO_THEME]}";
 
     if ((line_index == 1)); then
       return;
@@ -20,7 +20,7 @@
 
 
   # Set metadata based on left and right lengths
-  for ((line=__APOLLO_PROMPT_THEME_START[$__APOLLO_PROMPT_THEME];line<=line_index;line++)); do
+  for ((line=__APOLLO_PROMPT_THEME_START[$APOLLO_THEME];line<=line_index;line++)); do
     ((lines_meta[line]=0));
     if (( ( 0 ${(e)__APOLLO_LEFT_HAS_LENGTH[line]}) > 0 )); then
       ((lines_meta[line]+=1));
@@ -30,7 +30,7 @@
     fi
   done
 
-  for ((line=__APOLLO_PROMPT_THEME_START[$__APOLLO_PROMPT_THEME];line<=line_index;line++)); do
+  for ((line=__APOLLO_PROMPT_THEME_START[$APOLLO_THEME];line<=line_index;line++)); do
 
     below="${lines_meta[line+1]}"
     above="${lines_meta[line-1]}"
@@ -220,7 +220,7 @@
             ;;
         esac
         ;;
-      ${__APOLLO_PROMPT_THEME_START[$__APOLLO_PROMPT_THEME]})
+      ${__APOLLO_PROMPT_THEME_START[$APOLLO_THEME]})
         case "${lines_meta[line]}" in
           3) left_link="top"; right_link="top"; ;;
           2) left_link="none"; right_link="top"; ;;

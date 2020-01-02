@@ -7,12 +7,12 @@ __apollo_run_prompt() {
   local -a line_modules
   local -i line num
 
-  if [[ -z "${__APOLLO_FINISHED_PROMPTS[$__APOLLO_PROMPT_THEME]}" ]]; then
+  if [[ -z "${__APOLLO_FINISHED_PROMPTS[$APOLLO_THEME]}" ]]; then
     __apollo_init_theme;
   fi
 
-  PROMPT="${__APOLLO_FINISHED_PROMPTS[$__APOLLO_PROMPT_THEME]}"
-  RPROMPT="${__APOLLO_FINISHED_RPROMPTS[$__APOLLO_PROMPT_THEME]}"
+  PROMPT="${__APOLLO_FINISHED_PROMPTS[$APOLLO_THEME]}"
+  RPROMPT="${__APOLLO_FINISHED_RPROMPTS[$APOLLO_THEME]}"
 
   zstyle -b ":apollo:${APOLLO_THEME}:core:profiler" enabled profiler
 
@@ -21,7 +21,7 @@ __apollo_run_prompt() {
     startmod=${EPOCHREALTIME}
   fi
 
-  for ((line=__APOLLO_PROMPT_THEME_START[$__APOLLO_PROMPT_THEME]; line <= __APOLLO_PROMPT_THEME_END[$__APOLLO_PROMPT_THEME]; line++)); do
+  for ((line=__APOLLO_PROMPT_THEME_START[$APOLLO_THEME]; line <= __APOLLO_PROMPT_THEME_END[$APOLLO_THEME]; line++)); do
 
     line_modules=(${(s.\0.)__APOLLO_RIGHT_LINE_MAP[line]})
 

@@ -15,7 +15,7 @@ __apollo_update_prompts() {
     start="$EPOCHREALTIME"
   fi
 
-  for ((line=__APOLLO_PROMPT_THEME_START[$__APOLLO_PROMPT_THEME];line<__APOLLO_PROMPT_THEME_END[$__APOLLO_PROMPT_THEME];line++)); do
+  for ((line=__APOLLO_PROMPT_THEME_START[$APOLLO_THEME];line<__APOLLO_PROMPT_THEME_END[$APOLLO_THEME];line++)); do
 
     __APOLLO_PROMPT_LINE_LENGTH[line]="$COLUMNS"
     __apollo_get_display_width "${(e)__APOLLO_PROMPT_LINES[line]}"
