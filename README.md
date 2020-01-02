@@ -6,13 +6,13 @@ Heavily customizable, compatible, and performant zsh theme.
 
    * [Apollo ZSH Theme](#apollo-zsh-theme)
       * [Table of Contents](#table-of-contents)
+      * [About](#about)
+      * [Features](#features)
       * [Installation](#installation)
          * [Zplugin](#zplugin)
          * [Prezto](#prezto)
          * [Oh-My-Zsh](#oh-my-zsh)
          * [Manual install](#manual-install)
-      * [Features](#features)
-      * [Usage](#usage)
       * [Configuration](#configuration)
          * [Core Options](#core-options)
             * [Module Declaration](#module-declaration)
@@ -48,6 +48,20 @@ Heavily customizable, compatible, and performant zsh theme.
       * [Acknowledgments](#acknowledgments)
       * [License](#license)
 
+## About
+
+My initial goal was to make a few modifications to another theme to make it compatible with older zsh versions. After reviewing that however, I decided I wasn't at all happy with it and decided to write my own from scratch. This project is the result of that, and has been built with the primary goals of compatibility and flexibility. Due to it's tremendous flexibility, it should be considered more of a theme framework than a theme itself. It should be possible to reproduce just about any existing theme out there, as well as countless other possibilities, using simple configuration changes.
+
+## Features
+
+* Compatible with ZSH 4.3.11 or newer (Possibly older, but this is the oldest version I have to deal with)
+* Simple theme creation and customization
+* Faster than all but the most basic of prompt themes
+* Lots of configuration options
+* On the fly theme changing
+* Additional modules are easy to create
+* Configurable theme for buffered prompt lines. Useful for shortening multiline prompts to single line after command execution.
+
 ## Installation
 
 
@@ -59,32 +73,12 @@ zplugin light mjrafferty/apollo-zsh-theme
 ```
 
 
-### Prezto
-
-```shell
-```
-
-
-### Oh-My-Zsh
-
-```shell
-```
-
-
 ### Manual install
 
 ```shell
-fpath+=( $HOME/apollo-zsh-theme/functions $HOME/apollo-zsh-theme/modules )
-autoload -Uz promptinit && promptinit
-source apollo-zsh-theme/conf/theme.conf
-prompt apollo
+git clone https://github.com/mjrafferty/apollo-zsh-theme $HOME/apollo-zsh-theme
+source $HOME/apollo/zsh-theme/apollo-zsh-theme.zsh
 ```
-
-
-## Features
-
-
-## Usage
 
 
 ## Configuration
