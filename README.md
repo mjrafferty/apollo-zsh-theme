@@ -546,7 +546,7 @@ stash_count|Number of stashes
 
 Attribute|Type|Description
 ---|---|---
-elements|list|
+elements|list|List of elements to display
 
 Examples:
 ```shell
@@ -686,16 +686,17 @@ zstyle ':apollo:example:*:*:virtualenv:*' fg_color "white"
 zstyle ':apollo:example:*:*:virtualenv:*' bg_color "blue"
 ```
 
-
 ---
 
 ## Contributing
+
+This project was developed by myself and for myself, and because of this it's lacking in themes and modules that others might be interested in. At some point in the near future, I will be providing guides on module and theme development.
 
 ## FAQ
 
 ## Support
 
-## Acknowledgments
+Due to other interests and obligations, the amount of time I'm able to devote to this project is limited. Because of this, there is no official support. I am however happy to help within my availability and encourage bug reports and feature requests, as well as identification of areas that are not sufficiently documented.
 
 ## License
 
