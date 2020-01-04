@@ -5,6 +5,8 @@ __apollo_preexec() {
   local module
   local -a left_modules right_modules
 
+  trap - INT
+
   zstyle -a ":apollo:${APOLLO_THEME}:core:modules:left" modules left_modules
   zstyle -a ":apollo:${APOLLO_THEME}:core:modules:right" modules right_modules
 
