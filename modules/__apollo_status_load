@@ -54,13 +54,11 @@ __apollo_status_run() {
       fi
     done
 
-  else
+  elif (( __APOLLO_EXIT_CODE > 0 )); then
 
-    if (( __APOLLO_EXIT_CODE > 0 )); then
-      error=1;
-      __apollo_status_get_signal "$__APOLLO_EXIT_CODE"
-      error_text[1]="$__APOLLO_RETURN_MESSAGE"
-    fi
+    error=1;
+    __apollo_status_get_signal "$__APOLLO_EXIT_CODE"
+    error_text[1]="$__APOLLO_RETURN_MESSAGE"
 
   fi
 

@@ -36,6 +36,17 @@ __apollo_precmd() {
 
   fi
 
+  # Fixes zsh issue that makes pipestatus unreliable for status module
+  if (( $#__APOLLO_PIPE_EXIT_CODES > 1 )); then
+
+    zstyle -b ":apollo:${APOLLO_THEME}:core:pipestatus" fix fix_pipestatus
+
+    if [[ "$fix_pipestatus" == "yes" ]]; then
+      sched +1 ''
+    fi
+
+  fi
+
 }
 
 __apollo_precmd "$@"
