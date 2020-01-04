@@ -7,16 +7,18 @@ __apollo_background_jobs_cache_key() {
 
 __apollo_background_jobs_run() {
 
-  local context mode always_show
+  local context mode always_show job_count
 
   mode="default"
 
   zstyle -b "${context}:${mode}" always_show always_show
 
-  if [[ "${always_show}" == "yes" ]]; then
-    __APOLLO_RETURN_MESSAGE="${(%):-%j}"
+  job_count="${(%):-%j}"
+
+  if [[ "${always_show}" == "yes" || job_count -gt 0 ]]; then
+    __APOLLO_RETURN_MESSAGE='%j'
   else
-    __APOLLO_RETURN_MESSAGE="${(%):-%(1j.%j.)}"
+    __APOLLO_RETURN_MESSAGE=""
   fi
 
 }
