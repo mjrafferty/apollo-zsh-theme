@@ -2,13 +2,15 @@
 
 typeset -g  APOLLO_THEME="apollo"
 
+typeset -g __APOLLO_PID="$$"
+
 ## Cache types
 typeset -gA __APOLLO_MODULE_CACHE
 typeset -gA __APOLLO_STYLE_CACHE
 
 ## Buffer data
 typeset -g	__APOLLO_BUFFER_NAME
-typeset -gi __APOLLO_BUFFER_FD
+typeset -g  __APOLLO_BUFFER_FD
 
 ## Async data
 typeset -gi __APOLLO_ASYNC
@@ -97,11 +99,6 @@ prompt_apollo_setup() {
 	add-zsh-hook chpwd __apollo_chpwd
 	add-zsh-hook zshexit __apollo_cleanup
   zle -N zle-line-finish
-
-	# Open a buffer for modules to use
-  __APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
-  mkfifo "${__APOLLO_BUFFER_NAME}"
-  exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
 
 }
 

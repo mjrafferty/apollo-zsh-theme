@@ -20,6 +20,8 @@ __apollo_precmd() {
     __APOLLO_BREAK_CACHE_COUNTER=0;
   fi
 
+  __apollo_check_buffer
+
   __apollo_run_prompt;
 
   if (( __APOLLO_ASYNC == 1 )); then
