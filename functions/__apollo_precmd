@@ -47,12 +47,7 @@ __apollo_precmd() {
 
   fi
 
-	TRAPINT() {
-		zle-line-finish
-    __apollo_run_prompt
-    #zle && zle .reset-prompt
-		return $(( 128 + $1 ))
-	}
+  trap "zle-line-finish; __APOLLO_EXIT_CODE=130; __apollo_run_prompt;  return 130;" INT
 
 }
 
