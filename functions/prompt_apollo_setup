@@ -92,7 +92,7 @@ prompt_apollo_setup() {
   PROMPT=""
   RPROMPT=""
 
-	autoload -Uz add-zsh-hook
+	autoload -Uz add-zsh-hook regexp-replace
 
 	add-zsh-hook precmd __apollo_precmd
 	add-zsh-hook preexec __apollo_preexec

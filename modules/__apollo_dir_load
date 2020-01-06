@@ -41,6 +41,9 @@ __apollo_dir_run() {
     fi
   fi
 
+  __apollo_sanitize "$dir"
+  dir="$__APOLLO_RETURN_MESSAGE"
+
   if [[ "$shorten_length" == "auto" ]]; then
 
     dir_length="${#dir}"

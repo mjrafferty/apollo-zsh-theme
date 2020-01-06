@@ -81,6 +81,17 @@ __apollo_check_buffer () {
 
 }
 
+__apollo_sanitize() {
+
+  local input="$1"
+
+  regexp-replace input '(`|\$)' '\\$MATCH'
+  regexp-replace input '%' '%%'
+
+  __APOLLO_RETURN_MESSAGE="$input"
+
+}
+
 __apollo_load_utilities() {};
 
 __apollo_load_utilities "$@"

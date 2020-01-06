@@ -2,7 +2,7 @@
 
 __apollo_run_module() {
 
-  local module side cache_key module_text bg_color
+  local module side cache_key bg_color
   local -i line num
   local always_show module_colors
   local left_label right_label
@@ -36,7 +36,7 @@ __apollo_run_module() {
     __APOLLO_MODULE_HAS_LENGTH[$num]="0"
     __APOLLO_MODULE_TEXT[$num]=""
     if [[ -n "$cache_key" ]]; then
-      __APOLLO_MODULE_CACHE["${cache_key}"]="0\0${module_text}"
+      __APOLLO_MODULE_CACHE["${cache_key}"]="0\0${__APOLLO_RETURN_MESSAGE}"
     fi
     return;
   fi
