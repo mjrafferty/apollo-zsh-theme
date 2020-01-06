@@ -19,7 +19,7 @@ __apollo_git_always_async() {
   local -a elements misc_style element_style
   local return_string element item hash_length ignore_submodules
   local repo_path git_dir commit_hash local_branch remote_branch tag
-  local -i modified untracked stash_count ahead behind
+  local -i modified untracked stash_count ahead behind only_count_once
 
   git_dir="$(git rev-parse --git-dir)"
 
@@ -66,20 +66,24 @@ __apollo_git_always_async() {
             ;;
           "modified"|"untracked")
 
-            zstyle -b "${context}:${mode}" ignore_submodules ignore_submodules
+            if ((only_count_once++ == 0 )); then
 
-            if [[ "${ignore_submodules}" == "yes" ]]; then
-              git status --porcelain --ignore-submodules
-            else
-              git status --porcelain
-            fi \
-              | while read item; do
-              if [[ "$item" == "??"* ]]; then
-                (( untracked+=1 ))
+              zstyle -b "${context}:${mode}" ignore_submodules ignore_submodules
+
+              if [[ "${ignore_submodules}" == "yes" ]]; then
+                git status --porcelain --ignore-submodules
               else
-                (( modified+=1 ))
-              fi
-            done
+                git status --porcelain
+              fi \
+                | while read item; do
+                if [[ "$item" == "??"* ]]; then
+                  (( untracked+=1 ))
+                else
+                  (( modified+=1 ))
+                fi
+              done
+
+            fi
             ;;
         esac
         if [[ -n "${(P)element}" ]]; then
