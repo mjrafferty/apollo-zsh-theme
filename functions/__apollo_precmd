@@ -49,7 +49,7 @@ __apollo_precmd() {
 
   fi
 
-  trap "zle-line-finish; __APOLLO_EXIT_CODE=130; __apollo_run_prompt;  return 130;" INT
+  __apollo_trap_int
 
 }
 

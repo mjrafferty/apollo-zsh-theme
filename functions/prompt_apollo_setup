@@ -20,6 +20,7 @@ typeset -gA __APOLLO_ASYNC_TIMES
 ## Utility variables
 typeset -gi __APOLLO_BREAK_CACHE_COUNTER
 typeset -gi __APOLLO_EXIT_CODE
+typeset -gi __APOLLO_LEGACY_TRAP
 typeset -g  __APOLLO_PIPE_EXIT_CODES
 typeset -g  __APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
 
@@ -92,13 +93,17 @@ prompt_apollo_setup() {
   PROMPT=""
   RPROMPT=""
 
-	autoload -Uz add-zsh-hook regexp-replace
+	autoload -Uz add-zsh-hook regexp-replace is-at-least
 
 	add-zsh-hook precmd __apollo_precmd
 	add-zsh-hook preexec __apollo_preexec
 	add-zsh-hook chpwd __apollo_chpwd
 	add-zsh-hook zshexit __apollo_cleanup
   zle -N zle-line-finish
+
+  if is-at-least 5.1; then
+    __APOLLO_LEGACY_TRAP=1
+  fi
 
 }
 
