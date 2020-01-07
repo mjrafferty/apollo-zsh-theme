@@ -101,7 +101,7 @@ prompt_apollo_setup() {
 	add-zsh-hook zshexit __apollo_cleanup
   zle -N zle-line-finish
 
-  if is-at-least 5.1; then
+  if ! is-at-least 5.1; then
     __APOLLO_LEGACY_TRAP=1
   fi
 
