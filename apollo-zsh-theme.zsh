@@ -1,6 +1,11 @@
 # vim:ft=zsh
 
 typeset -g __APOLLO_INSTALL_DIR="${(%):-%N}"
+
+if [[ -L "$__APOLLO_INSTALL_DIR" ]]; then
+  __APOLLO_INSTALL_DIR=$(readlink "$__APOLLO_INSTALL_DIR")
+fi
+
 __APOLLO_INSTALL_DIR="${__APOLLO_INSTALL_DIR%/*}"
 
 ## Compile in background for faster startup
