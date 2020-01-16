@@ -5,14 +5,14 @@ typeset -gi __APOLLO_GAME_CASH=1000
 typeset -ga __APOLLO_GAME_SYMBOLS
 
 __APOLLO_GAME_SYMBOLS=(
-  "%{%F{1}🍒%F{7}%2G%}"
-  "%{%F{10}🍏%F{7}%2G%}"
-  "%{%F{9}🍓%F{7}%2G%}"
-  "%{%F{92}🍇%F{7}%2G%}"
-  "%{%F{162}🍉%F{7}%2G%}"
-  "%{%F{11}⭐%F{7}%2G%}"
-  "%{%F{11}🌟%F{7}%2G%}"
-  "%{%F{10}💵%F{7}%2G%}"
+  "%{%F{1}%}🍒%{%F{7}%}"
+  "%{%F{10}%}🍏%{%F{7}%}"
+  "%{%F{9}%}🍓%{%F{7}%}"
+  "%{%F{92}%}🍇%{%F{7}%}"
+  "%{%F{162}%}🍉%{%F{7}%}"
+  "%{%F{11}%}⭐%{%F{7}%}"
+  "%{%F{11}%}🌟%{%F{7}%}"
+  "%{%F{10}%}💵%{%F{7}%}"
   )
 
 __apollo_game_run (){
@@ -40,6 +40,6 @@ __apollo_game_run (){
   ((__APOLLO_GAME_CASH+=(win-10)))
 
   slots="[${__APOLLO_GAME_SYMBOLS[n1]}|${__APOLLO_GAME_SYMBOLS[n2]}|${__APOLLO_GAME_SYMBOLS[n3]}]"
-  __APOLLO_RETURN_MESSAGE="%B${slots}${winst}${__APOLLO_GAME_SYMBOLS[8]}:${__APOLLO_GAME_CASH}%b"
+  __APOLLO_RETURN_MESSAGE="%{%B%}${slots}${winst}${__APOLLO_GAME_SYMBOLS[8]}:${__APOLLO_GAME_CASH}%{%b%}"
 
 }
