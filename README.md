@@ -66,6 +66,18 @@ My initial goal was to make a few modifications to another theme to make it comp
 
 ## Installation
 
+### Prezto
+
+```shell
+git clone https://github.com/mjrafferty/apollo-zsh-theme $HOME/apollo-zsh-theme
+
+## Add this to bottom of .zprofile
+__APOLLO_INSTALL_DIR="$HOME/apollo-zsh-theme"
+fpath+=("${__APOLLO_INSTALL_DIR}/functions")
+
+## Set this in .zpreztorc
+zstyle ':prezto:module:prompt' theme 'apollo'
+```
 
 ### Zplugin
 
@@ -495,6 +507,7 @@ bookmarks|list|mapping of named directories of the form "name=PATH"
 bookmark_patterns|list|List of patterns to turn into named directories.
 shorten_length|integer|Maximum length of directory element name. Auto for dynamic.
 shorten_string|string|String to add to shortened elements
+last_count||
 
 Examples:
 ```shell
@@ -547,6 +560,8 @@ stash_count|Number of stashes
 Attribute|Type|Description
 ---|---|---
 elements|list|List of elements to display
+hash_length|integer|Length of hash to display. Default is 8
+ignore_submodules|boolean|Ignore modifications to submodules
 
 Examples:
 ```shell
