@@ -12,6 +12,7 @@ Heavily customizable, compatible, and performant zsh theme.
       * [Features](#features)
       * [Installation](#installation)
          * [Zplugin](#zplugin)
+         * [Zgen](#zgen)
          * [Prezto](#prezto)
          * [Oh-My-Zsh](#oh-my-zsh)
          * [Manual install](#manual-install)
@@ -95,6 +96,11 @@ zplugin ice lucid atinit'fpath+=($PWD/functions.zwc $PWD/functions $PWD/modules.
 zplugin light mjrafferty/apollo-zsh-theme
 ```
 
+### Zgen
+
+```shell
+zgen load mjrafferty/apollo-zsh-theme
+```
 
 ### Manual install
 
