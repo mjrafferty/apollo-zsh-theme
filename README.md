@@ -724,6 +724,6 @@ Due to other interests and obligations, the amount of time I'm able to devote to
 
 ## License
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- **[GPL v3 License](http://opensource.org/licenses/mit-license.php)**
+- **[MIT License](http://opensource.org/licenses/mit-license.php)**
