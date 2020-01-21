@@ -159,7 +159,7 @@ Dynamic links added to prompt line ends to join lines together. These get proces
 Option|Type|Description
 ---|---|---
 zstyle ':apollo:example:core:links' enabled|boolean|Enable line links
-zstyle ':apollo:example:core:links:\<line\>:\<side\>:\<link_type\>' text|string|String to use for matching links
+zstyle ':apollo:example:\<line\>:\<side\>:core:links:\<link_type\>' text|string|String to use for matching links
 
 Link Type|Description
 ---|---
@@ -172,17 +172,17 @@ none|Link if line has no content, and lines above have no content
 Examples:
 ```shell
 zstyle ':apollo:example:core:links' enabled "true"
-zstyle ':apollo:example:core:links:*:*:*' fg_color "white"
-zstyle ':apollo:example:core:links:*:*:*' style "bold"
-zstyle ':apollo:example:core:links:*:left:top' text "╭─"
-zstyle ':apollo:example:core:links:*:left:mid' text "├─"
-zstyle ':apollo:example:core:links:*:left:str' text "│ "
-zstyle ':apollo:example:core:links:*:left:bot' text "╰─"
-zstyle ':apollo:example:core:links:*:right:top' text "─╮"
-zstyle ':apollo:example:core:links:*:right:mid' text "─┤"
-zstyle ':apollo:example:core:links:*:right:str' text " │"
-zstyle ':apollo:example:core:links:*:right:bot' text "─╯"
-zstyle ':apollo:example:core:links:*:*:none' text ""
+zstyle ':apollo:example:*:*:core:links:*' fg_color "white"
+zstyle ':apollo:example:*:*:core:links:*' style "bold"
+zstyle ':apollo:example:*:left:core:links:top' text "╭─"
+zstyle ':apollo:example:*:left:core:links:mid' text "├─"
+zstyle ':apollo:example:*:left:core:links:str' text "│ "
+zstyle ':apollo:example:*:left:core:links:bot' text "╰─"
+zstyle ':apollo:example:*:right:core:links:top' text "─╮"
+zstyle ':apollo:example:*:right:core:links:mid' text "─┤"
+zstyle ':apollo:example:*:right:core:links:str' text " │"
+zstyle ':apollo:example:*:right:core:links:bot' text "─╯"
+zstyle ':apollo:example:*:*:core:links:none' text ""
 ```
 
 
@@ -192,13 +192,13 @@ Rulers can be used in multiline prompts to bridge the left and right prompt. The
 
 Option|Type|Description
 ---|---|---
-zstyle ':apollo:example:core:\<line\>:ruler' text|string|Text to use as ruler for matching lines
+zstyle ':apollo:example:\<line\>:core:ruler' text|string|Text to use as ruler for matching lines
 
 Examples:
 ```shell
-zstyle ':apollo:example:core:*:ruler' style "bold"
-zstyle ':apollo:example:core:*:ruler' fg_color "white"
-zstyle ':apollo:example:core:*:ruler' text "─"
+zstyle ':apollo:example:*:core:ruler' style "bold"
+zstyle ':apollo:example:*:core:ruler' fg_color "white"
+zstyle ':apollo:example:*:core:ruler' text "─"
 ```
 
 
