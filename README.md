@@ -92,7 +92,7 @@ ZSH_THEME="apollo"
 ### Zplugin
 
 ```shell
-zplugin ice lucid atinit'fpath+=($PWD/functions.zwc $PWD/functions $PWD/modules.zwc $PWD/modules)'
+zplugin ice lucid atinit'fpath+=($PWD/functions.zwc $PWD/functions ${XDG_DATA_HOME:-${HOME}/.local/share}/apollo $PWD/modules.zwc $PWD/modules)'
 zplugin light mjrafferty/apollo-zsh-theme
 ```
 
@@ -318,6 +318,7 @@ All modules include the following elements provided by the framework:
 
 Element|Description
 ---|---
+main|This is the module text itself
 separator|String to use as left module separator when NOT at beginning of line
 begin|String to use to left of module when at beginning of line
 end|String to use to right of module when at end of line
