@@ -32,7 +32,7 @@ __apollo_date_run() {
         if [[ "${verbose}" == "yes" ]]; then
           __apollo_set_style "${context}:${mode}:${element}" "%D{%e}"
         else
-          __apollo_set_style "${context}:${mode}:${element}" "%D{%m}"
+          __apollo_set_style "${context}:${mode}:${element}" "%D{%d}"
         fi
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
@@ -41,7 +41,7 @@ __apollo_date_run() {
         if [[ "${verbose}" == "yes" ]]; then
           __apollo_set_style "${context}:${mode}:${element}" "%D{%B}"
         else
-          __apollo_set_style "${context}:${mode}:${element}" "%D{%d}"
+          __apollo_set_style "${context}:${mode}:${element}" "%D{%m}"
         fi
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
