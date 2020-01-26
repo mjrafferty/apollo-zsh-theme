@@ -6,14 +6,6 @@ __apollo_public_ip_cache_key() {
   __APOLLO_RETURN_MESSAGE="1"
 }
 
-__apollo_public_ip_run() {
-
-  local context="$1"
-  local async_results="$2"
-
-    __APOLLO_RETURN_MESSAGE="${async_results}"
-}
-
 __apollo_public_ip_async() {
 
   local context mode method host

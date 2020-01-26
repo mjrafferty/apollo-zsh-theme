@@ -22,6 +22,8 @@ __apollo_init_theme() {
 
     if (( ${+functions[__apollo_${module}_async]} || ${+functions[__apollo_${module}_always_async]} )); then
 
+      eval "__apollo_${module}_async_runner () { __apollo_async_runner ${module} \"\${@}\" }"
+
       if ((__APOLLO_ASYNC != 1)); then
 
         if ((!${+functions[async_start_worker]})); then
@@ -34,12 +36,13 @@ __apollo_init_theme() {
           fi
         fi
 
-        async_start_worker apollo_async_helper -n
+        async_start_worker apollo_async_helper -u -n
 
         __APOLLO_ASYNC=1
 
       else
         async_worker_eval apollo_async_helper "autoload -Uz +X __apollo_${module}_load && __apollo_${module}_load"
+        async_worker_eval apollo_async_helper "__apollo_${module}_async_runner () { __apollo_async_runner ${module} \"\${@}\" }"
       fi
 
       if ((${+functions[__apollo_${module}_init_async]})); then

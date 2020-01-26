@@ -4,15 +4,6 @@ __apollo_git_cache_key() {
   __APOLLO_RETURN_MESSAGE="$PWD"
 }
 
-__apollo_git_run() {
-
-  local context="$1"
-  local async_results="$2"
-
-  __APOLLO_RETURN_MESSAGE="$async_results"
-
-}
-
 __apollo_git_always_async() {
 
   local context="$1"
