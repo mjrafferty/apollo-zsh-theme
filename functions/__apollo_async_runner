@@ -1,0 +1,15 @@
+# vim:ft=zsh
+
+__apollo_async_runner() {
+
+  local module="$1"
+  local call="$2"
+  local context="$3"
+
+  "$2" "$3"
+
+  echo "${module}¬${__APOLLO_RETURN_MESSAGE}¬${__APOLLO_MODULE_MODE[$module]}"
+
+}
+
+__apollo_async_runner "$@"

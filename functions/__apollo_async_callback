@@ -8,23 +8,26 @@ __apollo_async_callback() {
   local exec_time="$4"
   local stderr="$5"
   local -i has_next="$6"
+  local -a results
+  local mode
 
   local module
 
-  case "$job_name" in
-    *_always_async)
-      module="${job_name[10,-14]}"
-      ;;
-    *_async)
-      module="${job_name[10,-7]}"
-      ;;
-    "[async/eval]")
-      return;
-  esac
+  if [[ "$job_name" == "[async/eval]" ]]; then
+    return;
+  fi
 
-  __APOLLO_ASYNC_RESULTS[$module]="$stdout"
+  results=(${(s:¬:)stdout})
 
-  __apollo_async_update "$module" "$has_next"
+  module="${results[1]}"
+  __APOLLO_ASYNC_RESULTS[$module]="${results[2]}"
+  mode=""${results[3]}""
+
+  if [[ -n "${mode}" ]]; then
+    __apollo_set_mode "$module" "${mode}"
+  fi
+
+  __apollo_async_update "$module" "$has_next" "$mode"
 
   __APOLLO_ASYNC_RESULTS[$module]=""
   __APOLLO_ASYNC_TIMES[$module]="$exec_time"

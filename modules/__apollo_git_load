@@ -102,7 +102,7 @@ __apollo_git_always_async() {
     esac
   done
 
-  echo "$return_string"
+  __APOLLO_RETURN_MESSAGE="$return_string"
 
 }
 

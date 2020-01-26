@@ -30,17 +30,17 @@ __apollo_public_ip_async() {
     case $method in
       'dig')
         if (( $+commands[dig] )); then
-          command dig +time=1 +tries=1 +short myip.opendns.com @resolver1.opendns.com 2> /dev/null
+          __APOLLO_RETURN_MESSAGE=$(command dig +time=1 +tries=1 +short myip.opendns.com @resolver1.opendns.com 2> /dev/null)
         fi
         ;;
       'curl')
         if (( $+commands[curl] )); then
-          command curl --max-time 10 -w '\n' "$host" 2> /dev/null
+          __APOLLO_RETURN_MESSAGE=$(command curl --max-time 10 -w '\n' "$host" 2> /dev/null)
         fi
         ;;
       'wget')
         if (( $+commands[wget] )); then
-          command wget -T 10 -qO- "$host" 2> /dev/null
+          __APOLLO_RETURN_MESSAGE=$(command wget -T 10 -qO- "$host" 2> /dev/null)
         fi
         ;;
     esac

@@ -41,7 +41,7 @@ __apollo_init_theme() {
           fi
         fi
 
-        async_start_worker apollo_async_helper -u -n
+        async_start_worker apollo_async_helper -n
 
         # Add hooks back in
         zle -N zle-line-finish

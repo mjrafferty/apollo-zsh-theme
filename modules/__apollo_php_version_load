@@ -11,12 +11,12 @@ __apollo_php_version_run() {
   local context="$1"
   local async_results="$2"
 
-    __APOLLO_RETURN_MESSAGE="${async_results}"
+  __APOLLO_RETURN_MESSAGE="${async_results}"
 
 }
 
 __apollo_php_version_async() {
 
-  command php --no-php-ini --version | grep -Po -m1 '^PHP \K[0-9,.]*'
+  __APOLLO_RETURN_MESSAGE=$(command php --no-php-ini --version | grep -Po -m1 '^PHP \K[0-9,.]*')
 
 }

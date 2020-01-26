@@ -9,16 +9,20 @@ __apollo_run_module() {
   local left_surround right_surround
   local left_padding right_padding
   local -i width min_width
+  local mode
 
   line="$1"
   side="$2"
   module="$3"
   num="$4"
   cache_key="$5"
+  mode="$6"
 
   context=":apollo:${APOLLO_THEME}:${line}:${side}:${module}"
 
-  __APOLLO_MODULE_MODE[$module]="default"
+  if [[ -z "$mode" ]]; then
+    __APOLLO_MODULE_MODE[$module]="default"
+  fi
 
   # Clear out old message before passing to module
   __APOLLO_RETURN_MESSAGE=""
