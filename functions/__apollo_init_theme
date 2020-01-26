@@ -24,13 +24,6 @@ __apollo_init_theme() {
 
       if ((__APOLLO_ASYNC != 1)); then
 
-        # Remove hooks so async worker doesn't run them
-        zle -D zle-line-finish
-        add-zsh-hook -d precmd __apollo_precmd
-        add-zsh-hook -d preexec __apollo_preexec
-        add-zsh-hook -d chpwd __apollo_chpwd
-        add-zsh-hook -d zshexit __apollo_cleanup
-
         if ((!${+functions[async_start_worker]})); then
           # If async library already present, use it. Else use bundled
           if ((${+functions[async_init]})); then
@@ -42,13 +35,6 @@ __apollo_init_theme() {
         fi
 
         async_start_worker apollo_async_helper -n
-
-        # Add hooks back in
-        zle -N zle-line-finish
-        add-zsh-hook precmd __apollo_precmd
-        add-zsh-hook preexec __apollo_preexec
-        add-zsh-hook chpwd __apollo_chpwd
-        add-zsh-hook zshexit __apollo_cleanup
 
         __APOLLO_ASYNC=1
 
