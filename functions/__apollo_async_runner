@@ -10,7 +10,7 @@ __apollo_async_runner() {
 
   "$2" "$3"
 
-  printf '%s\\0%s\\0%s' "${module}" "${__APOLLO_RETURN_MESSAGE}" "${__APOLLO_MODULE_MODE[$module]}"
+  printf '%s\\0%s\\0%s' "${module}" "${__APOLLO_RETURN_MESSAGE:-NULL}" "${__APOLLO_MODULE_MODE[$module]}"
 
 }
 

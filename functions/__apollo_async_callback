@@ -20,7 +20,13 @@ __apollo_async_callback() {
   results=(${(s:\0:)stdout})
 
   module="${results[1]}"
-  __APOLLO_ASYNC_RESULTS[$module]="${results[2]}"
+
+  if [[ "${results[2]}" != "NULL" ]]; then
+    __APOLLO_ASYNC_RESULTS[$module]="${results[2]}"
+  else
+    __APOLLO_ASYNC_RESULTS[$module]=""
+  fi
+
   mode="${results[3]}"
 
   if [[ -n "${mode}" ]]; then
