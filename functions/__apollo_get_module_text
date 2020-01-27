@@ -38,6 +38,8 @@ __apollo_get_module_text() {
       async_job apollo_async_helper "__apollo_${module}_async_runner" "__apollo_${module}_async" ":apollo:${APOLLO_THEME}:${line}:${side}:${module}"
     fi
 
+    __APOLLO_MODULE_MODE[$module]="default"
+
     __apollo_run_module "$line" "$side" "$module" "$num" "$cache_key"
     cache_status="MISS"
 

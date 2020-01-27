@@ -4,7 +4,6 @@ __apollo_async_update() {
 
   local module="$1"
   local -i has_next="$2"
-  local mode="$3"
   local x side cache_key theme
   local -a module_info
   local -i line num change_made
@@ -44,14 +43,12 @@ __apollo_async_update() {
     esac
 
     module_before="${__APOLLO_MODULE_TEXT[$num]}"
-    mode_before="${__APOLLO_MODULE_MODE[$module]}"
 
-    __apollo_run_module "${line}" "${side}" "${module}" "${num}" "${cache_key}" "${mode}"
+    __apollo_run_module "${line}" "${side}" "${module}" "${num}" "${cache_key}"
 
     module_after="${__APOLLO_MODULE_TEXT[$num]}"
-    mode_after="${__APOLLO_MODULE_MODE[$module]}"
 
-    if [[ "$module_after" != "$module_before" || "$mode_after" != "$mode_before" ]]; then
+    if [[ "$module_after" != "$module_before" ]]; then
 
       __apollo_decorate_prompt
 

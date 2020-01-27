@@ -16,13 +16,8 @@ __apollo_run_module() {
   module="$3"
   num="$4"
   cache_key="$5"
-  mode="$6"
 
   context=":apollo:${APOLLO_THEME}:${line}:${side}:${module}"
-
-  if [[ -z "$mode" ]]; then
-    __APOLLO_MODULE_MODE[$module]="default"
-  fi
 
   # Clear out old message before passing to module
   __APOLLO_RETURN_MESSAGE=""
