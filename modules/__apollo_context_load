@@ -36,7 +36,7 @@ __apollo_context_run() {
   zstyle -a "${context}:${mode}" ignore_users ignored_users
 
   for user in "${ignored_users[@]}"; do
-    if [[ "$USER" == *"$user"* ]]; then
+    if [[ "$USER" -regex-match $user ]]; then
       ignore_user=1;
     fi
   done
@@ -44,7 +44,7 @@ __apollo_context_run() {
   zstyle -a "${context}:${mode}" ignore_hosts ignored_hosts
 
   for host in "${ignored_hosts[@]}"; do
-    if [[ "$HOST" == *"$host"* ]]; then
+    if [[ "$HOST" -regex-match $host ]]; then
       ignore_host=1;
     fi
   done
