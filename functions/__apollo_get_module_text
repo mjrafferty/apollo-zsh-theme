@@ -18,7 +18,11 @@ __apollo_get_module_text() {
   fi
 
   if (( __APOLLO_ASYNC == 1 && ${+functions[__apollo_${module}_always_async]} )); then
-    async_job apollo_async_helper "__apollo_${module}_async_runner" "__apollo_${module}_always_async" ":apollo:${APOLLO_THEME}:${line}:${side}:${module}"
+    async_job apollo_async_helper \
+      "__apollo_${module}_async_runner" \
+      "__apollo_${module}_always_async" \
+      ":apollo:${APOLLO_THEME}:${line}:${side}:${module}" 2> /dev/null \
+      || __apollo_start_async
   fi
 
   if ((${+functions[__apollo_${module}_cache_key]})); then
@@ -35,7 +39,11 @@ __apollo_get_module_text() {
   else
 
     if (( __APOLLO_ASYNC == 1 && ${+functions[__apollo_${module}_async]} )); then
-      async_job apollo_async_helper "__apollo_${module}_async_runner" "__apollo_${module}_async" ":apollo:${APOLLO_THEME}:${line}:${side}:${module}"
+      async_job apollo_async_helper \
+        "__apollo_${module}_async_runner" \
+        "__apollo_${module}_async" \
+        ":apollo:${APOLLO_THEME}:${line}:${side}:${module}" 2> /dev/null \
+        || __apollo_start_async
     fi
 
     __APOLLO_MODULE_MODE[$module]="default"

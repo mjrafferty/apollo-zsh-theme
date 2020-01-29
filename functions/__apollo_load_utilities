@@ -109,6 +109,38 @@ __apollo_trap_int() {
 
 }
 
+__apollo_start_async() {
+
+  if ((!${+functions[async_start_worker]})); then
+    # If async library already present, use it. Else use bundled
+    if ((${+functions[async_init]})); then
+      async_init
+    else
+      autoload -Uz __apollo_lib_async_load \
+        && __apollo_lib_async_load
+    fi
+  fi
+
+  async_stop_worker apollo_async_helper 2> /dev/null
+
+  async_start_worker apollo_async_helper -u -n
+
+  for module state in "${(kv)__APOLLO_MODULES_LOADED[@]}"; do
+
+  if (( ${+functions[__apollo_${module}_async]} || ${+functions[__apollo_${module}_always_async]} )); then
+
+    async_worker_eval apollo_async_helper "__apollo_${module}_async_runner () { __apollo_async_runner ${module} \"\${@}\" }"
+
+    if ((${+functions[__apollo_${module}_init_async]})); then
+      async_worker_eval apollo_async_helper "__apollo_${module}_init_async"
+    fi
+
+  fi
+
+done
+
+}
+
 __apollo_load_utilities() {};
 
 __apollo_load_utilities "$@"
