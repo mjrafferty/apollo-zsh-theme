@@ -13,17 +13,7 @@ __apollo_vi_mode_cache_key() {
 
 __apollo_vi_mode_run() {
 
-  local context mode
-
-  context="$1"
-  mode="default"
-
-  mode="${(L)__APOLLO_VI_MODE}"
-  __apollo_set_mode "vi_mode" "$mode"
-
-  __apollo_set_style "${context}:${mode}:mode"
-
-  __APOLLO_RETURN_MESSAGE="${__APOLLO_RETURN_MESSAGE}"
+  __apollo_set_mode "vi_mode" "${(L)__APOLLO_VI_MODE}"
 
 }
 
