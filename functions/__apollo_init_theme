@@ -17,7 +17,7 @@ __apollo_init_theme() {
       continue;
     fi
 
-    autoload -Uz +X "__apollo_${module}_load" \
+    autoload -Uz +X "__apollo_${module}_load" 2> /dev/null \
       && "__apollo_${module}_load"
 
     __APOLLO_MODULES_LOADED[$module]=1
