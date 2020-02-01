@@ -141,6 +141,19 @@ done
 
 }
 
+
+__apollo_math_max() {
+  local result=$1
+  shift
+  local arg
+  for arg ; do
+    (( $arg > result )) && result=$arg
+  done
+  (( result ))
+}
+
+functions -M __apollo_math_max 1 -1
+
 __apollo_load_utilities() {};
 
 __apollo_load_utilities "$@"
