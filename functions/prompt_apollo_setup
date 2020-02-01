@@ -99,6 +99,7 @@ prompt_apollo_setup() {
   RPROMPT=""
 
 	autoload -Uz add-zsh-hook regexp-replace is-at-least
+  autoload -Uz +X zmathfunc && zmathfunc
 
 	add-zsh-hook precmd __apollo_precmd
 	add-zsh-hook preexec __apollo_preexec
