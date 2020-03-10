@@ -21,7 +21,7 @@ Enable Profiler: zstyle ':apollo:apollo:core:profiler' enabled "true"
 
 ### Basic Module
 
-Every module should define at-least one function by the name of '__apollo_{module_name}_run'. The value this function returns is passed back by setting the '__APOLLO_RETURN_MESSAGE' variable.
+Every module should define at-least one function by the name of '\_\_apollo_{module_name}_run'. The value this function returns is passed back by setting the '\_\_apollo_RETURN_MESSAGE' variable.
 
 For the duration of this guide, we're going to focus on developing a module that does one simple task, listing the number of files in your current directory. The actual methods I'm using to get that data are extremely flawed, but it gives us an easy data point to demonstrate module creation. Here is a very basic implementation of that:
 
@@ -63,7 +63,7 @@ file_count: 0.000670 MISS
 
 ### Using Cache
 
-It's extremely unnecessary to count the number of items in a directory on every prompt, so let's make use of cache. Using cache is very easy, though it might not always be so easy to pick a good cache key. To add caching to a module, all that is needed is to define a function named '__apollo_{module_name}_cache_key' and return a value to use as the key via the '__APOLLO_RETURN_MESSAGE' variable. For this module. The '$PWD' variable will work well as a cache key:
+It's extremely unnecessary to count the number of items in a directory on every prompt, so let's make use of cache. Using cache is very easy, though it might not always be so easy to pick a good cache key. To add caching to a module, all that is needed is to define a function named '\_\_apollo_{module_name}_cache_key' and return a value to use as the key via the '\_\_apollo_RETURN_MESSAGE' variable. For this module. The '$PWD' variable will work well as a cache key:
 
 ```shell
 __apollo_file_count_cache_key() {
@@ -93,7 +93,7 @@ file_count: 0.000109 HIT
 
 Now that we have a basic module, let's add some customizable options to it. All custom options are controlled via zstyles. Zstyles allow for unique option values based on the current context. For more detail on the context for these styles, click [here](./README.md#syntax). When modules are called, the framework passes the current context as the first parameter. This context includes everything up to the module mode, which is set to the value "default" prior to running the module. 
 
-If your module implements additional modes, its best to identify the current mode and set it as early as possible so that the code afterwards can apply mode specific options. For telling the framework of a mode change, we use the '__apollo_set_mode' function, with the first argument being the module name, and the second being the new mode.
+If your module implements additional modes, its best to identify the current mode and set it as early as possible so that the code afterwards can apply mode specific options. For telling the framework of a mode change, we use the '\_\_apollo_set_mode' function, with the first argument being the module name, and the second being the new mode.
 
 For our file count module, we're going to set a mode called "big" to indicate there are a lot of files in the current directory. We'll allow the user to decide how many files is considered a lot. We'll also add a verbose option so that the user can choose between showing the exact count or to instead show a string of their choosing based on the mode:
 
@@ -144,7 +144,7 @@ So we've decided that if a directory has more than 10 items in it, that's a lot.
 
 ### Asynchronous Execution
 
-To run this module asynchronously, all we need to do is change the function name from '__apollo_{module_name}_run' to '__apollo_{module_name}_async'. This will run the async function only when no cache value is present. There also exists an '__apollo_{module_name}_always_async' function which will run on every prompt. Cache is still used in this case to prevent the harsh pop in caused by asynchronous operation, but the displayed value will update if needed once the async operation has completed. For this module, we don't need it to run on every prompt so we're just going to use the standard async function. Since this is no longer blocking the main prompt render, we can even sprinkle in some external commands and sub-shells if we want without caring too much:
+To run this module asynchronously, all we need to do is change the function name from '\_\_apollo_{module_name}_run' to '\_\_apollo_{module_name}_async'. This will run the async function only when no cache value is present. There also exists an '\_\_apollo_{module_name}_always_async' function which will run on every prompt. Cache is still used in this case to prevent the harsh pop in caused by asynchronous operation, but the displayed value will update if needed once the async operation has completed. For this module, we don't need it to run on every prompt so we're just going to use the standard async function. Since this is no longer blocking the main prompt render, we can even sprinkle in some external commands and sub-shells if we want without caring too much:
 
 ```shell
 __apollo_file_count_cache_key() {
@@ -176,11 +176,11 @@ __apollo_file_count_async() {
 }
 ```
 
-If no other function named '__apollo_{module_name}_run' exists, the framework will use the return value from the async function as the display text, as well as the mode that's set during the async function if any. In rare cases you may decide you want to use both an async function and still use an '__apollo_{module_name}_run' function as well. When this is done, the framework will pass the value from the async function as the second parameter to the run function, and the mode is left at whatever the async function set it as if not default.
+If no other function named '\_\_apollo_{module_name}_run' exists, the framework will use the return value from the async function as the display text, as well as the mode that's set during the async function if any. In rare cases you may decide you want to use both an async function and still use an '\_\_apollo_{module_name}_run' function as well. When this is done, the framework will pass the value from the async function as the second parameter to the run function, and the mode is left at whatever the async function set it as if not default.
 
 ### Module Elements
 
-For more complex modules, you may have several components that make up the module text. These can all be styled and have their own left and right labels separate from the module text itself. To do this we can use the '__apollo_set_style' function, which will set the colors, styles, and labels for the string. Note that these values are cached using the context as the cache key. This is not always desirable for values that are more dynamic, so there are two ways to use it.
+For more complex modules, you may have several components that make up the module text. These can all be styled and have their own left and right labels separate from the module text itself. To do this we can use the '\_\_apollo_set_style' function, which will set the colors, styles, and labels for the string. Note that these values are cached using the context as the cache key. This is not always desirable for values that are more dynamic, so there are two ways to use it.
 
 The simple way will style and cache the element text and can be done with the following code:
 
@@ -199,7 +199,7 @@ element="${style[1]}${element}${style[2]}"
 
 ### Sanitizing values
 
-Whenever you're working with unpredictable values, it's a good idea to sanitize them before displaying them in the prompt. There are pretty much only three characters that can be problematic here, \`, $, and %. For this you can use the '__apollo_sanitize' function to escape the needed characters:
+Whenever you're working with unpredictable values, it's a good idea to sanitize them before displaying them in the prompt. There are pretty much only three characters that can be problematic here, \`, $, and %. For this you can use the '\_\_apollo_sanitize' function to escape the needed characters:
 
 ```shell
 __apollo_sanitize "$string"
@@ -208,7 +208,7 @@ string="$__APOLLO_RETURN_MESSAGE"
 
 ### Buffered output
 
-For the most part, you should avoid using sub-shells, and pipes inside of an '__apollo_{module_name}_run' function. To help with that, the framework catches stdout in a buffer that you can operate on within the module. Say for example you need to get the zsh version and you aren't aware of the better ways to do this:
+For the most part, you should avoid using sub-shells, and pipes inside of an '\_\_apollo_{module_name}_run' function. To help with that, the framework catches stdout in a buffer that you can operate on within the module. Say for example you need to get the zsh version and you aren't aware of the better ways to do this:
 
 ```shell
 zsh --version
