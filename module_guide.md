@@ -14,10 +14,21 @@
 
 ### Introduction
 
+At this point in time the included modules are very much tailored for my own usage. I'm sure there's a great deal of desirable modules that aren't yet present. They're generally easy to make, so I've written this guide on the process.
+
+Modules are comprised of a single file named '\_\_apollo_{module_name}_load'. Custom modules can be placed in '${XDG_DATA_HOME}/apollo/' or /home/user/.local/share/apollo/ if XDG_DATA_HOME is not set.
 
 ### Profiling
 
-Enable Profiler: zstyle ':apollo:apollo:core:profiler' enabled "true"
+When developing modules, it's important to keep track of their performance impact. To do so, I've included a basic profiling tool that can be enabled with this config setting:
+
+```shell
+zstyle ':apollo:apollo:core:profiler' enabled "true"
+```
+
+Replace the second 'apollo' with whatever theme you're using, or an * to match all themes. The output of this will be in the form:
+
+module_name: duration cache_status
 
 ### Basic Module
 
