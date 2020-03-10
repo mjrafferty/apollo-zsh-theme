@@ -21,9 +21,9 @@ Enable Profiler: zstyle ':apollo:apollo:core:profiler' enabled "true"
 
 ### Basic Module
 
-Every module should define atleast one function by the name of '__apollo_{module_name}_run'. The value this function returns is passed back by setting the '__APOLLO_RETURN_MESSAGE' variable.
+Every module should define at-least one function by the name of '__apollo_{module_name}_run'. The value this function returns is passed back by setting the '__APOLLO_RETURN_MESSAGE' variable.
 
-For the duration of this guide, we're going to focus on devloping a module that does one simple task, listing the number of files in your current directory. The actual methods I'm using to get that data are extremely flawed, but it gives us an easy data point to demonstrate module creation. Here is a very basic implementation of that:
+For the duration of this guide, we're going to focus on developing a module that does one simple task, listing the number of files in your current directory. The actual methods I'm using to get that data are extremely flawed, but it gives us an easy data point to demonstrate module creation. Here is a very basic implementation of that:
 
 ```shell
 __apollo_file_count_run() {
@@ -39,7 +39,7 @@ That's not an exceptionally long time, but it adds a lot more latency than neces
 
 ### Avoiding Forks
 
-The biggest issue with our module is it generates quite a few extra processes to do the work. It's a lot lighter to do everything you can in the shell that's already running. We should avoid using external programs as well as implict and explicit subshells whenever possible. An explicit subshell would be a command wrapped in '$()', where as implicit subshells are created by things like pipes. To avoid all of that, we can do the same job with the following:
+The biggest issue with our module is it generates quite a few extra processes to do the work. It's a lot lighter to do everything you can in the shell that's already running. We should avoid using external programs as well as implicit and explicit sub-shells whenever possible. An explicit sub-shell would be a command wrapped in '$()', where as implicit sub-shells are created by things like pipes. To avoid all of that, we can do the same job with the following:
 
 ```shell
 __apollo_file_count_run() {
@@ -144,7 +144,7 @@ So we've decided that if a directory has more than 10 items in it, that's a lot.
 
 ### Asynchronous Execution
 
-To run this module asynchronously, all we need to do is change the function name from '__apollo_{module_name}_run' to '__apollo_{module_name}_async'. This will run the async function only when no cache value is present. There also exists an '__apollo_{module_name}_always_async' function which will run on every prompt. Cache is still used in this case to prevent the harsh pop in caused by asynchronous operation, but the displayed value will update if needed once the async operation has completed. For this module, we don't need it to run on every prompt so we're just going to use the standard async function. Since this is no longer blocking the main prompt render, we can even sprinkle in some external commands and subshells if we want without caring too much:
+To run this module asynchronously, all we need to do is change the function name from '__apollo_{module_name}_run' to '__apollo_{module_name}_async'. This will run the async function only when no cache value is present. There also exists an '__apollo_{module_name}_always_async' function which will run on every prompt. Cache is still used in this case to prevent the harsh pop in caused by asynchronous operation, but the displayed value will update if needed once the async operation has completed. For this module, we don't need it to run on every prompt so we're just going to use the standard async function. Since this is no longer blocking the main prompt render, we can even sprinkle in some external commands and sub-shells if we want without caring too much:
 
 ```shell
 __apollo_file_count_cache_key() {
@@ -176,7 +176,7 @@ __apollo_file_count_async() {
 }
 ```
 
-If no other function named '__apollo_{module_name}_run' exists, the framework will use the return value from the async function as the display text, as well as the mode thats set during the async function if any. In rare cases you may decide you want to use both an async function and still use an '__apollo_{module_name}_run' function as well. When this is done, the framework will pass the value from the async function as the second parameter to the run function, and the mode is left at whatever the async function set it as if not default.
+If no other function named '__apollo_{module_name}_run' exists, the framework will use the return value from the async function as the display text, as well as the mode that's set during the async function if any. In rare cases you may decide you want to use both an async function and still use an '__apollo_{module_name}_run' function as well. When this is done, the framework will pass the value from the async function as the second parameter to the run function, and the mode is left at whatever the async function set it as if not default.
 
 ### Module Elements
 
@@ -208,7 +208,7 @@ string="$__APOLLO_RETURN_MESSAGE"
 
 ### Buffered output
 
-For the most part, you should avoid using subshells, and pipes inside of an '__apollo_{module_name}_run' function. To help with that, the framework catches stdout in a buffer that you can operate on within the module. Say for example you need to get the zsh version and you aren't aware of the better ways to do this:
+For the most part, you should avoid using sub-shells, and pipes inside of an '__apollo_{module_name}_run' function. To help with that, the framework catches stdout in a buffer that you can operate on within the module. Say for example you need to get the zsh version and you aren't aware of the better ways to do this:
 
 ```shell
 zsh --version
