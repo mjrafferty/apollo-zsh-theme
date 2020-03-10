@@ -85,7 +85,7 @@ __apollo_sanitize() {
 
   local input="$1"
 
-  regexp-replace input '(`|\$)' '\\$MATCH'
+  regexp-replace input '(`|\$|\\)' '\\$MATCH'
   regexp-replace input '%' '%%'
 
   __APOLLO_RETURN_MESSAGE="$input"
