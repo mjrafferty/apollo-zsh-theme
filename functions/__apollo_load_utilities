@@ -77,7 +77,7 @@ __apollo_check_buffer () {
     unset "${__APOLLO_BUFFER_FD}" 2> /dev/null
     exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
 
-	fi
+  fi
 
 }
 
@@ -127,17 +127,17 @@ __apollo_start_async() {
 
   for module state in "${(kv)__APOLLO_MODULES_LOADED[@]}"; do
 
-  if (( ${+functions[__apollo_${module}_async]} || ${+functions[__apollo_${module}_always_async]} )); then
+    if (( ${+functions[__apollo_${module}_async]} || ${+functions[__apollo_${module}_always_async]} )); then
 
-    async_worker_eval apollo_async_helper "__apollo_${module}_async_runner () { __apollo_async_runner ${module} \"\${@}\" }"
+      async_worker_eval apollo_async_helper "__apollo_${module}_async_runner () { __apollo_async_runner ${module} \"\${@}\" }"
 
-    if ((${+functions[__apollo_${module}_init_async]})); then
-      async_worker_eval apollo_async_helper "__apollo_${module}_init_async"
+      if ((${+functions[__apollo_${module}_init_async]})); then
+        async_worker_eval apollo_async_helper "__apollo_${module}_init_async"
+      fi
+
     fi
 
-  fi
-
-done
+  done
 
 }
 

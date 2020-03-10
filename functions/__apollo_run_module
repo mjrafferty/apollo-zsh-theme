@@ -22,16 +22,16 @@ __apollo_run_module() {
   # Clear out old message before passing to module
   __APOLLO_RETURN_MESSAGE=""
 
-	if ((${+functions[__apollo_${module}_run]})); then
+  if ((${+functions[__apollo_${module}_run]})); then
 
-		"__apollo_${module}_run" "${context}" "${__APOLLO_ASYNC_RESULTS[$module]}" >&"${__APOLLO_BUFFER_FD}"
+    "__apollo_${module}_run" "${context}" "${__APOLLO_ASYNC_RESULTS[$module]}" >&"${__APOLLO_BUFFER_FD}"
 
-		# Flush any remaining data in buffer
-		while read -rt dump <&"${__APOLLO_BUFFER_FD}"; do true; done
+    # Flush any remaining data in buffer
+    while read -rt dump <&"${__APOLLO_BUFFER_FD}"; do true; done
 
-	else
-		__APOLLO_RETURN_MESSAGE="${__APOLLO_ASYNC_RESULTS[$module]}"
-	fi
+  else
+    __APOLLO_RETURN_MESSAGE="${__APOLLO_ASYNC_RESULTS[$module]}"
+  fi
 
   mode="${__APOLLO_MODULE_MODE[$module]}"
 

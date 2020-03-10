@@ -3,7 +3,7 @@
 __apollo_run_prompt() {
 
   local start startmod profiler
-	local module
+  local module
   local -a line_modules
   local -i line num
 

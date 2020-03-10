@@ -11,7 +11,7 @@ __apollo_date_run() {
   context="$1"
   mode="default"
 
-	local -a elements misc_style
+  local -a elements misc_style
   local return_string verbose
 
   zstyle -a "${context}:${mode}" elements elements

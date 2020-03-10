@@ -6,7 +6,7 @@ __apollo_precmd() {
   __APOLLO_PIPE_EXIT_CODES=( "${pipestatus[@]}" )
 
   local profiler
-	local module cache_disabled clearing_disabled
+  local module cache_disabled clearing_disabled
   local -i clear_count
 
   zstyle -b ":apollo:${APOLLO_THEME}:core:profiler" enabled profiler
@@ -16,8 +16,8 @@ __apollo_precmd() {
 
   if [[ "$cache_disabled" == "yes" ]] \
     || [[ "$clearing_disabled" != "yes" && "$((++__APOLLO_BREAK_CACHE_COUNTER))" -ge "$clear_count" ]]; then
-    __APOLLO_MODULE_CACHE=();
-    __APOLLO_BREAK_CACHE_COUNTER=0;
+      __APOLLO_MODULE_CACHE=();
+      __APOLLO_BREAK_CACHE_COUNTER=0;
   fi
 
   __apollo_check_buffer

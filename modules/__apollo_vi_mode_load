@@ -52,11 +52,12 @@ zle-line-init() {
 
   local last_mode="$__APOLLO_VI_MODE"
 
-	__APOLLO_VI_MODE="INSERT"
+  __APOLLO_VI_MODE="INSERT"
 
   if [[ "$__APOLLO_VI_MODE" != "$last_mode" ]]; then
     __apollo_async_update "vi_mode"
   fi
+
 }
 
 __apollo_vi_mode_visual_mode() {

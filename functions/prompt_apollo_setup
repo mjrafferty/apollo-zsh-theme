@@ -9,7 +9,7 @@ typeset -gA __APOLLO_MODULE_CACHE
 typeset -gA __APOLLO_STYLE_CACHE
 
 ## Buffer data
-typeset -g	__APOLLO_BUFFER_NAME
+typeset -g  __APOLLO_BUFFER_NAME
 typeset -g  __APOLLO_BUFFER_FD
 
 ## Async data
@@ -57,12 +57,12 @@ typeset -gA __APOLLO_MODULES_LOADED
 
 prompt_apollo_setup() {
 
-	local conf
+  local conf
 
-	setopt prompt_subst prompt_percent
+  setopt prompt_subst prompt_percent
   prompt_opts=(subst percent)
 
-	zmodload zsh/datetime zsh/regex
+  zmodload zsh/datetime zsh/regex
 
   ## Set fpath ##
   if [[ -n "${__APOLLO_INSTALL_DIR}" ]]; then
@@ -86,10 +86,10 @@ prompt_apollo_setup() {
   done
 
   ## Load functions ##
-	autoload -Uz +X __apollo_add_links __apollo_decorate_prompt __apollo_get_module_text \
-		__apollo_precmd __apollo_run_module __apollo_add_newline __apollo_build_right_prompt \
-		__apollo_preexec __apollo_build_left_prompt __apollo_set_colors __apollo_update_prompts \
-		__apollo_async_update __apollo_format_string __apollo_style_module __apollo_set_style \
+  autoload -Uz +X __apollo_add_links __apollo_decorate_prompt __apollo_get_module_text \
+    __apollo_precmd __apollo_run_module __apollo_add_newline __apollo_build_right_prompt \
+    __apollo_preexec __apollo_build_left_prompt __apollo_set_colors __apollo_update_prompts \
+    __apollo_async_update __apollo_format_string __apollo_style_module __apollo_set_style \
     __apollo_load_utilities __apollo_async_callback __apollo_init_theme __apollo_run_prompt \
     __apollo_async_runner
 
@@ -98,12 +98,12 @@ prompt_apollo_setup() {
   PROMPT=""
   RPROMPT=""
 
-	autoload -Uz add-zsh-hook regexp-replace is-at-least
+  autoload -Uz add-zsh-hook regexp-replace is-at-least
 
-	add-zsh-hook precmd __apollo_precmd
-	add-zsh-hook preexec __apollo_preexec
-	add-zsh-hook chpwd __apollo_chpwd
-	add-zsh-hook zshexit __apollo_cleanup
+  add-zsh-hook precmd __apollo_precmd
+  add-zsh-hook preexec __apollo_preexec
+  add-zsh-hook chpwd __apollo_chpwd
+  add-zsh-hook zshexit __apollo_cleanup
   zle -N zle-line-finish
 
   if ! is-at-least 5.1; then
