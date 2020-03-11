@@ -42,6 +42,12 @@ __apollo_chpwd() {
 ## Update buffered prompt when executing command
 zle-line-finish() {
 
+  if [[ "${zsh_eval_context[1]}" == "trap" ]] \
+    && (( BUFFERLINES > 1 )) \
+    && ((${#BUFFER} < ((BUFFERLINES - 1) * COLUMNS))); then
+      return;
+  fi
+
   local current_theme="$APOLLO_THEME"
 
   APOLLO_THEME="buffer"
