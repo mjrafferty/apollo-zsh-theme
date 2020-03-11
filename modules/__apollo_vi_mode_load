@@ -21,6 +21,8 @@ zle-keymap-select() {
 
   local last_mode="$__APOLLO_VI_MODE"
 
+  [[ "$KEYS" == ":" ]] && return
+
   case "$KEYMAP" in
     "vicmd")
       if ((REGION_ACTIVE == 1)); then

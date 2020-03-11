@@ -48,6 +48,9 @@ zle-line-finish() {
       return;
   fi
 
+  # Skip if escape key was last pressed
+  [[ "$KEYS" ==  ]] && return;
+
   local current_theme="$APOLLO_THEME"
 
   APOLLO_THEME="buffer"

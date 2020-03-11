@@ -47,13 +47,11 @@ __apollo_command_execution_time_run() {
       ;;
     "minute")
       duration=$(( int(rint(duration)) ))
-      TZ=GMT strftime '%M:%S' "${duration}"
-      read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
+      TZ=GMT strftime -s __APOLLO_RETURN_MESSAGE '%M:%S' "${duration}"
       ;;
     "hour")
       duration=$(( int(rint(duration)) ))
-      TZ=GMT strftime '%H:%M:%S' "${duration}"
-      read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
+      TZ=GMT strftime -s __APOLLO_RETURN_MESSAGE '%H:%M:%S' "${duration}"
       ;;
   esac
 
