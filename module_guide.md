@@ -11,6 +11,7 @@
       * [Module Elements](#module-elements)
       * [Sanitizing Values](#sanitizing-values)
       * [Buffered Output](#buffered-output)
+      * [Things to Avoid](#things-to-avoid)
 
 ### Introduction
 
@@ -227,3 +228,14 @@ read -r -t output_string <&${__APOLLO_BUFFER_FD}
 ```
 
 The output of the command is sent to the buffer, and then you read in from the buffer file descriptor to assign it to the variable called "$output_string". Note that reading the data this way does so line by line, so you'd need to do it multiple times for multi line output. It's also important to note that this buffer is ___NOT___ available with async functions, so this should be thought of if converting a function to async.
+
+
+### Things to Avoid
+
+The most difficult goal of this project is to maintain compatibility with older zsh versions. I've decided that it would be beneficial to maintain a list of items that are not compatible with older versions. 
+
+  1. =~ operator (risk of segfault)
+  2. add-zle-hook-widget (not present)
+  3. sysopen (not present)
+  4. zmathfunc (not present)
+
