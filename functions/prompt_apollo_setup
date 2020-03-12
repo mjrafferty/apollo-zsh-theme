@@ -62,7 +62,7 @@ prompt_apollo_setup() {
   setopt prompt_subst prompt_percent
   prompt_opts=(subst percent)
 
-  zmodload zsh/datetime zsh/regex
+  zmodload zsh/datetime zsh/regex zsh/system
 
   ## Set fpath ##
   if [[ -n "${__APOLLO_INSTALL_DIR}" ]]; then

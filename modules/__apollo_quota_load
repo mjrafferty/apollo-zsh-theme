@@ -35,11 +35,10 @@ __apollo_quota_cache_key(){
 __apollo_quota_run() {
 
   if (( OS_VERSION < 7 )) && [[ -n "$__APOLLO_QUOTA_COMMAND" && -n "$__APOLLO_QUOTA_USER" ]]; then
-    "$__APOLLO_QUOTA_COMMAND" -qg "$__APOLLO_QUOTA_USER" 2> /dev/null
 
-    # Read once to clear the header from output, second read gathers what we want.
-    read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
-    read -r -t __APOLLO_RETURN_MESSAGE <&${__APOLLO_BUFFER_FD}
+    "$__APOLLO_QUOTA_COMMAND" -qg "$__APOLLO_QUOTA_USER" 2> /dev/null
+    sysread -i "${__APOLLO_BUFFER_FD}"
+    __APOLLO_RETURN_MESSAGE="${${(f)REPLY}[2]}"
 
   else
     __APOLLO_RETURN_MESSAGE=""

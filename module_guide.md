@@ -224,7 +224,7 @@ For the most part, you should avoid using sub-shells, and pipes inside of an '\_
 
 ```shell
 zsh --version
-read -r -t output_string <&${__APOLLO_BUFFER_FD}
+sysread -i ${__APOLLO_BUFFER_FD} output_string
 ```
 
 The output of the command is sent to the buffer, and then you read in from the buffer file descriptor to assign it to the variable called "$output_string". Note that reading the data this way does so line by line, so you'd need to do it multiple times for multi line output. It's also important to note that this buffer is ___NOT___ available with async functions, so this should be thought of if converting a function to async.

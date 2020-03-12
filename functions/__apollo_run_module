@@ -27,7 +27,8 @@ __apollo_run_module() {
     "__apollo_${module}_run" "${context}" "${__APOLLO_ASYNC_RESULTS[$module]}" >&"${__APOLLO_BUFFER_FD}"
 
     # Flush any remaining data in buffer
-    while read -rt dump <&"${__APOLLO_BUFFER_FD}"; do true; done
+    sysread -i "${__APOLLO_BUFFER_FD}"
+    unset REPLY
 
   else
     __APOLLO_RETURN_MESSAGE="${__APOLLO_ASYNC_RESULTS[$module]}"
