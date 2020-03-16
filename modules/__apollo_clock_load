@@ -76,13 +76,15 @@ __apollo_clock_run() {
 
 }
 
-local live
 
-zstyle -b ":apollo:${APOLLO_THEME}:*:*:clock:*" live live
+__apollo_clock_theme_init() {
+  local live
 
-if [[ "$live" == "yes" ]]; then
-  TMOUT=1
-  TRAPALRM(){ zle && zle .reset-prompt }
-fi
+  zstyle -b ":apollo:${APOLLO_THEME}:*:*:clock:*" live live
 
-unset live
+  if [[ "$live" == "yes" ]]; then
+    TMOUT=1
+    TRAPALRM(){ zle && zle .reset-prompt }
+  fi
+
+}

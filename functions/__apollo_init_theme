@@ -14,6 +14,11 @@ __apollo_init_theme() {
   for module in "${left_modules[@]}" "${right_modules[@]}"; do
 
     if [[ "$module" == "newline" || "$module" == "ruler" || "${__APOLLO_MODULES_LOADED[$module]}" == 1 ]]; then
+
+      if ((${+functions[__apollo_${module}_theme_init]})); then
+        __apollo_${module}_theme_init
+      fi
+
       continue;
     fi
 
@@ -41,6 +46,10 @@ __apollo_init_theme() {
 
       fi
 
+    fi
+
+    if ((${+functions[__apollo_${module}_theme_init]})); then
+      __apollo_${module}_theme_init
     fi
 
 

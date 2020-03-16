@@ -95,35 +95,36 @@ __apollo_dir_run() {
 
 }
 
+__apollo_dir_theme_init() {
 
-local bookmark pattern bookmark_name
-local -a bookmarks bookmark_patterns split_pattern
+  local bookmark pattern bookmark_name
+  local -a bookmarks bookmark_patterns split_pattern
 
-zstyle -a ":apollo:${APOLLO_THEME}:*:*:dir:*" bookmarks bookmarks
+  zstyle -a ":apollo:${APOLLO_THEME}:*:*:dir:*" bookmarks bookmarks
 
-for bookmark in "${bookmarks[@]}"; do
-  hash -d "${bookmark}" 2> /dev/null
-done
+  for bookmark in "${bookmarks[@]}"; do
+    hash -d "${bookmark}" 2> /dev/null
+  done
 
-zstyle -a ":apollo:${APOLLO_THEME}:*:*:dir:*" bookmark_patterns bookmark_patterns
+  zstyle -a ":apollo:${APOLLO_THEME}:*:*:dir:*" bookmark_patterns bookmark_patterns
 
-for pattern in "${bookmark_patterns[@]}"; do
+  for pattern in "${bookmark_patterns[@]}"; do
 
-  split_pattern=("${(s.;.)pattern}")
+    split_pattern=("${(s.;.)pattern}")
 
-  bookmarks=(${~=split_pattern[1]}(N))
+    bookmarks=(${~=split_pattern[1]}(N))
 
-  if [[ -z "${split_pattern[2]}" ]]; then
-    for bookmark in "${bookmarks[@]}"; do
-      hash -d "${bookmark##*/}=${bookmark}" 2> /dev/null
-    done
-  else
-    for bookmark in "${bookmarks[@]}"; do
-      bookmark_name="${bookmark%${split_pattern[2]}}"
-      hash -d "${bookmark_name##*/}=${bookmark}" 2> /dev/null
-    done
-  fi
+    if [[ -z "${split_pattern[2]}" ]]; then
+      for bookmark in "${bookmarks[@]}"; do
+        hash -d "${bookmark##*/}=${bookmark}" 2> /dev/null
+      done
+    else
+      for bookmark in "${bookmarks[@]}"; do
+        bookmark_name="${bookmark%${split_pattern[2]}}"
+        hash -d "${bookmark_name##*/}=${bookmark}" 2> /dev/null
+      done
+    fi
 
-done
+  done
 
-unset bookmark bookmarks pattern bookmark_patterns split_pattern
+}
