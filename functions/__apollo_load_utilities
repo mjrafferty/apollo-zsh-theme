@@ -42,6 +42,8 @@ __apollo_chpwd() {
 ## Update buffered prompt when executing command
 zle-line-finish() {
 
+  local current_theme scrollback_theme
+
   if [[ "${zsh_eval_context[1]}" == "trap" ]] \
     && (( BUFFERLINES > 1 )) \
     && ((${#BUFFER} < ((BUFFERLINES - 1) * COLUMNS))); then
@@ -51,14 +53,18 @@ zle-line-finish() {
   # Skip if escape key was last pressed
   [[ "$KEYS" ==  ]] && return;
 
-  local current_theme="$APOLLO_THEME"
+  zstyle -s ":apollo:${APOLLO_THEME}:core:scrollback" theme scrollback_theme
 
-  APOLLO_THEME="buffer"
-  __apollo_run_prompt
+  if [[ -n "$scrollback_theme" ]]; then
+    current_theme="$APOLLO_THEME"
 
-  zle && zle .reset-prompt
+    APOLLO_THEME="${scrollback_theme}"
+    __apollo_run_prompt
 
-  APOLLO_THEME="$current_theme"
+    zle && zle .reset-prompt
+
+    APOLLO_THEME="$current_theme"
+  fi
 
 }
 
