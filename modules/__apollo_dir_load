@@ -1,8 +1,5 @@
 # vim:ft=zsh
 
-# Description:
-#
-
 __apollo_dir_cache_key() {
   __APOLLO_RETURN_MESSAGE="$PWD"
 }
@@ -59,6 +56,7 @@ __apollo_dir_run() {
     fi
 
   fi
+
   __apollo_set_style "${context}:${mode}:sep"
   sep="${__APOLLO_RETURN_MESSAGE}"
 
@@ -101,13 +99,13 @@ __apollo_dir_run() {
 local bookmark pattern bookmark_name
 local -a bookmarks bookmark_patterns split_pattern
 
-zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:*:*:dir:*" bookmarks bookmarks
+zstyle -a ":apollo:${APOLLO_THEME}:*:*:dir:*" bookmarks bookmarks
 
 for bookmark in "${bookmarks[@]}"; do
   hash -d "${bookmark}" 2> /dev/null
 done
 
-zstyle -a ":apollo:${__APOLLO_PROMPT_THEME}:*:*:dir:*" bookmark_patterns bookmark_patterns
+zstyle -a ":apollo:${APOLLO_THEME}:*:*:dir:*" bookmark_patterns bookmark_patterns
 
 for pattern in "${bookmark_patterns[@]}"; do
 

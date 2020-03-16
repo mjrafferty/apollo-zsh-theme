@@ -1,9 +1,4 @@
 # vim:ft=zsh
-################################################################
-# Vi Mode: show editing mode (NORMAL|INSERT|VISUAL)
-#
-# VISUAL mode is shown as NORMAL unless APOLLO_VI_VISUAL_MODE_STRING is explicitly set.
-# Your ZSH version must be >= 5.3 if you set this parameter.
 
 typeset -g __APOLLO_VI_MODE="INSERT"
 

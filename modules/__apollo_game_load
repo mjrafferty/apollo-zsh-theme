@@ -1,6 +1,5 @@
 # vim:ft=zsh
 
-
 typeset -gi __APOLLO_GAME_CASH=1000
 typeset -ga __APOLLO_GAME_SYMBOLS
 
@@ -17,7 +16,7 @@ __APOLLO_GAME_SYMBOLS=(
 
 __apollo_game_run (){
 
-  local slots
+  local slots n1 n2 n3
   local win=0
   local winst=""
 

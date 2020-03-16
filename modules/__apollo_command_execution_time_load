@@ -1,13 +1,10 @@
 # vim:ft=zsh
-################################################################
-# Display the duration the command needed to run.
 
 typeset -gF __APOLLO_COMMAND_EXECUTION_TIME_START="-1"
 
 __apollo_command_execution_time_run() {
 
-  local context mode
-  local duration min_duration precision
+  local context mode duration min_duration precision
 
   context="$1"
   mode="default"

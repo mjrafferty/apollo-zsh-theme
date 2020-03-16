@@ -1,5 +1,4 @@
 # vim:ft=zsh
-#
 
 __apollo_background_jobs_cache_key() {
   __APOLLO_RETURN_MESSAGE="${(%):-%j}"

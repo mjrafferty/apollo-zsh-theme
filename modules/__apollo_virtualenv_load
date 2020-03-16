@@ -1,8 +1,4 @@
 # vim:ft=zsh
-################################################################
-# Virtualenv: current working virtualenv
-# More information on virtualenv (Python):
-# https://virtualenv.pypa.io/en/latest/
 
 __apollo_virtualenv_cache_key() {
   __APOLLO_RETURN_MESSAGE="${VIRTUAL_ENV:-1}"

@@ -1,6 +1,4 @@
 # vim:ft=zsh
-################################################################
-# Public IP module
 
 __apollo_public_ip_cache_key() {
   __APOLLO_RETURN_MESSAGE="1"
@@ -15,28 +13,19 @@ __apollo_public_ip_async() {
   mode="default"
 
   zstyle -a "${context}:${mode}" methods methods
-  zstyle -s "${context}:${mode}" host host
 
   for method in "${methods[@]}"; do
 
-    case $method in
-      'dig')
-        if (( $+commands[dig] )); then
-          __APOLLO_RETURN_MESSAGE=$(command dig +time=1 +tries=1 +short myip.opendns.com @resolver1.opendns.com 2> /dev/null)
-        fi
-        ;;
-      'curl')
-        if (( $+commands[curl] )); then
-          __APOLLO_RETURN_MESSAGE=$(command curl --max-time 10 -w '\n' "$host" 2> /dev/null)
-        fi
-        ;;
-      'wget')
-        if (( $+commands[wget] )); then
-          __APOLLO_RETURN_MESSAGE=$(command wget -T 10 -qO- "$host" 2> /dev/null)
-        fi
-        ;;
-    esac
+    if (( $+commands[$method] )); then
 
+      zstyle -s "${context}:${mode}:${method}" host host
+
+      case $method in
+        'curl') __APOLLO_RETURN_MESSAGE=$(command curl --max-time 10 -w '\n' "$host") ;;
+        'dig') __APOLLO_RETURN_MESSAGE=$(command dig +time=1 +tries=1 +short "$host" @resolver1.opendns.com) ;;
+        'wget') __APOLLO_RETURN_MESSAGE=$(command wget -T 10 -qO- "$host") ;;
+      esac
+    fi
   done
 
 }

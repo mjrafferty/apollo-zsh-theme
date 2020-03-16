@@ -1,6 +1,4 @@
 # vim:ft=zsh
-################################################################
-# Segment to print an icon if user is root.
 
 __apollo_root_indicator_cache_key() {
   __APOLLO_RETURN_MESSAGE="1"

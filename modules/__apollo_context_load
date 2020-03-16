@@ -1,12 +1,5 @@
 # vim:ft=zsh
 
-# Description:
-#
-#    Username and hostname
-#
-#       Modes: default sudo ssh
-#    Elements: user separator host
-
 __apollo_context_cache_key() {
   __APOLLO_RETURN_MESSAGE="1"
 }

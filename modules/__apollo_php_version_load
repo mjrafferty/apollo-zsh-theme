@@ -1,6 +1,4 @@
 # vim:ft=zsh
-################################################################
-# Segment to display PHP version number
 
 __apollo_php_version_cache_key() {
   __APOLLO_RETURN_MESSAGE="1"

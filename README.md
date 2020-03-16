@@ -609,6 +609,12 @@ zstyle ':apollo:example:*:*:php_version:*:left:label' text "PHP "
 
 Display public IP address.
 
+Element|Description
+---|---
+curl|Retrieve IP using curl
+dig|Retrieve IP using dig
+wget|Retrieve IP using wget
+
 Attribute|Type|Description
 ---|---|---
 methods|list|List of methods to retrieve IP info (dig, curl, wget)
@@ -619,7 +625,7 @@ Examples:
 zstyle ':apollo:example:*:*:public_ip:*' fg_color "white"
 zstyle ':apollo:example:*:*:public_ip:*' bg_color "darkgreen"
 zstyle ':apollo:example:*:*:public_ip:*' methods "curl"
-zstyle ':apollo:example:*:*:public_ip:*' host "ipv4.nexcess.net"
+zstyle ':apollo:example:*:*:public_ip:*:curl' host "icanhazip.com"
 ```
 
 
