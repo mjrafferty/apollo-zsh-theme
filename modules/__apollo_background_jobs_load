@@ -8,6 +8,7 @@ __apollo_background_jobs_run() {
 
   local context mode always_show job_count
 
+  context="$1"
   mode="default"
 
   zstyle -b "${context}:${mode}" always_show always_show
