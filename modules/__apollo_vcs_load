@@ -4,85 +4,143 @@ __apollo_vcs_cache_key() {
   __APOLLO_RETURN_MESSAGE="$PWD"
 }
 
-__apollo_vcs_run() {
-
-  local line="$1"
-  local side="$2"
-  local async_results="$3"
-
-  __APOLLO_RETURN_MESSAGE="${async_results}"
-
-}
-
 __apollo_vcs_always_async() {
-  vcs_info hello
-  echo "${vcs_info_msg_0_}"
-}
 
+  local pattern listed element misc_style format_string index
+  local -a list vcs_items results
+  local context="$1"
+  local mode="default"
 
-estyle-cfc() {
-  local d
-  local -a cfc_dirs
-  cfc_dirs=(
-    ${HOME}/src/code/*(/N)
-  )
+  zstyle -a "${context}:${mode}" whitelist list
 
-  for d in ${cfc_dirs}; do
-    d=${d%/##}
-    [[ $PWD == $d(|/*) ]] && return 0
+  for pattern in "${list[@]}"; do
+    [[ "$PWD" -regex-match $pattern ]] && listed=1
   done
-  return 1
-}
 
-+vi-git-remotebranch() {
-  local remote
+  if ((listed != 1)); then
+    zstyle -a "${context}:${mode}" blacklist list
 
-  # Are we on a remote-tracking branch?
-  remote=${$(git rev-parse --verify ${hook_com[branch]}@{upstream} --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
+    for pattern in "${list[@]}"; do
+      [[ "$PWD" -regex-match $pattern ]] && listed=1
+    done
 
-  # The first test will show a tracking branch whenever there is one. The
-  # second test, however, will only show the remote branchs name if it
-  # differs from the local one.
-  if [[ -n ${remote} ]] ; then
-  #if [[ -n ${remote} && ${remote#*/} != ${hook_com[branch]} ]] ; then
-    hook_com[branch]="${hook_com[branch]} [${remote}]"
+    if ((listed == 1)); then
+      __apollo_set_style "${context}:${mode}:blacklist"
+      return 0
+    fi
   fi
+
+  #zstyle ':vcs_info:git*+set-message:apollo_vcs:*' hooks git-remotebranch git-status git-tracked git-untracked 
+
+  zstyle -a "${context}:${mode}" elements elements
+
+  for element in "${elements[@]}"; do
+    case "$element" in
+      "vcs"|"branch"|"action"|"base_dir"|"repo_name"|"sub_dir"|"misc"|"revision"|"staged"|"unstaged")
+        case "$element" in
+          "revision")
+            zstyle ':vcs_info:*:apollo_vcs:*' get-revision "true"
+            ;;
+          "staged")
+            zstyle ':vcs_info:*:apollo_vcs:*' check-for-staged-changes "true"
+            ;;
+          "unstaged")
+            zstyle ':vcs_info:*:apollo_vcs:*' check-for-changes "true"
+            ;;
+        esac
+        format_string+="${__APOLLO_VCS_MAP[$element]}\0"
+        ;;
+      *)
+        format_string+="${element}\0"
+        ;;
+    esac
+    vcs_items+="$element"
+  done
+
+  zstyle ':vcs_info:*:apollo_vcs:*' formats "${format_string}"
+  zstyle ':vcs_info:*:apollo_vcs:*' actionformats "${format_string}"
+
+  vcs_info apollo_vcs
+
+  results=(${(s.\0.)vcs_info_msg_0_})
+
+  for ((index=1;index<=${#vcs_items[@]};index++)); do
+
+    element="${vcs_items[index]}"
+
+    case "$element" in
+      "vcs"|"branch"|"action"|"base_dir"|"repo_name"|"sub_dir"|"misc"|"revision"|"staged"|"unstaged")
+        if [[ -n "${results[index]}" ]]; then
+          __apollo_set_style "${context}:${mode}:${element}" --dynamic
+          element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+          return_string+="${element_style[1]}${results[index]}${element_style[2]}"
+        fi
+        ;;
+      *)
+        if [[ -z "$misc_style" ]]; then
+          __apollo_set_style "${context}:${mode}:misc" --dynamic
+          misc_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
+        fi
+        return_string+="${misc_style[1]}${results[index]}${misc_style[2]}"
+        ;;
+    esac
+
+  done
+
+  __APOLLO_RETURN_MESSAGE="${return_string}"
+
 }
 
-+vi-git-st() {
-  local ahead behind
-  local -a gitstatus
+__apollo_vcs_init_async() {
 
-  # for git prior to 1.7
-  # ahead=$(git rev-list origin/${hook_com[branch]}..HEAD | wc -l)
-  ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
-  (( $ahead )) && gitstatus+=( "+${ahead}" )
+  typeset -gAh __APOLLO_VCS_MAP
 
-  # for git prior to 1.7
-  # behind=$(git rev-list HEAD..origin/${hook_com[branch]} | wc -l)
-  behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
-  (( $behind )) && gitstatus+=( "-${behind}" )
-
-  hook_com[misc]+=${(j:/:)gitstatus}
-}
-
-+vi-git-untracked(){
-  if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
-    git status --porcelain | grep '??' &> /dev/null ; then
-    hook_com[staged]+='T'
-  fi
-}
+  __APOLLO_VCS_MAP=(
+  "vcs"       "%s"
+  "branch"    "%b"
+  "action"    "%a"
+  "revision"  "%i"
+  "staged"    "%c"
+  "unstaged"  "%u"
+  "base_dir"  "%R"
+  "repo_name" "%r"
+  "sub_dir"   "%S"
+  "misc"      "%m"
+)
 
 autoload -Uz vcs_info
 
-zstyle ':vcs_info:*' formats "VCS:%s|Repo:%r|Branch:%b|Action:%a|Rev:%12.12i|Base:%R|Misc:%m|Staged:%c|Unstaged:%u"
-zstyle ':vcs_info:*' actionformats "VCS:%s|Repo:%r|Branch:%b|Action:%a|Rev:%12.12i|Base:%R|Misc:%m|Staged:%c|Unstaged:%u"
-zstyle ':vcs_info:*' max-exports 1
-zstyle ':vcs_info:*' check-for-changes "true"
-zstyle ':vcs_info:*' check-for-staged-changes "true"
-zstyle ':vcs_info:*' get-revision "true"
-zstyle ':vcs_info:*' disable-patterns "true"
+  +vi-git-remotebranch() {
 
-zstyle -e ':vcs_info:git:*' check-for-changes 'estyle-cfc && reply=( true ) || reply=( false )'
-zstyle -e ':vcs_info:git:*' check-for-staged-changes 'estyle-cfc && reply=( true ) || reply=( false )'
-zstyle ':vcs_info:git*+set-message:*' hooks git-untracked git-st git-remotebranch
+    local remote
+
+    remote=${$(git rev-parse --verify ${hook_com[branch]}@{upstream} --symbolic-full-name)/refs\/remotes\/}
+
+    hook_com[branch]="${hook_com[branch]}|${remote}]"
+  }
+
+  +vi-git-status() {
+
+    local ahead behind
+
+    ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD | wc -l)
+    behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} | wc -l)
+
+    hook_com[misc]+="$ahead|$behind"
+  }
+
+  +vi-git-tracked(){
+    if [[ $(git rev-parse --is-inside-work-tree) == 'true' ]]; then
+      hook_com[staged]="$(git status --porcelain | grep -c -v '??')"
+    fi
+  }
+
+  +vi-git-untracked(){
+    if [[ $(git rev-parse --is-inside-work-tree) == 'true' ]]; then
+      hook_com[unstaged]="$(git status --porcelain | grep -c '??')"
+    fi
+  }
+
+  zstyle ':vcs_info:*:apollo_vcs:*' max-exports 1
+
+}
