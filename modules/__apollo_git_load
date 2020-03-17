@@ -11,6 +11,7 @@ __apollo_git_always_async() {
   local return_string element item hash_length ignore_submodules listed
   local repo_path git_dir commit_hash local_branch remote_branch tag
   local -i modified untracked stash_count ahead behind only_count_once
+  local mode="default"
 
   git_dir="$(git rev-parse --git-dir)"
 
@@ -30,6 +31,7 @@ __apollo_git_always_async() {
     done
 
     if ((listed == 1)); then
+      __apollo_set_style "${context}:${mode}:blacklist"
       return 0
     fi
   fi
