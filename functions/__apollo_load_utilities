@@ -18,8 +18,8 @@ __apollo_cleanup() {
 
   if [[ "$$" == "${__APOLLO_PID}" ]]; then
 
-    exec {__APOLLO_BUFFER_FD}>&-
-    rm "$__APOLLO_BUFFER_NAME"
+    [[ -n "$__APOLLO_BUFFER_FD" ]] && exec {__APOLLO_BUFFER_FD}>&-
+    [[ -e "$__APOLLO_BUFFER_NAME" ]] && rm "$__APOLLO_BUFFER_NAME"
 
     if (( __APOLLO_ASYNC == 1 )); then
       async_stop_worker apollo_async_helper
