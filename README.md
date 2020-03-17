@@ -25,6 +25,7 @@ Heavily customizable, compatible, and performant zsh theme.
             * [Prompt End](#prompt-end)
             * [Caching](#caching)
             * [Profiler](#profiler)
+            * [Scrollback Theme](#scrollback-theme)
          * [Modules](#modules)
          * [Syntax](#syntax)
          * [Options provided to all modules by framework:](#options-provided-to-all-modules-by-framework)
@@ -248,6 +249,14 @@ Examples:
 zstyle ':apollo:example:core:profiler' enabled "true"
 ```
 
+
+#### Scrollback Theme
+
+Multiline prompts can eat up a lot of space in the scrollback buffer which can be somewhat irritating. To remedy that, a secondary theme can be applied which is set before saving a line to the scrollback buffer. This is most commonly used with a simple single line prompt to prevent wasted space, but any theme can be used here. Note that async modules will not work as the buffer text can not reasonably be modified.
+
+```shell
+zstyle ':apollo:example:core:scrollback' theme "scrollback_theme_name"
+```
 
 ### Modules
 
@@ -572,17 +581,25 @@ action|Current repository action if any
 modified|Modified file count
 untracked|Untracked file count
 stash_count|Number of stashes
+blacklist<sup>1</sup>|Directory is blacklisted
+
+  <sup>1</sup> This is not valid in the element list below. Its purpose is to allow for displaying a string when user is in a blacklisted directory.
 
 Attribute|Type|Description
 ---|---|---
 elements|list|List of elements to display
 hash_length|integer|Length of hash to display. Default is 8
 ignore_submodules|boolean|Ignore modifications to submodules
+blacklist|list|List of directory patterns to ignore
+whitelist|list|List of directory patterns to explicitly allow
+
 
 Examples:
 ```shell
 zstyle ':apollo:example:*:*:git:*' elements "local_branch" "action" " " "commit_hash" " " "remote_branch" " " "modified" "|" "untracked" "|" "stash_count"
 zstyle ':apollo:example:*:*:git:*' bg_color "black"
+zstyle ':apollo:example:*:*:git:*' blacklist ".*"
+zstyle ':apollo:example:*:*:git:*:blacklist' text "This is a git dir"
 zstyle ':apollo:example:*:*:git:*::left:label' text "git "
 zstyle ':apollo:example:*:*:git:*::left:label' fg_color "blue"
 zstyle ':apollo:example:*:*:git:*' fg_color "yellow"

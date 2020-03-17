@@ -8,6 +8,7 @@
       * [Using Cache](#using-cache)
       * [Adding Options](#adding-options)
       * [Asynchronous Execution](#asynchronous-execution)
+      * [Additional Hooks](#additional-hooks)
       * [Module Elements](#module-elements)
       * [Sanitizing Values](#sanitizing-values)
       * [Buffered Output](#buffered-output)
@@ -189,6 +190,18 @@ __apollo_file_count_async() {
 ```
 
 If no other function named '\_\_apollo\_{module_name}\_run' exists, the framework will use the return value from the async function as the display text, as well as the mode that's set during the async function if any. In rare cases you may decide you want to use both an async function and still use an '\_\_apollo\_{module_name}\_run' function as well. When this is done, the framework will pass the value from the async function as the second parameter to the run function, and the mode is left at whatever the async function set it as if not default.
+
+
+### Additional Hooks
+
+There are a few additional hook functions available that aren't mentioned in the guide above. They are not often needed, but specific scenarios call for their usage:
+
+Hook Function|Description
+---|---
+\_\_apollo_{module_name}_init_async|Evaluated by async worker when it is sstarted
+\_\_apollo_{module_name}_preexec|Run during preexec zsh hook
+\_\_apollo_{module_name}_theme_init|Run whenever a theme is first initialized
+
 
 ### Module Elements
 
