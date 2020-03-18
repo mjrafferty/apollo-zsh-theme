@@ -484,7 +484,7 @@ zstyle ':apollo:example:*:*:context:*:sep' text "@"
 
 #### date
 
-Today's date
+Today's date.
 
 Element|Description
 ---|---
@@ -695,7 +695,7 @@ zstyle ':apollo:example:*:*:status:*' bg_color "red"
 
 #### vcs
 
-Version control information provided by vcs_info. This covers a wide variety of version control systems. If you only use git, you'll likely prefer the dedicated git module above.
+Version control information provided by vcs_info. This covers a wide variety of version control systems. If you only use git, you'll likely prefer the dedicated git module above. Note that this uses the vcs_info function, so you can also configure that directly following the documentation [here](http://zsh.sourceforge.net/Doc/Release/User-Contributions.html#Version-Control-Information). The zstyles for it require a user-context, and for that you will need to use 'apollo-vcs' for the settings to impact this module.
 
 Element|Description
 ---|---
