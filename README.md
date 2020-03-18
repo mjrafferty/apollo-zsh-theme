@@ -1,6 +1,8 @@
 # Apollo ZSH Theme
 
-![Logo](media/logo.png)
+<p align="center">
+  <img src="media/logo.png" alt="Apollo Logo"/>
+</p>
 
 Heavily customizable, compatible, and performant zsh theme.
 
