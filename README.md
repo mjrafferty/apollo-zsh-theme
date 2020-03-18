@@ -1,6 +1,6 @@
 # Apollo ZSH Theme
 
-![Demo](media/demo.gif)
+![Logo](media/logo.png)
 
 Heavily customizable, compatible, and performant zsh theme.
 
@@ -65,6 +65,8 @@ My initial goal was to make a few modifications to another theme to make it comp
 * On the fly theme changing
 * Additional modules are easy to create
 * Configurable theme for buffered prompt lines. Useful for shortening multiline prompts to single line after command execution.
+
+![Demo](media/demo.gif)
 
 ## Installation
 
