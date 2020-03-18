@@ -695,12 +695,40 @@ zstyle ':apollo:example:*:*:status:*' bg_color "red"
 
 #### vcs
 
-Version control information provided by vcs_info (Work in progress).
+Version control information provided by vcs_info. This covers a wide variety of version control systems. If you only use git, you'll likely prefer the dedicated git module above.
+
+Element|Description
+---|---
+vcs|Name of version control system
+branch|Branch name
+repo_name|Repository name
+action|Current vcs action if any
+base_dir|Base directory of repo
+sub_dir|Current subdirectory of repo
+misc|Varies depending on vcs
+revision|Revision/commit hash
+staged|Staged changes
+unstaged|Unstaged changes
+blacklist<sup>1</sup>|Directory is blacklisted
+
+  <sup>1</sup> This is not valid in the element list below. Its purpose is to allow for displaying a string when user is in a blacklisted directory.
+
+Attribute|Type|Description
+---|---|---
+elements|list|List of elements to display
+blacklist|list|List of directory patterns to ignore
+whitelist|list|List of directory patterns to explicitly allow
+
 
 Examples:
 ```shell
-zstyle ':apollo:example:*:*:vcs:*' fg_color "white"
-zstyle ':apollo:example:*:*:vcs:*' bg_color "green"
+zstyle ':apollo:apollo:*:*:vcs:*' elements "vcs" "branch" "action" "staged" "unstaged" "repo_name" "misc"
+zstyle ':apollo:apollo:*:*:vcs:*:(branch|action|staged|unstaged|repo_name|misc):left:label' text ' '
+zstyle ':apollo:apollo:*:*:vcs:*:branch' fg_color "green"
+zstyle ':apollo:apollo:*:*:vcs:*:staged' text S
+zstyle ':apollo:apollo:*:*:vcs:*:unstaged' text U
+zstyle ':apollo:apollo:*:*:vcs:*:blacklist' text "vcs"
+zstyle ':apollo:apollo:*:*:vcs:*:blacklist' fg_color "green"
 ```
 
 
