@@ -44,17 +44,6 @@ zle-line-finish() {
 
   local current_theme scrollback_theme
 
-  if [[ "${zsh_eval_context[1]}" == "trap" ]] \
-    && (( BUFFERLINES > 1 )) \
-    && ((${#BUFFER} < ((BUFFERLINES - 1) * COLUMNS))); then
-      return;
-  fi
-
-  
-
-  # Skip if escape key was last pressed
-  [[ "$KEYS" ==  ]] && return;
-
   zstyle -s ":apollo:${APOLLO_THEME}:core:scrollback" theme scrollback_theme
 
   if [[ -n "$scrollback_theme" ]]; then
@@ -109,19 +98,33 @@ __apollo_sanitize() {
 
 }
 
+__apollo_sigint_handler() {
+
+  [[ "${zsh_eval_context[1]}" == "shfunc" ]] && return
+
+  if [[ "${zsh_eval_context[1]}" == "trap" ]] \
+    && (( BUFFERLINES > 1 )) \
+    && ((${#BUFFER} < ((BUFFERLINES - 1) * COLUMNS))); then
+      return;
+  fi
+
+  # Skip if escape key was last pressed
+  [[ "$KEYS" ==  ]] && return;
+
+  zle-line-finish
+  __APOLLO_EXIT_CODE=$(( 128 + ${1:-2} ))
+  __apollo_run_prompt
+
+}
+
 __apollo_trap_int() {
 
   # Trap handling is different on older ZSH versions, and need to use function trap in order to preserve return code
   # Using a list trap for newer ZSH versions as function trap caused issues with other ZSH plugins
   if ((__APOLLO_LEGACY_TRAP==0)); then
-    trap "[[ \"\${zsh_eval_context[1]}\" == \"shfunc\" ]] && return;zle-line-finish; __APOLLO_EXIT_CODE=130; __apollo_run_prompt; return 130;" INT
+    trap "__apollo_sigint_handler; return \$((128+\${1:-2}))" INT
   else
-    TRAPINT(){
-      zle-line-finish
-      __APOLLO_EXIT_CODE=130
-      __apollo_run_prompt
-      return $((128 + $1))
-    }
+    TRAPINT(){ __apollo_sigint_handler; return $((128+${1:-2})) }
   fi
 
 }
