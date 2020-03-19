@@ -198,7 +198,7 @@ There are a few additional hook functions available that aren't mentioned in the
 
 Hook Function|Description
 ---|---
-\_\_apollo_{module_name}_init_async|Evaluated by async worker when it is sstarted
+\_\_apollo_{module_name}_init_async|Evaluated by async worker when it is started
 \_\_apollo_{module_name}_preexec|Run during preexec zsh hook
 \_\_apollo_{module_name}_theme_init|Run whenever a theme is first initialized
 

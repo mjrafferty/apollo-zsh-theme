@@ -193,7 +193,7 @@ zstyle ':apollo:example:*:*:core:links:none' text ""
 
 #### Rulers
 
-Rulers can be used in multiline prompts to bridge the left and right prompt. The text for these can be made up of strings of any length. Depending on terminal width, the string will be repeated as needed, and will resize with termainal window size changes. Rulers can be configured to be unique on each prompt line.
+Rulers can be used in multiline prompts to bridge the left and right prompt. The text for these can be made up of strings of any length. Depending on terminal width, the string will be repeated as needed, and will resize with terminal window size changes. Rulers can be configured to be unique on each prompt line.
 
 Option|Type|Description
 ---|---|---
@@ -266,7 +266,7 @@ zstyle ':apollo:example:core:scrollback' theme "scrollback_theme_name"
 
 Module Name|Description
 ---|---
-[background_jobs](#background_jobs)|Dispaly number of jobs in background
+[background_jobs](#background_jobs)|Display number of jobs in background
 [clock](#clock)|Displays current time
 [command_execution_time](#command_execution_time)|Execution time of last command
 [context](#context)|User and hostname
@@ -291,7 +291,7 @@ ruler**|Same as newline, but finishes line with configurable ruler string. Not u
 
 ### Syntax
 
-All configuration is done using zstyles. Zstyle definitions assign a value to an attribute based on context, and the flexibility of this context is what makes it so useful. Below is a guide to describe the strucutre of context within Apollo.
+All configuration is done using zstyles. Zstyle definitions assign a value to an attribute based on context, and the flexibility of this context is what makes it so useful. Below is a guide to describe the structure of context within Apollo.
 
 ```
 zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element/module_side>' attribute "value"
@@ -527,7 +527,7 @@ Element|Description
 ---|---
 element|Normal part of path
 last|Last element in path
-shortened|Element that thas been shortened
+shortened|Element that has been shortened
 
 Attribute|Type|Description
 ---|---|---
@@ -780,7 +780,7 @@ This project was developed by myself and for myself, and because of this it's la
 
 [Module Guide](./module_guide.md)
 
-If you write a module and feel that others might beneftit from it, by all means open a pull request for it. I'll also be writing a theme/style guide in the near future.
+If you write a module and feel that others might benefit from it, by all means open a pull request for it. I'll also be writing a theme/style guide in the near future.
 
 ## FAQ
 
