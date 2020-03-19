@@ -50,6 +50,8 @@ zle-line-finish() {
       return;
   fi
 
+  [[ "${zsh_eval_context[1]}" == "shfunc" ]] && return;
+
   # Skip if escape key was last pressed
   [[ "$KEYS" ==  ]] && return;
 
