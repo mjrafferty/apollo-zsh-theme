@@ -50,7 +50,7 @@ zle-line-finish() {
       return;
   fi
 
-  [[ "${zsh_eval_context[1]}" == "shfunc" ]] && return;
+  
 
   # Skip if escape key was last pressed
   [[ "$KEYS" ==  ]] && return;
@@ -114,7 +114,7 @@ __apollo_trap_int() {
   # Trap handling is different on older ZSH versions, and need to use function trap in order to preserve return code
   # Using a list trap for newer ZSH versions as function trap caused issues with other ZSH plugins
   if ((__APOLLO_LEGACY_TRAP==0)); then
-    trap "zle-line-finish; __APOLLO_EXIT_CODE=130; __apollo_run_prompt; return 130;" INT
+    trap "[[ \"\${zsh_eval_context[1]}\" == \"shfunc\" ]] && return;zle-line-finish; __APOLLO_EXIT_CODE=130; __apollo_run_prompt; return 130;" INT
   else
     TRAPINT(){
       zle-line-finish
