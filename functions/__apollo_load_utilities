@@ -101,7 +101,7 @@ __apollo_sanitize() {
 __apollo_sigint_handler() {
 
   # No good way to handle this particular scenario in older zsh versions 
-  [[ "${zsh_eval_context[1]}" == "shfunc" ]] && is-at-least 5.1 && return
+  [[ "${zsh_eval_context[1]}" == "shfunc" ]] && is-at-least 5.0 && return
 
   if (( BUFFERLINES > 1 )) && ((${#BUFFER} < ((BUFFERLINES - 1) * COLUMNS))); then
     return;
