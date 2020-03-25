@@ -1,5 +1,6 @@
 # vim:ft=zsh
 
+typeset -g __APOLLO_QUOTA_COMMAND="$(command -v quota)"
 typeset -g __APOLLO_QUOTA_USER
 
 __apollo_quota_cache_key(){
@@ -31,9 +32,9 @@ __apollo_quota_cache_key(){
 
 __apollo_quota_run() {
 
-  if (( OS_VERSION < 7 )) && [[ -n "$__APOLLO_QUOTA_COMMAND" && -n "$__APOLLO_QUOTA_USER" ]]; then
+  if [[ -n "$__APOLLO_QUOTA_COMMAND" && -n "$__APOLLO_QUOTA_USER" ]]; then
 
-    command quota -qg "$__APOLLO_QUOTA_USER" 2> /dev/null
+    "$__APOLLO_QUOTA_COMMAND" -qg "$__APOLLO_QUOTA_USER" 2> /dev/null
     sysread -i "${__APOLLO_BUFFER_FD}" -t 0
     __APOLLO_RETURN_MESSAGE="${${(f)REPLY}[2]/	/}"
 
