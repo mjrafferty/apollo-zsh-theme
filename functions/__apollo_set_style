@@ -15,6 +15,7 @@ __apollo_set_style() {
   fi
 
   text="$2"
+  printf -v text "%b" "$text"
 
   cache="${__APOLLO_STYLE_CACHE[$context]}"
 

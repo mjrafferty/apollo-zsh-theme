@@ -12,6 +12,7 @@ __apollo_format_string() {
 
   if [[ -z "$string" ]]; then
     zstyle -s "${context}" text string
+    printf -v string "%b" "$string"
   fi
 
   if [[ -z "$string" ]]; then
@@ -45,6 +46,7 @@ __apollo_format_string() {
   fi
 
   __apollo_set_colors "$fg_color" "$bg_color"
+
 
   __APOLLO_RETURN_MESSAGE="${__APOLLO_RETURN_MESSAGE}$string"
 
