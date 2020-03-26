@@ -6,11 +6,11 @@ __apollo_decorate_prompt() {
   local first_module last_module context last_context
   local -i line
   local -a line_modules
-  local do_decorate
+  local skip_decorate
 
-  zstyle -b ":apollo:${APOLLO_THEME}:core:decorations" enabled do_decorate
+  zstyle -b ":apollo:${APOLLO_THEME}:core:decorations" disabled skip_decorate
 
-  if [[ "$do_decorate" == "no" ]]; then
+  if [[ "$skip_decorate" == "yes" ]]; then
     return;
   fi
 
