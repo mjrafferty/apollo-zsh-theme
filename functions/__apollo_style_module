@@ -5,7 +5,6 @@ __apollo_style_module() {
   local context module_text
   local -i width min_width
   local left_padding right_padding
-  local left_label right_label
   local left_surround right_surround
   local style_string
   local -a cache

@@ -2,14 +2,8 @@
 
 __apollo_run_module() {
 
-  local module side cache_key bg_color
+  local module side cache_key always_show mode
   local -i line num
-  local always_show module_colors
-  local left_label right_label
-  local left_surround right_surround
-  local left_padding right_padding
-  local -i width min_width
-  local mode
 
   line="$1"
   side="$2"
