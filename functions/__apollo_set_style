@@ -48,7 +48,7 @@ __apollo_set_style() {
         fi
         ;;
       "--dynamic")
-        text="\0\0"
+        text="\0"
 
         __apollo_format_string "${context}:left:label"
         left_label="$__APOLLO_RETURN_MESSAGE"

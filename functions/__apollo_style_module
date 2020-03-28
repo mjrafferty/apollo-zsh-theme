@@ -12,7 +12,7 @@ __apollo_style_module() {
   context="$1"
   module_text="$2"
 
-  cache=("${(s.\0.)__APOLLO_STYLE_CACHE[$context]}")
+  cache=("${(@s.\0.)__APOLLO_STYLE_CACHE[$context]}")
 
   if [[ -z "$cache[1]" ]]; then
 
@@ -30,7 +30,7 @@ __apollo_style_module() {
 
     style_string="${left_surround}\0${style_string}\0${right_surround}${__APOLLO_RETURN_MESSAGE}"
 
-    cache=("${(s.\0.)style_string}")
+    cache=("${(@s.\0.)style_string}")
     __APOLLO_STYLE_CACHE[$context]="$style_string"
 
   fi
