@@ -252,4 +252,5 @@ The most difficult goal of this project is to maintain compatibility with older 
   3. sysopen (not present)
   4. zmathfunc (not present)
   5. print(f) -v (flag not present)
+  6. (g:opts:) parameter expansion flag (not present)
 

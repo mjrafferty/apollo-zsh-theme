@@ -12,7 +12,6 @@ __apollo_format_string() {
 
   if [[ -z "$string" ]]; then
     zstyle -s "${context}" text string
-    string="${(g::)string}"
   fi
 
   if [[ -z "$string" ]]; then

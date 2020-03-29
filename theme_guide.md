@@ -135,7 +135,7 @@ zstyle ':apollo:*:core:modules:right' modules 'command_execution_time' 'status' 
 
 ### Text
 
-The vast majority of elements are defined by setting a "text" attribute. The text attributes accept any string and unicode characters are supported. Unicode characters can be added directly either by copying the glyphs or using unicode escape sequences. If you'd like to generate a full chart of unicode characters and their escape sequences, you can add the following function to your shell configuration:
+The vast majority of elements are defined by setting a "text" attribute. The text attributes accept any string and unicode characters are supported. Unicode characters can be added directly either by copying the glyphs or using unicode escape sequences within ANSI-C quotes. If you'd like to generate a full chart of unicode characters and their escape sequences, you can add the following function to your shell configuration:
 
 ```shell
 unicode_chart() {
