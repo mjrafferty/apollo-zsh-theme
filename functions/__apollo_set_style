@@ -14,8 +14,7 @@ __apollo_set_style() {
     shift;
   fi
 
-  text="$2"
-  printf -v text "%b" "$text"
+  text="${(g::)2}"
 
   cache="${__APOLLO_STYLE_CACHE[$context]}"
 

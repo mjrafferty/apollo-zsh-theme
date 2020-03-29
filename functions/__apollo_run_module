@@ -32,7 +32,7 @@ __apollo_run_module() {
 
   if [[ ${#__APOLLO_RETURN_MESSAGE} == 0 ]]; then
     zstyle -s "${context}:${mode}:main" text __APOLLO_RETURN_MESSAGE
-    printf -v __APOLLO_RETURN_MESSAGE "%b" "$__APOLLO_RETURN_MESSAGE"
+    __APOLLO_RETURN_MESSAGE="${(g::)__APOLLO_RETURN_MESSAGE}"
   fi
 
   zstyle -b "${context}:${mode}" always_show always_show

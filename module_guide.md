@@ -251,4 +251,5 @@ The most difficult goal of this project is to maintain compatibility with older 
   2. add-zle-hook-widget (not present)
   3. sysopen (not present)
   4. zmathfunc (not present)
+  5. print(f) -v (flag not present)
 
