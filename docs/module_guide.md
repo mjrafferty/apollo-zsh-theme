@@ -104,7 +104,7 @@ file_count: 0.000109 HIT
 
 ### Adding Options
 
-Now that we have a basic module, let's add some customizable options to it. All custom options are controlled via zstyles. Zstyles allow for unique option values based on the current context. For more detail on the context for these styles, click [here](./README.md#syntax). When modules are called, the framework passes the current context as the first parameter. This context includes everything up to the module mode, which is set to the value "default" prior to running the module. 
+Now that we have a basic module, let's add some customizable options to it. All custom options are controlled via zstyles. Zstyles allow for unique option values based on the current context. For more detail on the context for these styles, click [here](./theme_guide.md#syntax). When modules are called, the framework passes the current context as the first parameter. This context includes everything up to the module mode, which is set to the value "default" prior to running the module. 
 
 If your module implements additional modes, its best to identify the current mode and set it as early as possible so that the code afterwards can apply mode specific options. For telling the framework of a mode change, we use the '\_\_apollo_set_mode' function, with the first argument being the module name, and the second being the new mode.
 
