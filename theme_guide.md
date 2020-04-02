@@ -1,37 +1,38 @@
-* [Introduction](#introduction)
-* [Reference](#reference)
-  * [Syntax](#syntax)
-  * [Options provided to all modules by framework](#options-provided-to-all-modules-by-framework)
-* [Getting Started](#getting-started)
-* [Text](#text)
-* [Colors](#colors)
-* [Styles](#styles)
-* [Decorations](#decorations)
-* [Labels](#labels)
-* [Surround](#surround)
-* [Multiline](#multiline)
-* [Links](#links)
-* [Prompt End](#prompt-end)
-* [Scrollback Theme](#scrollback-theme)
-* [Behavior](#behavior)
-* [Basic Theme](#basic-theme)
-* [Module Specific Settings](#module-specific-settings)
-* [Faux Modules](#faux-modules)
+# Theme Creation
+
+    * [Introduction](#introduction)
+    * [Reference](#reference)
+      * [Syntax](#syntax)
+      * [Options provided to all modules by framework](#options-provided-to-all-modules-by-framework)
+    * [Getting Started](#getting-started)
+    * [Text](#text)
+    * [Colors](#colors)
+    * [Styles](#styles)
+    * [Decorations](#decorations)
+    * [Labels](#labels)
+    * [Surround](#surround)
+    * [Multiline](#multiline)
+    * [Links](#links)
+    * [Prompt End](#prompt-end)
+    * [Scrollback Theme](#scrollback-theme)
+    * [Basic Theme](#basic-theme)
+    * [Module Specific Settings](#module-specific-settings)
+    * [Faux Modules](#faux-modules)
 
 
-### Introduction
+## Introduction
 
 This guide will explain the configuration for Apollo and go over creating a basic theme. All configuration is done using zstyles, so I highly recommend reviewing the [zsh/util documentation](http://zsh.sourceforge.net/Doc/Release/Zsh-Modules.html#The-zsh_002fzutil-Module). 
 
 
-### Reference
+## Reference
 
-#### Syntax
+### Syntax
 
 Zstyle definitions assign a value to an attribute based on context, and the flexibility of this context is what makes it so useful. Below is a guide to describe the structure of context within Apollo.
 
 ```
-zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element/module_side>' attribute "value"
+zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>:<element>:<element/module_side>' attribute "value"
                    ^      ^        ^            ^        ^         ^              ^                ^
                    |      |        |            |        |         |              |                Attribute name
                    |      |        |            |        |         |              |
@@ -51,7 +52,7 @@ zstyle ':apollo:<theme>:<line>:<prompt_side>:<module>:<mode>::<element>:<element
 ```
 
 
-#### Options provided to all modules by framework
+### Options provided to all modules by framework
 
 Every module has the following attributes available:
 
@@ -124,7 +125,7 @@ zstyle ':apollo:example:*:*:*:*:end' blend "true"
 zstyle ':apollo:example:*:*:*:*:end' text ""
 ```
 
-### Getting Started
+## Getting Started
 
 Apollo will load additional configuration files from ${XDG_CONFIG_HOME}/.config/apollo/ or from ${HOME}/.config/apollo/ if XDG_CONFIG_HOME is not set. The file must have a .conf extension. This is where you should place any themes in development or for personal use. I highly recommend not setting module lists as part of the theme so that users can easily decide their own module lists without being theme dependent. I do however recommend testing themes with a variety of module configurations to ensure that it maintains the desired look. Module lists are defined by the following:
 
@@ -133,7 +134,7 @@ zstyle ':apollo:*:core:modules:left' modules 'root_indicator' 'context' 'public_
 zstyle ':apollo:*:core:modules:right' modules 'command_execution_time' 'status' 'php_version' 'newline' 'background_jobs' 'git' 'date' 'clock'
 ```
 
-### Text
+## Text
 
 The vast majority of elements are defined by setting a "text" attribute. The text attributes accept any string and unicode characters are supported. Unicode characters can be added directly either by copying the glyphs or using unicode escape sequences within ANSI-C quotes. If you'd like to generate a full chart of unicode characters and their escape sequences, you can add the following function to your shell configuration:
 
@@ -171,7 +172,7 @@ This generates 26MB of output, so I highly recommend redirecting output to a fil
 Compatibility note: Unicode character support is highly dependent on terminal and font. Unfortunately there's no reliable way to test what an environment supports, so if your theme is dependent on a specific font, be sure to note it.
 
 
-### Colors
+## Colors
 
 Every element accepts two different attributes for color, fg_color and bg_color. As you'd expect, these are for setting the color of the font and the background color. Each of them accepts one of the following values:
 
@@ -180,16 +181,16 @@ Every element accepts two different attributes for color, fg_color and bg_color.
 * 24-bit #RRGGBB hex codes
 
 ```shell
-zstyle ':apollo:apollo:*' fg_color white
-zstyle ':apollo:apollo:*:*:*:*:surround:*' fg_color blue
-zstyle ':apollo:apollo:*:core:*' fg_color red
-zstyle ':apollo:apollo:core:prompt:end' fg_color blue
+zstyle ':apollo:example:*' fg_color white
+zstyle ':apollo:example:*:*:*:*:surround:*' fg_color blue
+zstyle ':apollo:example:*:core:*' fg_color red
+zstyle ':apollo:example:core:prompt:end' fg_color blue
 ```
 
 Compatibility note: Just like with unicode characters, color support is very dependent on the terminal environment. Most modern environments support 24-bit truecolor, but support for 256 color palette is much better, and all terminals should support the base 8 color palette.
 
 
-### Styles
+## Styles
 
 All elements support a style attribute. This attribute accepts a list of one or more of the following options:
 
@@ -198,7 +199,7 @@ All elements support a style attribute. This attribute accepts a list of one or 
 * underline
 
 
-### Decorations
+## Decorations
 
 Decorations consist of strings to place at the beginning and end of each prompt lines, as well as the separators between modules. These elements support the normal color attributes, as well as two additional attributes:
 
@@ -213,78 +214,82 @@ zstyle ':apollo:example:*:left:*:*:separator' text ""
 zstyle ':apollo:example:*:right:*:*:separator' text ""
 zstyle ':apollo:example:*:*:*:*:end' text ""
 
-zstyle ':apollo:powerline:*:*:*:*:(begin|end)' blend "true"
-zstyle ':apollo:powerline:*:left:*:*:separator' blend "true"
-zstyle ':apollo:powerline:*:right:*:*:separator' revblend "true"
+zstyle ':apollo:example:*:*:*:*:(begin|end)' blend "true"
+zstyle ':apollo:example:*:left:*:*:separator' blend "true"
+zstyle ':apollo:example:*:right:*:*:separator' revblend "true"
 ```
 
 Decorations have a negligible performance impact, but if they're not used on your theme the logic can be disabled with the following:
 
 ```shell
-zstyle ':apollo:apollo:core:decorations' disabled "true"
+zstyle ':apollo:example:core:decorations' disabled "true"
 ```
 
 
-### Labels
+## Labels
 
 All modules, as well as the elements provided by modules, support left and right label text.
 
 
-### Surround
+## Surround
 
+In addition to left and right labels, modules can add left and right surround strings.
 
 ```shell
-zstyle ':apollo:apollo:*:*:*:*:surround:left' text "("
-zstyle ':apollo:apollo:*:*:*:*:surround:right' text ")"
+zstyle ':apollo:example:*:*:*:*:surround:left' text "("
+zstyle ':apollo:example:*:*:*:*:surround:right' text ")"
 ```
 
 
-### Multiline
+## Multiline
+
+Multiline prompts are supported by adding "newline" or "ruler" to the module lists. Ruler is only valid for the left module list, and the right list can not span more lines than the left. The ruler wil display a configurable string spanning from the left prompt to the right. The string will repeat itself as needed to bridge the gap and resize with window changes.
 
 ```shell
-zstyle ':apollo:apollo:*:core:ruler' text "─"
+zstyle ':apollo:example:*:core:ruler' text "─"
 ```
 
 
-### Links
+## Links
+
+Multiline prompts can also add additional strings to the beginning and end of each line. These are intended for characters that visually tie the lines together but any strings is valid. This must also be explicitly enabled.
 
 ```shell
-zstyle ':apollo:apollo:core:links' enabled "true"
+zstyle ':apollo:example:core:links' enabled "true"
 
-zstyle ':apollo:apollo:*:*:core:links:none' text ""
-zstyle ':apollo:apollo:*:left:core:links:top' text "╭─"
-zstyle ':apollo:apollo:*:left:core:links:mid' text "├─"
-zstyle ':apollo:apollo:*:left:core:links:str' text "│ "
-zstyle ':apollo:apollo:*:left:core:links:bot' text "╰─"
-zstyle ':apollo:apollo:*:right:core:links:top' text "─╮"
-zstyle ':apollo:apollo:*:right:core:links:mid' text "─┤"
-zstyle ':apollo:apollo:*:right:core:links:str' text " │"
-zstyle ':apollo:apollo:*:right:core:links:bot' text "─╯"
+zstyle ':apollo:example:*:*:core:links:none' text ""
+zstyle ':apollo:example:*:left:core:links:top' text "╭─"
+zstyle ':apollo:example:*:left:core:links:mid' text "├─"
+zstyle ':apollo:example:*:left:core:links:str' text "│ "
+zstyle ':apollo:example:*:left:core:links:bot' text "╰─"
+zstyle ':apollo:example:*:right:core:links:top' text "─╮"
+zstyle ':apollo:example:*:right:core:links:mid' text "─┤"
+zstyle ':apollo:example:*:right:core:links:str' text " │"
+zstyle ':apollo:example:*:right:core:links:bot' text "─╯"
 ```
 
 
-### Prompt End
+## Prompt End
+
+Prompt end allows for adding a string at the very end of the prompt just before the cursor.
 
 ```shell
-zstyle ':apollo:apollo:core:prompt:end' text "> "
+zstyle ':apollo:example:core:prompt:end' text "> "
 ```
 
 
-### Scrollback theme
+## Scrollback theme
+
+The scrollback theme setting sets the theme to use after executing a command and saving a line to the scrollback buffer. The value should point to an actual theme name, so if you'd like to customize this you should create a separate theme. This primarily provides a way of shrinking a multiline theme down to a single line theme to save space. Note that asynchronous modules will NOT run for a scrollback theme.
 
 ```shell
-zstyle ':apollo:apollo:core:scrollback' theme "scrollback"
+zstyle ':apollo:example:core:scrollback' theme "scrollback"
 ```
 
 
-### Behavior
+## Basic Theme
 
-```shell
-zstyle ':apollo:apollo:*' verbose yes
-```
-
-
-### Basic Theme
+This is a simple theme I created to demonstrate some of the settings mentioned above. It starts off with setting the general colors for the theme and then moves on to set more specific things. 
 
 ```shell
 zstyle ':apollo:bluefade:*' fg_color white
@@ -304,11 +309,16 @@ zstyle ':apollo:bluefade:core:scrollback' theme scrollback
 ```
 
 
-### Module Specific Settings
+## Module Specific Settings
+
+In general I recommend leaving module specific settings outside of the theme, as it would require users to override settings for the specific theme if they want something different. That said, it's generally fine to configure how something will display as long as you avoid deciding what will be displayed. For example it's fine to style individual elements for the git module, but setting the list of elements to display should be avoided in most cases. Ideally the user should be able to switch themes without it impacting the information displayed.
 
 
+## Faux Modules
 
+It's technically possible to create a simple module using only zstyle. This is done by setting the main module text. You can set it to a static string, a variable, command substition, or whatever other shell expression. Pay close attention to quoting. If it's something you want to evaulate on every run, it should be encased in single quotes or properly escaped. Otherwise it will only be evaluated when the style is set on startup. Keep in mind that since these "modules" don't have a cache key function, they won't make use of the module cache. Therefore this should only be used for simple tasks.
 
-### Faux Modules
-
-
+```shell
+zstyle ':apollo:example:*:*:fake:*:main' text "\$variable"
+zstyle ':apollo:example:*:*:fake:*:main' text '$(some_function)'
+```
