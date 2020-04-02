@@ -243,7 +243,7 @@ zstyle ':apollo:example:*:*:*:*:surround:right' text ")"
 
 ## Multiline
 
-Multiline prompts are supported by adding "newline" or "ruler" to the module lists. Ruler is only valid for the left module list, and the right list can not span more lines than the left. The ruler wil display a configurable string spanning from the left prompt to the right. The string will repeat itself as needed to bridge the gap and resize with window changes.
+Multiline prompts are supported by adding "newline" or "ruler" to the module lists. Ruler is only valid for the left module list, and the right list can not span more lines than the left. The ruler will display a configurable string spanning from the left prompt to the right. The string will repeat itself as needed to bridge the gap and resize with window changes.
 
 ```shell
 zstyle ':apollo:example:*:core:ruler' text "─"
@@ -316,7 +316,7 @@ In general I recommend leaving module specific settings outside of the theme, as
 
 ## Faux Modules
 
-It's technically possible to create a simple module using only zstyle. This is done by setting the main module text. You can set it to a static string, a variable, command substition, or whatever other shell expression. Pay close attention to quoting. If it's something you want to evaulate on every run, it should be encased in single quotes or properly escaped. Otherwise it will only be evaluated when the style is set on startup. Keep in mind that since these "modules" don't have a cache key function, they won't make use of the module cache. Therefore this should only be used for simple tasks.
+It's technically possible to create a simple module using only zstyle. This is done by setting the main module text. You can set it to a static string, a variable, command substitution, or whatever other shell expression. Pay close attention to quoting. If it's something you want to evaluate on every run, it should be encased in single quotes or properly escaped. Otherwise it will only be evaluated when the style is set on startup. Keep in mind that since these "modules" don't have a cache key function, they won't make use of the module cache. Therefore this should only be used for simple tasks.
 
 ```shell
 zstyle ':apollo:example:*:*:fake:*:main' text "\$variable"
