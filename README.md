@@ -675,6 +675,7 @@ zstyle ':apollo:example:*:*:virtualenv:*' bg_color "blue"
 This project was developed by myself and for myself, and because of this it's lacking in themes and modules that others might be interested in. I've written guides on creating these here:
 
 [Module Guide](./docs/module_guide.md)
+
 [Theme Guide](./docs/theme_guide.md)
 
 If you write a module or theme and think others might enjoy it, by all means open a pull request for it.
