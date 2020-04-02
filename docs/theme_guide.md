@@ -58,7 +58,7 @@ Every module has the following attributes available:
 
 Attribute|Type|Description
 ---|---|---
-width|integer|Minimum width to enforce on module.
+min_width|integer|Minimum width to enforce on module.
 always_show|boolean|Show module even when it contains empty output.
 fg_color|color|Foreground color for module.
 bg_color|color|Background color for module.
