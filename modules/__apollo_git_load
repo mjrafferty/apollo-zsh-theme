@@ -90,7 +90,9 @@ __apollo_git_always_async() {
                   case "$item" in
                     "M  "*)(( staged+=1 )) ;;
                     "A  "*) (( staged+=1 ));;
+                    "D  "*) (( staged+=1 ));;
                     "M "*) (( unstaged+=1 ));;
+                    "D "*) (( unstaged+=1 ));;
                     "??"*)(( untracked+=1 ));;
                   esac
               done
