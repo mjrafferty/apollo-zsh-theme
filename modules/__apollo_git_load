@@ -10,7 +10,7 @@ __apollo_git_always_async() {
   local -a elements misc_style element_style whitelist blacklist
   local return_string element item hash_length ignore_submodules listed
   local repo_path git_dir commit_hash local_branch remote_branch tag
-  local -i modified untracked stash_count ahead behind only_count_once
+  local -i staged unstaged untracked stash_count ahead behind only_count_once
   local mode="default"
 
   git_dir="$(git rev-parse --git-dir)"
@@ -43,7 +43,7 @@ __apollo_git_always_async() {
 
   for element in "${elements[@]}"; do
     case "$element" in
-      "repo_path"|"commit_hash"|"local_branch"|"remote_branch"|"ahead"|"behind"|"modified"|"untracked"|"stash_count"|"tag"|"action")
+      "repo_path"|"commit_hash"|"local_branch"|"remote_branch"|"ahead"|"behind"|"staged"|"unstaged"|"untracked"|"stash_count"|"tag"|"action")
         case "$element" in
           "repo_path")
             repo_path="$(git rev-parse --show-toplevel )"
@@ -75,7 +75,7 @@ __apollo_git_always_async() {
           "tag")
             tag=$(git describe --tags --exact-match HEAD)
             ;;
-          "modified"|"untracked")
+          "staged"|"unstaged"|"untracked")
 
             if ((only_count_once++ == 0 )); then
 
@@ -87,11 +87,12 @@ __apollo_git_always_async() {
                 git status --porcelain
               fi \
                 | while read item; do
-                if [[ "$item" == "??"* ]]; then
-                  (( untracked+=1 ))
-                else
-                  (( modified+=1 ))
-                fi
+                  case "$item" in
+                    "M  "*)(( staged+=1 )) ;;
+                    "A  "*) (( staged+=1 ));;
+                    "M "*) (( unstaged+=1 ));;
+                    "??"*)(( untracked+=1 ));;
+                  esac
               done
 
             fi

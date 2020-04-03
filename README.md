@@ -478,7 +478,8 @@ ahead|Commits ahead remote
 behind|Commits behind remote
 commit_hash|Commit hash
 action|Current repository action if any
-modified|Modified file count
+staged|Staged file count
+unstaged|Unstaged file count
 untracked|Untracked file count
 stash_count|Number of stashes
 blacklist<sup>1</sup>|Directory is blacklisted
@@ -496,7 +497,7 @@ whitelist|list|List of directory patterns to explicitly allow
 
 Examples:
 ```shell
-zstyle ':apollo:example:*:*:git:*' elements "local_branch" "action" " " "commit_hash" " " "remote_branch" " " "modified" "|" "untracked" "|" "stash_count"
+zstyle ':apollo:example:*:*:git:*' elements "local_branch" "action" " " "commit_hash" " " "remote_branch" " " "staged" "|" "unstaged" "|" "untracked" "|" "stash_count"
 zstyle ':apollo:example:*:*:git:*' bg_color "black"
 zstyle ':apollo:example:*:*:git:*' blacklist ".*"
 zstyle ':apollo:example:*:*:git:*:blacklist' text "This is a git dir"
