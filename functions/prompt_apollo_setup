@@ -1,6 +1,6 @@
 # vim:ft=zsh
 
-typeset -g  APOLLO_THEME="apollo"
+typeset -g  APOLLO_THEME="${APOLLO_THEME:-apollo}"
 
 typeset -g __APOLLO_PID="$$"
 
