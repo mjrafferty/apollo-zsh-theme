@@ -85,7 +85,7 @@ zstyle ':prezto:module:prompt' theme 'apollo'
 ### Oh-My-Zsh
 ```shell
 git clone https://github.com/mjrafferty/apollo-zsh-theme ${HOME}/apollo-zsh-theme
-ln -s ${HOME}/apollo-zsh-theme/apollo-zsh-theme.zsh ${ZSH:-$HOME.oh-my-zsh}/custom/themes/apollo.zsh-theme
+ln -s ${HOME}/apollo-zsh-theme/apollo-zsh-theme.zsh ${ZSH:-$HOME/.oh-my-zsh}/custom/themes/apollo.zsh-theme
 
 ## Set this in .zshrc
 ZSH_THEME="apollo"
