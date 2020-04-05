@@ -18,6 +18,7 @@ Heavily customizable, compatible, and performant zsh theme.
          * [Prezto](#prezto)
          * [Oh-My-Zsh](#oh-my-zsh)
          * [Manual install](#manual-install)
+      * [Basic Usage](#basic-usage)
       * [Configuration](#configuration)
          * [Core Options](#core-options)
             * [Module Declaration](#module-declaration)
@@ -111,6 +112,21 @@ git clone https://github.com/mjrafferty/apollo-zsh-theme $HOME/apollo-zsh-theme
 source $HOME/apollo-zsh-theme/apollo-zsh-theme.zsh
 ```
 
+## Basic Usage
+
+If you're happy with the defaults, no configuration is necessary. Most users though will likely want to at least set the following in their shell startup files:
+
+```shell
+# Theme selection. The default theme is "apollo".
+APOLLO_THEME=apollo
+
+
+# Module lists for left and right prompt. Replace the * with theme name if you want 
+# different lists for different themes, or if you need to override lists provided by a theme.
+
+zstyle ':apollo:*:core:modules:left' modules "module1" "module2" "etc.."
+zstyle ':apollo:*:core:modules:right' modules "module1" "module2" "etc.."
+```
 
 ## Configuration
 
