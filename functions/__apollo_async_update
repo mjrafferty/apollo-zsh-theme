@@ -8,7 +8,7 @@ __apollo_async_update() {
   local -a module_info
   local -i line num change_made
   local line_before line_after
-  local module_before module_after
+  local module_before module_after always_refresh
 
   for x in "${(s.\0.)__APOLLO_REVERSE_MODULE_MAP[$module]}"; do
 
@@ -19,7 +19,7 @@ __apollo_async_update() {
     num="${module_info[3]}"
     theme="${module_info[4]}"
 
-    # If this module isn't in the active theme, skip it
+    # If this module isnt in the active theme, skip it
     if [[ "$theme" != "$APOLLO_THEME" ]]; then
       continue;
     fi
@@ -48,7 +48,9 @@ __apollo_async_update() {
 
     module_after="${__APOLLO_MODULE_TEXT[$num]}"
 
-    if [[ "$module_after" != "$module_before" ]]; then
+    zstyle -b ":apollo:${APOLLO_THEME}:${line}:${side}:${module}:${__APOLLO_MODULE_MODE[$module]}" always_refresh always_refresh
+
+    if [[ "$module_after" != "$module_before" || "$always_refresh" == "yes" ]]; then
 
       __apollo_decorate_prompt
 

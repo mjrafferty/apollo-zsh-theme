@@ -9,7 +9,7 @@ __apollo_git_always_async() {
   local context="$1"
   local -a elements misc_style element_style whitelist blacklist
   local return_string element item hash_length ignore_submodules listed
-  local repo_path git_dir commit_hash local_branch remote_branch tag
+  local repo_path git_dir commit_hash local_branch remote_branch tag simple
   local -i staged unstaged untracked stash_count ahead behind only_count_once
   local mode="default"
 
@@ -101,9 +101,19 @@ __apollo_git_always_async() {
             ;;
         esac
         if [[ -n "${(P)element}" ]]; then
+
+          zstyle -b "${context}:${mode}:${element}" simple simple
+
+          if [[ "$simple" == "yes" ]]; then
+            if (( ${(P)element} != 0)); then
+              __apollo_set_style "${context}:${mode}:${element}"
+              return_string+="$__APOLLO_RETURN_MESSAGE"
+            fi
+          else
           __apollo_set_style "${context}:${mode}:${element}" --dynamic
           element_style=(${(s:\0:)__APOLLO_RETURN_MESSAGE})
           return_string+="${element_style[1]}${(P)element}${element_style[2]}"
+          fi
         fi
         ;;
       *)

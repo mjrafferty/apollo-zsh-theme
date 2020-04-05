@@ -63,6 +63,7 @@ always_show|boolean|Show module even when it contains empty output.
 fg_color|color|Foreground color for module.
 bg_color|color|Background color for module.
 style|list|Style for module text (bold,standout,underline)
+always_refresh|boolean|Force refresh of prompt on async update  even if module text hasn't changed.
 
 
 All modules include the following elements provided by the framework:

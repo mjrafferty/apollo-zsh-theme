@@ -67,6 +67,13 @@ __apollo_status_run() {
     __apollo_set_mode "status" "bad"
     mode="bad"
 
+    zstyle -b "${context}:${mode}" simple simple
+
+    if [[ "$simple" == "yes" ]]; then
+      __APOLLO_RETURN_MESSAGE=""
+      return;
+    fi
+
     zstyle -b "${context}:${mode}" verbose verbose
     zstyle -b "${context}:${mode}" pipe_status pipe_status
 
@@ -98,10 +105,19 @@ __apollo_status_run() {
 
   else
 
+    zstyle -b "${context}:${mode}" simple simple
+
+    if [[ "$simple" == "yes" ]]; then
+      __APOLLO_RETURN_MESSAGE=""
+      return;
+    fi
+
     zstyle -b "${context}:${mode}" always_show always_show
-    zstyle -b "${context}:${mode}" verbose verbose
+    zstyle -b "${context}:${mode}" simple simple
 
     if [[ "$always_show" == "yes" ]]; then
+
+      zstyle -b "${context}:${mode}" verbose verbose
 
       if [[ "$verbose" == "yes" ]]; then
         __APOLLO_RETURN_MESSAGE="OK"

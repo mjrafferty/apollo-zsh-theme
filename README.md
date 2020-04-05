@@ -493,6 +493,7 @@ hash_length|integer|Length of hash to display. Default is 8
 ignore_submodules|boolean|Ignore modifications to submodules
 blacklist|list|List of directory patterns to ignore
 whitelist|list|List of directory patterns to explicitly allow
+simple|boolean|Returns no text, so any "text" attributes set are used instead.
 
 
 Examples:
@@ -582,6 +583,7 @@ Attribute|Type|Description
 verbose|boolean|Display signal name as well as code
 pipe_status|boolean|Display pipe exit codes
 always_show|boolean|Show when exit code is 0
+simple|boolean|Returns no text, so any "text" attributes set are used instead.
 
 Examples:
 ```shell
