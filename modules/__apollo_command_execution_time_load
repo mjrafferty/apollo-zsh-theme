@@ -1,6 +1,7 @@
 # vim:ft=zsh
 
 typeset -gF __APOLLO_COMMAND_EXECUTION_TIME_START="-1"
+typeset -gF __APOLLO_COMMAND_EXECUTION_TIME_DURATION="-1"
 
 __apollo_command_execution_time_run() {
 
@@ -9,12 +10,16 @@ __apollo_command_execution_time_run() {
   context="$1"
   mode="default"
 
-  if ((__APOLLO_COMMAND_EXECUTION_TIME_START < 0)); then
+  if (( __APOLLO_COMMAND_EXECUTION_TIME_DURATION > 0 )); then
+    duration="${__APOLLO_COMMAND_EXECUTION_TIME_DURATION}"
+  elif ((__APOLLO_COMMAND_EXECUTION_TIME_START < 0)); then
     __APOLLO_RETURN_MESSAGE=""
     return
+  else
+    ((duration = EPOCHREALTIME - __APOLLO_COMMAND_EXECUTION_TIME_START))
+    __APOLLO_COMMAND_EXECUTION_TIME_DURATION="${duration}"
   fi
 
-  ((duration = EPOCHREALTIME - __APOLLO_COMMAND_EXECUTION_TIME_START))
   __APOLLO_COMMAND_EXECUTION_TIME_START="-1"
 
   if (( duration >= 60 )); then
@@ -55,5 +60,6 @@ __apollo_command_execution_time_run() {
 }
 
 __apollo_command_execution_time_preexec(){
+  __APOLLO_COMMAND_EXECUTION_TIME_DURATION="-1"
   __APOLLO_COMMAND_EXECUTION_TIME_START=$EPOCHREALTIME
 }

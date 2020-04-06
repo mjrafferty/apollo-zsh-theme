@@ -54,6 +54,8 @@ zle-line-finish() {
 
     zle && zle .reset-prompt
 
+    [[ -n "$__APOLLO_COMMAND_EXECUTION_TIME_DURATION" ]] && __APOLLO_COMMAND_EXECUTION_TIME_DURATION=-1
+
     APOLLO_THEME="$current_theme"
   fi
 
