@@ -106,8 +106,16 @@ __apollo_sigint_handler() {
   [[ "${zsh_eval_context[1]}" == "shfunc" ]] && is-at-least 5.0 && return
 
   # If BUFFERLINES is greater than the actual line count, assume the main line editor is inactive
-  if (( BUFFERLINES > ( ${#${(s:\n:)BUFFER}} + 1 ) )); then
-    return;
+  if (( BUFFERLINES > 1 )); then
+
+    if ((${#${(@f)BUFFER}} != ${#BUFFER})); then
+      if (( BUFFERLINES > ${#${(@f)BUFFER}} )) && ((${#BUFFER} < ((BUFFERLINES - 1) * COLUMNS))); then
+        return;
+      fi
+    elif ((${#BUFFER} < ((BUFFERLINES - 1) * COLUMNS))); then
+      return;
+    fi
+
   fi
 
   # Skip if escape key was last pressed
