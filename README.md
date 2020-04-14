@@ -4,7 +4,7 @@
   <img src="media/logo.png" alt="Apollo Logo"/>
 </p>
 
-Heavily customizable, compatible, and performant zsh theme.
+Heavily customizable, compatible, and fast ZSH theme framework.
 
 ## Table of Contents
 
@@ -127,6 +127,10 @@ APOLLO_THEME=apollo
 zstyle ':apollo:*:core:modules:left' modules "module1" "module2" "etc.."
 zstyle ':apollo:*:core:modules:right' modules "module1" "module2" "etc.."
 ```
+
+An advanced usage guide is located here:
+
+[Advanced Usage](./docs/advanced_usage.md)
 
 ## Configuration
 
