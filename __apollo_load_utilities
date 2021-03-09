@@ -1,0 +1,190 @@
+# vim:ft=zsh
+
+__apollo_get_display_width(){
+
+  local format_regex='%{*%}'
+
+  __APOLLO_RETURN_MESSAGE="${(m)#${(S%)1//$~format_regex/}}"
+
+}
+
+__apollo_set_mode() {
+
+  __APOLLO_MODULE_MODE[$1]="$2"
+
+}
+
+__apollo_cleanup() {
+
+  if [[ "$$" == "${__APOLLO_PID}" ]]; then
+
+    [[ -e "$__APOLLO_BUFFER_NAME" ]] && rm "$__APOLLO_BUFFER_NAME"
+
+    if (( __APOLLO_ASYNC == 1 )); then
+      async_stop_worker apollo_async_helper
+    fi
+
+  fi
+
+}
+
+__apollo_chpwd() {
+
+  ## Seeing bug $PWD not always updating. Hoping this will work around it
+  PWD="${(%):-%d}"
+
+  if ((__APOLLO_ASYNC == 1)); then
+    async_worker_eval apollo_async_helper "cd $PWD"
+  fi
+}
+
+## Update buffered prompt when executing command
+zle-line-finish() {
+
+  local current_theme scrollback_theme
+
+  zstyle -s ":apollo:${APOLLO_THEME}:core:scrollback" theme scrollback_theme
+
+  if [[ -n "$scrollback_theme" ]]; then
+    current_theme="$APOLLO_THEME"
+
+    APOLLO_THEME="${scrollback_theme}"
+    __apollo_run_prompt
+
+    zle && zle .reset-prompt
+
+    [[ -n "$__APOLLO_COMMAND_EXECUTION_TIME_DURATION" ]] && __APOLLO_COMMAND_EXECUTION_TIME_DURATION=-1
+
+    APOLLO_THEME="$current_theme"
+  fi
+
+}
+
+# Open a buffer for modules to use
+__apollo_check_buffer () {
+
+  if [[ -z "$__APOLLO_BUFFER_NAME" ]]; then
+    __APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
+  fi
+
+  if [[ ! -e "${__APOLLO_BUFFER_NAME}" ]]; then
+    mkfifo "${__APOLLO_BUFFER_NAME}"
+    chmod 600 "${__APOLLO_BUFFER_NAME}";
+  fi
+
+  exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
+
+  if ! print -nu "${__APOLLO_BUFFER_FD}" ; then
+    unset "${__APOLLO_BUFFER_FD}" 2> /dev/null
+    exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
+  fi
+
+}
+
+__apollo_sanitize() {
+
+  local input="$1"
+
+  regexp-replace input '(`|\$|\\)' '\\$MATCH'
+  regexp-replace input '%' '%%'
+
+  __APOLLO_RETURN_MESSAGE="$input"
+
+}
+
+__apollo_sigint_handler() {
+
+  local full_buffer
+
+  # No good way to handle this particular scenario in older zsh versions 
+  [[ "${zsh_eval_context[1]}" == "shfunc" ]] && is-at-least 5.0 && return
+
+  # Fix for zsh autosuggestions plugin
+  if [[ -n "$POSTDISPLAY" ]]; then
+    full_buffer="${BUFFER}${POSTDISPLAY}"
+  else
+    full_buffer="${BUFFER}"
+  fi
+
+  # If BUFFERLINES is greater than the actual line count, assume the main line editor is inactive
+  if (( BUFFERLINES > 1 )); then
+
+    if ((${#${(@f)full_buffer}} != ${#full_buffer})); then
+      if (( BUFFERLINES > ${#${(@f)full_buffer}} )) && ((${#full_buffer} < ((BUFFERLINES - 1) * COLUMNS))); then
+        return;
+      fi
+    elif ((${#full_buffer} < ((BUFFERLINES - 1) * COLUMNS))); then
+      return;
+    fi
+
+  fi
+
+  # Skip if escape key was last pressed
+  [[ "$KEYS" ==  ]] && return;
+
+  zle-line-finish
+  __APOLLO_EXIT_CODE=$(( 128 + ${1:-2} ))
+  __apollo_run_prompt
+
+}
+
+__apollo_trap_int() {
+
+  # Trap handling is different on older ZSH versions, and need to use function trap in order to preserve return code
+  # Using a list trap for newer ZSH versions as function trap caused issues with other ZSH plugins
+  if ((__APOLLO_LEGACY_TRAP==0)); then
+    trap "__apollo_sigint_handler; return \$((128+\${1:-2}))" INT
+  else
+    TRAPINT(){ __apollo_sigint_handler; return $((128+${1:-2})) }
+  fi
+
+}
+
+__apollo_start_async() {
+
+  if ((!${+functions[async_start_worker]})); then
+    # If async library already present, use it. Else use bundled
+    if ((${+functions[async_init]})); then
+      async_init
+    else
+      autoload -Uz __apollo_lib_async_load \
+        && __apollo_lib_async_load
+    fi
+  fi
+
+  async_stop_worker apollo_async_helper 2> /dev/null
+
+  async_start_worker apollo_async_helper -u -n
+
+  for module state in "${(kv)__APOLLO_MODULES_LOADED[@]}"; do
+
+    if (( ${+functions[__apollo_${module}_async]} || ${+functions[__apollo_${module}_always_async]} )); then
+
+      async_worker_eval apollo_async_helper "__apollo_${module}_async_runner () { __apollo_async_runner ${module} \"\${@}\" }"
+
+      if ((${+functions[__apollo_${module}_init_async]})); then
+        async_worker_eval apollo_async_helper "__apollo_${module}_init_async"
+      fi
+
+    fi
+
+  done
+
+}
+
+
+__apollo_math_max() {
+  local result=$1
+  shift
+  local arg
+  for arg ; do
+    (( $arg > result )) && result=$arg
+  done
+  (( result ))
+}
+
+functions -M __apollo_math_max 1 -1
+
+__apollo_load_utilities() {};
+
+__apollo_load_utilities "$@"
