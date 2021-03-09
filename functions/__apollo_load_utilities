@@ -19,6 +19,7 @@ __apollo_cleanup() {
   if [[ "$$" == "${__APOLLO_PID}" ]]; then
 
     [[ -n "$__APOLLO_BUFFER_FD" ]] && exec {__APOLLO_BUFFER_FD}>&-
+    unset "${__APOLLO_BUFFER_FD}" 2> /dev/null
     [[ -e "$__APOLLO_BUFFER_NAME" ]] && rm "$__APOLLO_BUFFER_NAME"
 
     if (( __APOLLO_ASYNC == 1 )); then
