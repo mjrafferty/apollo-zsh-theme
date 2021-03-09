@@ -69,22 +69,15 @@ __apollo_check_buffer () {
   fi
 
   if [[ ! -e "${__APOLLO_BUFFER_NAME}" ]]; then
-    if [[ -n "${__APOLLO_BUFFER_FD}" ]]; then
-      exec {__APOLLO_BUFFER_FD}>&-
-      unset "${__APOLLO_BUFFER_FD}"
-    fi
     mkfifo "${__APOLLO_BUFFER_NAME}"
     chmod 600 "${__APOLLO_BUFFER_NAME}";
   fi
 
-  if [[ -z "${__APOLLO_BUFFER_FD}" ]]; then
-    exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
-  fi
+  exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
 
   if ! print -nu "${__APOLLO_BUFFER_FD}" ; then
     unset "${__APOLLO_BUFFER_FD}" 2> /dev/null
     exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
-
   fi
 
 }

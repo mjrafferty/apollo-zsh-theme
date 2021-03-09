@@ -21,6 +21,8 @@ __apollo_run_prompt() {
     startmod=${EPOCHREALTIME}
   fi
 
+  __apollo_check_buffer
+
   for ((line=__APOLLO_PROMPT_THEME_START[$APOLLO_THEME]; line <= __APOLLO_PROMPT_THEME_END[$APOLLO_THEME]; line++)); do
 
     line_modules=(${(s.\0.)__APOLLO_RIGHT_LINE_MAP[line]})
@@ -50,6 +52,8 @@ __apollo_run_prompt() {
   fi
 
   __apollo_update_prompts
+
+  [[ -n "$__APOLLO_BUFFER_FD" ]] && exec {__APOLLO_BUFFER_FD}>&-
 
   if [[ "$profiler" == "yes" ]] ; then
     printf "%25s: %f\n" "total" "$((EPOCHREALTIME-start))"
