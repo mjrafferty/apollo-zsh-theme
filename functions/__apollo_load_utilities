@@ -26,6 +26,8 @@ __apollo_cleanup() {
       async_stop_worker apollo_async_helper
     fi
 
+    add-zsh-hook -d chpwd __apollo_chpwd
+
   fi
 
 }
