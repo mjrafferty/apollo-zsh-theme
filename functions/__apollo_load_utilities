@@ -78,11 +78,6 @@ __apollo_check_buffer () {
 
   exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
 
-  if ! print -nu "${__APOLLO_BUFFER_FD}" ; then
-    unset "${__APOLLO_BUFFER_FD}" 2> /dev/null
-    exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}"
-  fi
-
 }
 
 __apollo_sanitize() {
