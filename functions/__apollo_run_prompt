@@ -21,7 +21,8 @@ __apollo_run_prompt() {
     startmod=${EPOCHREALTIME}
   fi
 
-  __apollo_check_buffer
+  exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}" \
+    || __apollo_check_buffer
 
   for ((line=__APOLLO_PROMPT_THEME_START[$APOLLO_THEME]; line <= __APOLLO_PROMPT_THEME_END[$APOLLO_THEME]; line++)); do
 

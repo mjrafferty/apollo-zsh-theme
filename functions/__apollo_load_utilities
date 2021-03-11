@@ -67,10 +67,6 @@ zle-line-finish() {
 # Open a buffer for modules to use
 __apollo_check_buffer () {
 
-  if [[ -z "$__APOLLO_BUFFER_NAME" ]]; then
-    __APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
-  fi
-
   if [[ ! -e "${__APOLLO_BUFFER_NAME}" ]]; then
     mkfifo "${__APOLLO_BUFFER_NAME}"
     chmod 600 "${__APOLLO_BUFFER_NAME}";

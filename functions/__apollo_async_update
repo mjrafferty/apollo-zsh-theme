@@ -44,7 +44,13 @@ __apollo_async_update() {
 
     module_before="${__APOLLO_MODULE_TEXT[$num]}"
 
+    exec {__APOLLO_BUFFER_FD}<> "${__APOLLO_BUFFER_NAME}" \
+      || __apollo_check_buffer
+
     __apollo_run_module "${line}" "${side}" "${module}" "${num}" "${cache_key}"
+
+    [[ -n "$__APOLLO_BUFFER_FD" ]] && exec {__APOLLO_BUFFER_FD}>&-
+    unset __APOLLO_BUFFER_FD 2> /dev/null
 
     module_after="${__APOLLO_MODULE_TEXT[$num]}"
 

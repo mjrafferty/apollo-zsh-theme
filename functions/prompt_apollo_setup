@@ -9,7 +9,7 @@ typeset -gA __APOLLO_MODULE_CACHE
 typeset -gA __APOLLO_STYLE_CACHE
 
 ## Buffer data
-typeset -g  __APOLLO_BUFFER_NAME
+typeset -g  __APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
 typeset -g  __APOLLO_BUFFER_FD
 
 ## Async data
