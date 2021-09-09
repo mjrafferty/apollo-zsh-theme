@@ -9,7 +9,7 @@ typeset -gA __APOLLO_MODULE_CACHE
 typeset -gA __APOLLO_STYLE_CACHE
 
 ## Buffer data
-typeset -g  __APOLLO_BUFFER_NAME
+typeset -gx  __APOLLO_BUFFER_NAME
 typeset -g  __APOLLO_BUFFER_FD
 
 ## Async data
@@ -64,7 +64,9 @@ prompt_apollo_setup() {
 
   zmodload zsh/datetime zsh/regex zsh/system zsh/mathfunc
 
-__APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
+  if [[ -z "${__APOLLO_BUFFER_NAME}" ]]; then
+    __APOLLO_BUFFER_NAME="${TMPDIR:-/tmp}/${USER}__APOLLO_$EPOCHSECONDS"
+  fi
 
   ## Set fpath ##
   if [[ -n "${__APOLLO_INSTALL_DIR}" ]]; then
