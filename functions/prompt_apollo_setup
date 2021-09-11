@@ -6,6 +6,7 @@ typeset -g __APOLLO_PID="$$"
 
 ## Cache types
 typeset -gA __APOLLO_MODULE_CACHE
+typeset -gA __APOLLO_SCROLLBACK_CACHE
 typeset -gA __APOLLO_STYLE_CACHE
 
 ## Buffer data
@@ -22,6 +23,7 @@ typeset -gi __APOLLO_BREAK_CACHE_COUNTER
 typeset -gi __APOLLO_EXIT_CODE
 typeset -gi __APOLLO_LEGACY_TRAP
 typeset -g  __APOLLO_PIPE_EXIT_CODES
+typeset -g  __APOLLO_IS_SCROLLBACK
 typeset -g  __APOLLO_RETURN_MESSAGE   # Used as a temporary storage for values to avoid using subshells
 
 ## Decorator variables

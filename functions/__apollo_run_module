@@ -41,6 +41,7 @@ __apollo_run_module() {
     __APOLLO_MODULE_TEXT[$num]=""
     if [[ -n "$cache_key" ]]; then
       __APOLLO_MODULE_CACHE["${cache_key}"]="0\0${__APOLLO_RETURN_MESSAGE}"
+      __APOLLO_SCROLLBACK_CACHE[${module}]="${__APOLLO_RETURN_MESSAGE}"
     fi
     return;
   fi
@@ -53,6 +54,7 @@ __apollo_run_module() {
 
   if [[ -n "$cache_key" ]]; then
     __APOLLO_MODULE_CACHE["${cache_key}"]="${__APOLLO_MODULE_HAS_LENGTH[$num]}\0${__APOLLO_MODULE_TEXT[$num]}\0${mode}"
+    __APOLLO_SCROLLBACK_CACHE[${module}]="${__APOLLO_MODULE_TEXT[$num]}"
   fi
 
 }

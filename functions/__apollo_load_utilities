@@ -53,9 +53,12 @@ zle-line-finish() {
     current_theme="$APOLLO_THEME"
 
     APOLLO_THEME="${scrollback_theme}"
+    __APOLLO_IS_SCROLLBACK=1;
     __apollo_run_prompt
 
     zle && zle .reset-prompt
+
+    __APOLLO_IS_SCROLLBACK=0;
 
     [[ -n "$__APOLLO_COMMAND_EXECUTION_TIME_DURATION" ]] && __APOLLO_COMMAND_EXECUTION_TIME_DURATION=-1
 
