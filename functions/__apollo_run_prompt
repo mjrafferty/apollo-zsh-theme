@@ -11,7 +11,7 @@ __apollo_run_prompt() {
     __apollo_init_theme;
   fi
 
-    PROMPT="${__APOLLO_FINISHED_PROMPTS[$APOLLO_THEME]}"
+  PROMPT="${__APOLLO_FINISHED_PROMPTS[$APOLLO_THEME]}"
   RPROMPT="${__APOLLO_FINISHED_RPROMPTS[$APOLLO_THEME]}"
 
   zstyle -b ":apollo:${APOLLO_THEME}:core:profiler" enabled profiler
@@ -21,7 +21,7 @@ __apollo_run_prompt() {
     startmod=${EPOCHREALTIME}
   fi
 
-    __apollo_check_buffer
+  __apollo_check_buffer
 
   for ((line=__APOLLO_PROMPT_THEME_START[$APOLLO_THEME]; line <= __APOLLO_PROMPT_THEME_END[$APOLLO_THEME]; line++)); do
 

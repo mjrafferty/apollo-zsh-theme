@@ -112,7 +112,7 @@ __apollo_dir_theme_init() {
 
     split_pattern=("${(s.;.)pattern}")
 
-    bookmarks=(${~=split_pattern[1]}(N))
+    bookmarks=(${~=split_pattern[1]}(/N))
 
     if [[ -z "${split_pattern[2]}" ]]; then
       for bookmark in "${bookmarks[@]}"; do
