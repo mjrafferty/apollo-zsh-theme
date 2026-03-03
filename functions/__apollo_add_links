@@ -21,7 +21,7 @@
 
   # Set metadata based on left and right lengths
   for ((line=__APOLLO_PROMPT_THEME_START[$APOLLO_THEME];line<=line_index;line++)); do
-    ((lines_meta[line]=0));
+    lines_meta[line]=0;
     if (( ( 0 ${(e)__APOLLO_LEFT_HAS_LENGTH[line]}) > 0 )); then
       ((lines_meta[line]+=1));
     fi
