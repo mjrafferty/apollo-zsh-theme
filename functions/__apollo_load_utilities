@@ -47,7 +47,7 @@ zle-line-finish() {
 
   local current_theme scrollback_theme
 
-  zstyle -s ":apollo:${APOLLO_THEME}:core:scrollback" theme scrollback_theme
+  zstyle -s ":apollo:${APOLLO_THEME}:core:scrollback" theme scrollback_theme || true
 
   if [[ -n "$scrollback_theme" ]]; then
     current_theme="$APOLLO_THEME"

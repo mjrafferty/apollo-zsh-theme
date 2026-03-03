@@ -17,14 +17,14 @@ __apollo_git_always_async() {
 
   [[ -z "$git_dir" ]] && return 0
 
-  zstyle -a "${context}:${mode}" whitelist list
+  zstyle -a "${context}:${mode}" whitelist list || true
 
   for pattern in "${list[@]}"; do
     [[ "$PWD" -regex-match $pattern ]] && listed=1
   done
 
   if ((listed != 1)); then
-    zstyle -a "${context}:${mode}" blacklist list
+    zstyle -a "${context}:${mode}" blacklist list || true
 
     for pattern in "${list[@]}"; do
       [[ "$PWD" -regex-match $pattern ]] && listed=1
@@ -39,7 +39,7 @@ __apollo_git_always_async() {
   local_branch=$(__apollo_git_getbranch "${git_dir}")
   action=$(__apollo_git_getaction "${git_dir}")
 
-  zstyle -a "${context}:${mode}" elements elements
+  zstyle -a "${context}:${mode}" elements elements || true
 
   for element in "${elements[@]}"; do
     case "$element" in
@@ -50,7 +50,7 @@ __apollo_git_always_async() {
             ;;
           "commit_hash")
 
-            zstyle -s "${context}:${mode}" hash_length hash_length
+            zstyle -s "${context}:${mode}" hash_length hash_length || true
 
             if [[ "$hash_length" == [0-9]* ]]; then
               commit_hash="$(git rev-parse --short="$hash_length" HEAD)"
@@ -79,7 +79,7 @@ __apollo_git_always_async() {
 
             if ((only_count_once++ == 0 )); then
 
-              zstyle -b "${context}:${mode}" ignore_submodules ignore_submodules
+              zstyle -b "${context}:${mode}" ignore_submodules ignore_submodules || true
 
               if [[ "${ignore_submodules}" == "yes" ]]; then
                 git status --porcelain --ignore-submodules
@@ -102,7 +102,7 @@ __apollo_git_always_async() {
         esac
         if [[ -n "${(P)element}" ]]; then
 
-          zstyle -b "${context}:${mode}:${element}" simple simple
+          zstyle -b "${context}:${mode}:${element}" simple simple || true
 
           if [[ "$simple" == "yes" ]]; then
             if (( ${(P)element} != 0)); then

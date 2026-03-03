@@ -18,10 +18,10 @@ __apollo_dir_run() {
     __apollo_set_mode dir "readonly"
   fi
 
-  zstyle -b "${context}:${mode}" absolute absolute
-  zstyle -s "${context}:${mode}" last_count last_count
-  zstyle -s "${context}:${mode}" shorten_length shorten_length
-  zstyle -s "${context}:${mode}" shorten_string shorten_string
+  zstyle -b "${context}:${mode}" absolute absolute || true
+  zstyle -s "${context}:${mode}" last_count last_count || true
+  zstyle -s "${context}:${mode}" shorten_length shorten_length || true
+  zstyle -s "${context}:${mode}" shorten_string shorten_string || true
 
   __apollo_set_style "${context}:${mode}:sep"
   sep="${__APOLLO_RETURN_MESSAGE}"
@@ -100,13 +100,13 @@ __apollo_dir_theme_init() {
   local bookmark pattern bookmark_name
   local -a bookmarks bookmark_patterns split_pattern
 
-  zstyle -a ":apollo:${APOLLO_THEME}:*:*:dir:*" bookmarks bookmarks
+  zstyle -a ":apollo:${APOLLO_THEME}:*:*:dir:*" bookmarks bookmarks || true
 
   for bookmark in "${bookmarks[@]}"; do
     hash -d "${bookmark}" 2> /dev/null
   done
 
-  zstyle -a ":apollo:${APOLLO_THEME}:*:*:dir:*" bookmark_patterns bookmark_patterns
+  zstyle -a ":apollo:${APOLLO_THEME}:*:*:dir:*" bookmark_patterns bookmark_patterns || true
 
   for pattern in "${bookmark_patterns[@]}"; do
 

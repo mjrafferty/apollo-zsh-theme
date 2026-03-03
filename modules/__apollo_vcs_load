@@ -11,14 +11,14 @@ __apollo_vcs_always_async() {
   local context="$1"
   local mode="default"
 
-  zstyle -a "${context}:${mode}" whitelist list
+  zstyle -a "${context}:${mode}" whitelist list || true
 
   for pattern in "${list[@]}"; do
     [[ "$PWD" -regex-match $pattern ]] && listed=1
   done
 
   if ((listed != 1)); then
-    zstyle -a "${context}:${mode}" blacklist list
+    zstyle -a "${context}:${mode}" blacklist list || true
 
     for pattern in "${list[@]}"; do
       [[ "$PWD" -regex-match $pattern ]] && listed=1
@@ -30,7 +30,7 @@ __apollo_vcs_always_async() {
     fi
   fi
 
-  zstyle -a "${context}:${mode}" elements elements
+  zstyle -a "${context}:${mode}" elements elements || true
 
   for element in "${elements[@]}"; do
     case "$element" in
@@ -40,12 +40,12 @@ __apollo_vcs_always_async() {
             zstyle ':vcs_info:*:apollo_vcs:*' get-revision "true"
             ;;
           "staged")
-            zstyle -s "${context}:${mode}:staged" text stagedstr
+            zstyle -s "${context}:${mode}:staged" text stagedstr || true
             zstyle ':vcs_info:*:apollo_vcs:*' stagedstr "$stagedstr"
             zstyle ':vcs_info:*:apollo_vcs:*' check-for-staged-changes "true"
             ;;
           "unstaged")
-            zstyle -s "${context}:${mode}:unstaged" text unstagedstr
+            zstyle -s "${context}:${mode}:unstaged" text unstagedstr || true
             zstyle ':vcs_info:*:apollo_vcs:*' unstagedstr "$unstagedstr"
             zstyle ':vcs_info:*:apollo_vcs:*' check-for-changes "true"
             ;;

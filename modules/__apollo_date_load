@@ -14,12 +14,12 @@ __apollo_date_run() {
   local -a elements misc_style
   local return_string verbose
 
-  zstyle -a "${context}:${mode}" elements elements
+  zstyle -a "${context}:${mode}" elements elements || true
 
   for element in "${elements[@]}"; do
     case "$element" in
       "dow")
-        zstyle -b "${context}:${mode}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose || true
         if [[ "${verbose}" == "yes" ]]; then
           __apollo_set_style "${context}:${mode}:${element}" "%D{%A}"
         else
@@ -28,7 +28,7 @@ __apollo_date_run() {
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "day")
-        zstyle -b "${context}:${mode}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose || true
         if [[ "${verbose}" == "yes" ]]; then
           __apollo_set_style "${context}:${mode}:${element}" "%D{%e}"
         else
@@ -37,7 +37,7 @@ __apollo_date_run() {
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "month")
-        zstyle -b "${context}:${mode}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose || true
         if [[ "${verbose}" == "yes" ]]; then
           __apollo_set_style "${context}:${mode}:${element}" "%D{%B}"
         else
@@ -46,7 +46,7 @@ __apollo_date_run() {
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "year")
-        zstyle -b "${context}:${mode}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose || true
         if [[ "${verbose}" == "yes" ]]; then
           __apollo_set_style "${context}:${mode}:${element}" "%D{%Y}"
         else

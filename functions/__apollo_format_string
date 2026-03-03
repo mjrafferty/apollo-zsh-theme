@@ -11,7 +11,7 @@ __apollo_format_string() {
   bg_color="$4"
 
   if [[ -z "$string" ]]; then
-    zstyle -s "${context}" text string
+    zstyle -s "${context}" text string || true
   fi
 
   if [[ -z "$string" ]]; then
@@ -19,7 +19,7 @@ __apollo_format_string() {
     return;
   fi
 
-  zstyle -a "$context" style styles
+  zstyle -a "$context" style styles || true
 
   for style in "${styles[@]}"; do
     case "$style" in
@@ -37,11 +37,11 @@ __apollo_format_string() {
   done
 
   if [[ -z "$fg_color" ]]; then
-    zstyle -s "${context}" fg_color fg_color
+    zstyle -s "${context}" fg_color fg_color || true
   fi
 
   if [[ -z "$bg_color" ]]; then
-    zstyle -s "${context}" bg_color bg_color
+    zstyle -s "${context}" bg_color bg_color || true
   fi
 
   __apollo_set_colors "$fg_color" "$bg_color"

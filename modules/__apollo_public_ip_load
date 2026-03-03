@@ -12,13 +12,13 @@ __apollo_public_ip_async() {
   context="$1"
   mode="default"
 
-  zstyle -a "${context}:${mode}" methods methods
+  zstyle -a "${context}:${mode}" methods methods || true
 
   for method in "${methods[@]}"; do
 
     if (( $+commands[$method] )); then
 
-      zstyle -s "${context}:${mode}:${method}" host host
+      zstyle -s "${context}:${mode}:${method}" host host || true
 
       case $method in
         'curl') __APOLLO_RETURN_MESSAGE=$(command curl --max-time 10 -w '\n' "$host") ;;

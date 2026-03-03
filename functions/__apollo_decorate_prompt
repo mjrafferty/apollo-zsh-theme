@@ -8,7 +8,7 @@ __apollo_decorate_prompt() {
   local -a line_modules
   local skip_decorate
 
-  zstyle -b ":apollo:${APOLLO_THEME}:core:decorations" disabled skip_decorate
+  zstyle -b ":apollo:${APOLLO_THEME}:core:decorations" disabled skip_decorate || true
 
   if [[ "$skip_decorate" == "yes" ]]; then
     return;

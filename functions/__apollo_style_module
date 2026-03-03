@@ -25,7 +25,7 @@ __apollo_style_module() {
     __apollo_format_string "${context}:surround:right"
     right_surround="$__APOLLO_RETURN_MESSAGE"
 
-    zstyle -s "$context:blend" bg_color bg_color
+    zstyle -s "$context:blend" bg_color bg_color || true
     __apollo_set_colors "$bg_color" "keep"
 
     style_string="${left_surround}\0${style_string}\0${right_surround}${__APOLLO_RETURN_MESSAGE}"
@@ -39,7 +39,7 @@ __apollo_style_module() {
   left_surround="${cache[1]}"
   right_surround="${cache[4]}"
 
-  zstyle -s "${context}" min_width min_width
+  zstyle -s "${context}" min_width min_width || true
 
   ## Set padding if necessary
   if [[ -n "$min_width" ]]; then

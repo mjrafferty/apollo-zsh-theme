@@ -14,12 +14,12 @@ __apollo_clock_run() {
   local -a elements misc_style
   local return_string verbose
 
-  zstyle -a "${context}:${mode}" elements elements
+  zstyle -a "${context}:${mode}" elements elements || true
 
   for element in "${elements[@]}"; do
     case "$element" in
       "12hour")
-        zstyle -b "${context}:${mode}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose || true
         if [[ "${verbose}" == "yes" ]]; then
           __apollo_set_style "${context}:${mode}:${element}" "%D{%l}"
         else
@@ -28,7 +28,7 @@ __apollo_clock_run() {
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "24hour")
-        zstyle -b "${context}:${mode}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose || true
         if [[ "${verbose}" == "yes" ]]; then
           __apollo_set_style "${context}:${mode}:${element}" "%D{%k}"
         else
@@ -45,7 +45,7 @@ __apollo_clock_run() {
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "ampm")
-        zstyle -b "${context}:${mode}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose || true
         if [[ "${verbose}" == "yes" ]]; then
           __apollo_set_style "${context}:${mode}:${element}" "%D{%p}"
         else
@@ -54,7 +54,7 @@ __apollo_clock_run() {
         return_string+="${__APOLLO_RETURN_MESSAGE}"
         ;;
       "timezone")
-        zstyle -b "${context}:${mode}:${element}" verbose verbose
+        zstyle -b "${context}:${mode}:${element}" verbose verbose || true
         if [[ "${verbose}" == "yes" ]]; then
           __apollo_set_style "${context}:${mode}:${element}" "%D{%Z}"
         else
@@ -80,7 +80,7 @@ __apollo_clock_run() {
 __apollo_clock_theme_init() {
   local live
 
-  zstyle -b ":apollo:${APOLLO_THEME}:*:*:clock:*" live live
+  zstyle -b ":apollo:${APOLLO_THEME}:*:*:clock:*" live live || true
 
   if [[ "$live" == "yes" ]]; then
     TMOUT=1

@@ -11,7 +11,7 @@ __apollo_add_newline() {
     __APOLLO_PROMPT_LINES[line]+="%{%k%}\${(er.\$((\$COLUMNS - \${__APOLLO_PROMPT_LINE_LENGTH[$line]})).. .)}"
   else
 
-    zstyle -s ":apollo:${APOLLO_THEME}:${line}:core:ruler" text ruler_text
+    zstyle -s ":apollo:${APOLLO_THEME}:${line}:core:ruler" text ruler_text || true
 
     # Using ¬ as a flag delimiter as it seems pretty uncommon and unlikely to be contained in the value of $ruler_text
     __apollo_set_style ":apollo:${APOLLO_THEME}:${line}:core:ruler" "\${(er¬\$((__apollo_math_max(\$COLUMNS - \${(e)__APOLLO_PROMPT_LINE_LENGTH[$line]},0)))¬¬${ruler_text}¬)}"

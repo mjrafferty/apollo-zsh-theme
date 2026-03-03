@@ -54,7 +54,7 @@ __apollo_async_update() {
 
     module_after="${__APOLLO_MODULE_TEXT[$num]}"
 
-    zstyle -b ":apollo:${APOLLO_THEME}:${line}:${side}:${module}:${__APOLLO_MODULE_MODE[$module]}" always_refresh always_refresh
+    zstyle -b ":apollo:${APOLLO_THEME}:${line}:${side}:${module}:${__APOLLO_MODULE_MODE[$module]}" always_refresh always_refresh || true
 
     if [[ "$module_after" != "$module_before" || "$always_refresh" == "yes" ]]; then
 

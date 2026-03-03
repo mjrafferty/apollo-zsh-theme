@@ -30,7 +30,7 @@ __apollo_command_execution_time_run() {
     __apollo_set_mode command_execution_time "hour"
   fi
 
-  zstyle -s "${context}:${mode}" min_duration min_duration
+  zstyle -s "${context}:${mode}" min_duration min_duration || true
 
   if [[ -n "$duration" && "$duration" -lt "$min_duration"  ]]; then
     __APOLLO_RETURN_MESSAGE=""
@@ -39,7 +39,7 @@ __apollo_command_execution_time_run() {
 
   case "$mode" in
     "default")
-      zstyle -s "${context}:${mode}" precision precision
+      zstyle -s "${context}:${mode}" precision precision || true
       if ((precision == 0)); then
         typeset -i duration
       else

@@ -9,10 +9,10 @@ __apollo_precmd() {
   local module cache_disabled clearing_disabled
   local -i clear_count
 
-  zstyle -b ":apollo:${APOLLO_THEME}:core:profiler" enabled profiler
-  zstyle -b ":apollo:${APOLLO_THEME}:core:cache" disable cache_disabled
-  zstyle -s ":apollo:${APOLLO_THEME}:core:cache:clear" count clear_count
-  zstyle -b ":apollo:${APOLLO_THEME}:core:cache:clear" disable clearing_disabled
+  zstyle -b ":apollo:${APOLLO_THEME}:core:profiler" enabled profiler || true
+  zstyle -b ":apollo:${APOLLO_THEME}:core:cache" disable cache_disabled || true
+  zstyle -s ":apollo:${APOLLO_THEME}:core:cache:clear" count clear_count || true
+  zstyle -b ":apollo:${APOLLO_THEME}:core:cache:clear" disable clearing_disabled || true
 
   if [[ "$cache_disabled" == "yes" ]] \
     || [[ "$clearing_disabled" != "yes" && "$((++__APOLLO_BREAK_CACHE_COUNTER))" -ge "$clear_count" ]]; then
@@ -39,7 +39,7 @@ __apollo_precmd() {
   # Fixes zsh issue that makes pipestatus unreliable for status module
   if (( $#__APOLLO_PIPE_EXIT_CODES > 1 )); then
 
-    zstyle -b ":apollo:${APOLLO_THEME}:core:pipestatus" fix fix_pipestatus
+    zstyle -b ":apollo:${APOLLO_THEME}:core:pipestatus" fix fix_pipestatus || true
 
     if [[ "$fix_pipestatus" == "yes" ]]; then
       sched +1 ''

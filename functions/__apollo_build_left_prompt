@@ -6,7 +6,7 @@ __apollo_build_left_prompt() {
   local -i line_index line
   local -a left_modules
 
-  zstyle -a ":apollo:${APOLLO_THEME}:core:modules:left" modules left_modules
+  zstyle -a ":apollo:${APOLLO_THEME}:core:modules:left" modules left_modules || true
 
   line_index=$(($#__APOLLO_PROMPT_LINES + 1));
   __APOLLO_PROMPT_THEME_START[$APOLLO_THEME]="$line_index"

@@ -22,27 +22,27 @@ __apollo_set_style() {
 
     case "$type" in
       "--begin")
-        zstyle -b "${context}" blend blend
+        zstyle -b "${context}" blend blend || true
         if [[ "$blend" == "yes" ]]; then
-          zstyle -s "${context}" bg_color fg_color
+          zstyle -s "${context}" bg_color fg_color || true
           bg_color="clear"
         fi
         ;;
       "--end")
-        zstyle -b "${context}" blend blend
+        zstyle -b "${context}" blend blend || true
         if [[ "$blend" == "yes" ]]; then
           fg_color="keep"
           bg_color="clear"
         fi
         ;;
       "--separator")
-        zstyle -b "${context}" blend blend
-        zstyle -b "${context}" revblend revblend
+        zstyle -b "${context}" blend blend || true
+        zstyle -b "${context}" revblend revblend || true
         if [[ "$blend" == "yes" ]]; then
-          zstyle -s "${context}" bg_color bg_color
+          zstyle -s "${context}" bg_color bg_color || true
           fg_color="keep"
         elif [[ "$revblend" == "yes" ]]; then
-          zstyle -s "${context}" bg_color fg_color
+          zstyle -s "${context}" bg_color fg_color || true
           bg_color="keep"
         fi
         ;;

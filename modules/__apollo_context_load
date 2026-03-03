@@ -26,7 +26,7 @@ __apollo_context_run() {
     __apollo_set_mode "context" "sudo"
   fi
 
-  zstyle -a "${context}:${mode}" ignore_users ignored_users
+  zstyle -a "${context}:${mode}" ignore_users ignored_users || true
 
   for user in "${ignored_users[@]}"; do
     if [[ "$USER" -regex-match $user ]]; then
@@ -34,7 +34,7 @@ __apollo_context_run() {
     fi
   done
 
-  zstyle -a "${context}:${mode}" ignore_hosts ignored_hosts
+  zstyle -a "${context}:${mode}" ignore_hosts ignored_hosts || true
 
   for host in "${ignored_hosts[@]}"; do
     if [[ "$HOST" -regex-match $host ]]; then
